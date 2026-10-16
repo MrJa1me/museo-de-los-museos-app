@@ -45,7 +45,23 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+
+    // Base del equipo: navegación, MVVM, persistencia, adaptabilidad
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.compose.material3.window.size)
+    implementation(libs.androidx.compose.material.icons.extended)
+
+    // Recursos nativos (P3): mapa (osmdroid) y lectura de QR (Google Code Scanner)
+    implementation(libs.osmdroid.android)
+    implementation(libs.play.services.code.scanner)
+
     testImplementation(libs.junit)
+    // org.json real para pruebas unitarias en el PC (en Android ya viene incluido)
+    testImplementation(libs.org.json)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)
