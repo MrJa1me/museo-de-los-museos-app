@@ -1,3 +1,31 @@
 <resources>
-    <string name="app_name">museo-de-los-museos-app</string>
+    <string name="app_name">Museo de los Museos</string>
+
+    <!-- Barra de navegación inferior (P2) -->
+    <string name="nav_inicio">Inicio</string>
+    <string name="nav_mapa">Mapa</string>
+    <string name="nav_catalogo">Catálogo</string>
+    <string name="nav_notificaciones">Avisos</string>
+    <string name="nav_perfil">Perfil</string>
+
+    <!-- Títulos de pantallas. Cada integrante agrega sus textos nuevos en su propio bloque. -->
+    <string name="pantalla_bienvenida">Bienvenida</string>
+    <string name="pantalla_dashboard">Inicio</string>
+    <string name="pantalla_notificaciones">Notificaciones</string>
+    <string name="placeholder_pendiente">Pantalla pendiente de implementar · Responsable: %1$s</string>
+
+    <string name="pantalla_registro">Registro de usuario</string>
+    <string name="pantalla_login">Inicio de sesión</string>
+    <string name="pantalla_perfil">Perfil y configuración</string>
+
+    <string name="pantalla_mapa">Mapa de museos virtuales</string>
+    <string name="pantalla_detalle_museo">Detalle del museo</string>
+    <string name="pantalla_escaner_qr">Escáner QR</string>
+    <string name="pantalla_resultado_qr">Resultado del QR</string>
+    <string name="pantalla_favoritos">Museos favoritos</string>
+
+    <string name="pantalla_catalogo">Catálogo de productos y cursos</string>
+    <string name="pantalla_detalle_producto">Detalle y solicitud de compra</string>
+    <string name="pantalla_carrito">Carrito y cálculo de envío</string>
+    <string name="pantalla_historial">Historial y gestión de solicitudes</string>
 </resources>
