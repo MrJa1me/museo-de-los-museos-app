@@ -28,4 +28,36 @@
     <string name="pantalla_detalle_producto">Detalle y solicitud de compra</string>
     <string name="pantalla_carrito">Carrito y cálculo de envío</string>
     <string name="pantalla_historial">Historial y gestión de solicitudes</string>
+
+    <!-- P4: Catálogo -->
+    <string name="catalogo_buscar">Buscar cursos o productos</string>
+    <string name="catalogo_limpiar_busqueda">Limpiar búsqueda</string>
+    <string name="catalogo_todas">Todas</string>
+    <string name="catalogo_solo_disponibles">Solo disponibles</string>
+    <string name="catalogo_resultados">%1$d resultados</string>
+    <string name="catalogo_sin_resultados">No hay productos que coincidan con la búsqueda</string>
+    <string name="catalogo_limpiar_filtros">Limpiar filtros</string>
+    <string name="catalogo_cupos">%1$d cupos disponibles</string>
+    <string name="catalogo_stock">%1$d unidades disponibles</string>
+    <string name="catalogo_agotado">Agotado</string>
+    <string name="catalogo_no_disponible">No disponible</string>
+    <string name="catalogo_desactivado">Desactivado</string>
+    <string name="catalogo_ir_carrito">Ver carrito</string>
+    <string name="catalogo_ir_historial">Ver historial de solicitudes</string>
+
+    <!-- P4: mensajes de validación (domain/Validadores.kt → ui/utils/MensajesValidacion.kt) -->
+    <string name="error_campo_vacio">Este campo es obligatorio</string>
+    <string name="error_texto_muy_corto">El texto es demasiado corto</string>
+    <string name="error_solo_letras">Solo se permiten letras y espacios</string>
+    <string name="error_numero_invalido">Ingresa un número válido</string>
+    <string name="error_cantidad_minima">La cantidad mínima es 1</string>
+    <string name="error_producto_agotado">Este producto no está disponible</string>
+    <string name="error_supera_stock">La cantidad supera el stock disponible</string>
+    <string name="error_precio_invalido">El precio debe ser mayor a 0</string>
+    <string name="error_stock_invalido">El stock no puede ser negativo</string>
+    <string name="error_peso_invalido">El peso debe ser mayor a 0</string>
+    <string name="error_peso_maximo">El peso máximo es 30 kg</string>
+    <string name="error_telefono_invalido">Ingresa un teléfono de 8 a 15 dígitos</string>
+    <string name="error_region_invalida">Selecciona una región de Chile</string>
+    <string name="error_pais_no_disponible">No hay envíos a ese país</string>
 </resources>
