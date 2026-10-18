@@ -28,6 +28,41 @@
     <string name="bienvenida_acceso_dashboard_titulo">Panel de Inicio</string>
     <string name="bienvenida_acceso_dashboard_desc">Accede al contenido destacado y novedades del museo</string>
 
+    <!-- Pantalla de Dashboard / Inicio (P2) -->
+    <string name="dashboard_saludo_hola">¡Hola, %1$s!</string>
+    <string name="dashboard_saludo_invitado">¡Bienvenido al Museo!</string>
+    <string name="dashboard_rol_label">Rol: %1$s</string>
+    <string name="dashboard_seccion_acciones">Acciones rápidas</string>
+    <string name="dashboard_seccion_museos_destacados">Museos virtuales destacados</string>
+    <string name="dashboard_seccion_cursos_destacados">Cursos de capacitación</string>
+    <string name="dashboard_seccion_productos_destacados">Publicaciones y materiales</string>
+    <string name="dashboard_admin_titulo">Panel de Administración</string>
+    <string name="dashboard_admin_metricas">Métricas del sistema y solicitudes</string>
+    <string name="dashboard_investigador_titulo">Panel de Investigación</string>
+    <string name="dashboard_investigador_fichas">Registros y fichas de Iberoamérica</string>
+    <string name="dashboard_btn_ver_todos">Ver todos</string>
+    <string name="dashboard_btn_escaner">Escáner QR</string>
+    <string name="dashboard_btn_favoritos">Favoritos</string>
+    <string name="dashboard_btn_carrito">Carrito</string>
+    <string name="dashboard_btn_historial">Historial</string>
+
+    <!-- Pantalla de Notificaciones / Avisos (P2) -->
+    <string name="notif_titulo">Notificaciones y Avisos</string>
+    <string name="notif_sin_notificaciones">No tienes notificaciones por el momento.</string>
+    <string name="notif_filtro_todas">Todas</string>
+    <string name="notif_filtro_no_leidas">No leídas</string>
+    <string name="notif_marcar_leida">Marcar leída</string>
+    <string name="notif_ir_a_seccion">Ir a la sección</string>
+    <string name="notif_crear_aviso">Crear aviso de prueba</string>
+    <string name="notif_dialog_titulo">Publicar aviso de prueba (Admin)</string>
+    <string name="notif_campo_titulo">Título del aviso</string>
+    <string name="notif_campo_mensaje">Mensaje o descripción</string>
+    <string name="notif_campo_ruta">Ruta de destino (opcional)</string>
+    <string name="notif_btn_publicar">Publicar aviso</string>
+    <string name="notif_btn_cancelar">Cancelar</string>
+    <string name="notif_error_titulo_vacio">El título no puede estar vacío</string>
+    <string name="notif_error_mensaje_vacio">El mensaje no puede estar vacío</string>
+
     <string name="pantalla_registro">Registro de usuario</string>
     <string name="pantalla_login">Inicio de sesión</string>
     <string name="pantalla_perfil">Perfil y configuración</string>
