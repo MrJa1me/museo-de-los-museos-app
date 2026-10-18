@@ -14,6 +14,20 @@
     <string name="pantalla_notificaciones">Notificaciones</string>
     <string name="placeholder_pendiente">Pantalla pendiente de implementar · Responsable: %1$s</string>
 
+    <!-- Pantalla de Bienvenida (P2) -->
+    <string name="bienvenida_titulo">Museo de los Museos</string>
+    <string name="bienvenida_subtitulo">Plataforma unificada de museos virtuales de Iberoamérica, oferta de cursos y catálogo museológico.</string>
+    <string name="bienvenida_btn_comenzar">Iniciar sesión / Comenzar</string>
+    <string name="bienvenida_btn_registro">Crear una cuenta</string>
+    <string name="bienvenida_btn_invitado">Explorar como invitado</string>
+    <string name="bienvenida_seccion_accesos">Accesos directos</string>
+    <string name="bienvenida_acceso_catalogo_titulo">Catálogo y Cursos</string>
+    <string name="bienvenida_acceso_catalogo_desc">Descubre publicaciones, materiales y cursos de capacitación</string>
+    <string name="bienvenida_acceso_mapa_titulo">Mapa de Museos Virtuales</string>
+    <string name="bienvenida_acceso_mapa_desc">Recorre de forma interactiva los museos de Iberoamérica</string>
+    <string name="bienvenida_acceso_dashboard_titulo">Panel de Inicio</string>
+    <string name="bienvenida_acceso_dashboard_desc">Accede al contenido destacado y novedades del museo</string>
+
     <string name="pantalla_registro">Registro de usuario</string>
     <string name="pantalla_login">Inicio de sesión</string>
     <string name="pantalla_perfil">Perfil y configuración</string>
