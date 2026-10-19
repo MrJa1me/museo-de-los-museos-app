@@ -132,10 +132,12 @@ private fun BarraInferior(navController: NavHostController, rutaActual: String) 
             NavigationBarItem(
                 selected = rutaActual == destino.ruta,
                 onClick = {
-                    navController.navigate(destino.ruta) {
-                        popUpTo(Routes.Dashboard.route) { saveState = true }
-                        launchSingleTop = true
-                        restoreState = true
+                    if (rutaActual != destino.ruta) {
+                        navController.navigate(destino.ruta) {
+                            popUpTo(Routes.Dashboard.route) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = (destino.ruta != Routes.Dashboard.route)
+                        }
                     }
                 },
                 icon = { Icon(imageVector = destino.icono, contentDescription = null) },
