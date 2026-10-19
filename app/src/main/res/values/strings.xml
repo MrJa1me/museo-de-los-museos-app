@@ -45,16 +45,32 @@
     <string name="dashboard_btn_favoritos">Favoritos</string>
     <string name="dashboard_btn_carrito">Carrito</string>
     <string name="dashboard_btn_historial">Historial</string>
+    <string name="dashboard_banner_mapa_titulo">Mapa de Museos Virtuales</string>
+    <string name="dashboard_banner_mapa_desc">Explora los espacios culturales de Iberoamérica de forma interactiva.</string>
+    <string name="dashboard_metrica_solicitudes">Solicitudes</string>
+    <string name="dashboard_metrica_catalogo">Catálogo</string>
+    <string name="dashboard_metrica_mapa">Mapa Museos</string>
+    <string name="dashboard_metrica_escaner">Escáner QR</string>
+    <string name="dashboard_metrica_fichas">%1$d fichas</string>
+    <string name="dashboard_metrica_items">%1$d ítems</string>
+    <string name="dashboard_metrica_pendientes">%1$d pendientes</string>
+    <string name="dashboard_metrica_captura">Captura rápida</string>
+    <string name="dashboard_cupos_disponibles">%1$d cupos disponibles</string>
 
     <!-- Pantalla de Notificaciones / Avisos (P2) -->
     <string name="notif_titulo">Notificaciones y Avisos</string>
     <string name="notif_sin_notificaciones">No tienes notificaciones por el momento.</string>
+    <string name="notif_sin_sesion">Debes iniciar sesión para ver y recibir notificaciones.</string>
     <string name="notif_filtro_todas">Todas</string>
     <string name="notif_filtro_no_leidas">No leídas</string>
     <string name="notif_marcar_leida">Marcar leída</string>
     <string name="notif_ir_a_seccion">Ir a la sección</string>
     <string name="notif_crear_aviso">Crear aviso de prueba</string>
     <string name="notif_dialog_titulo">Publicar aviso de prueba (Admin)</string>
+    <string name="notif_campo_destinatario">Destinatario del aviso</string>
+    <string name="notif_destinatario_todos">Todos los clientes</string>
+    <string name="notif_destinatario_cliente1">Cliente Uno</string>
+    <string name="notif_destinatario_cliente2">Cliente Dos</string>
     <string name="notif_campo_titulo">Título del aviso</string>
     <string name="notif_campo_mensaje">Mensaje o descripción</string>
     <string name="notif_campo_ruta">Ruta de destino (opcional)</string>
@@ -62,6 +78,8 @@
     <string name="notif_btn_cancelar">Cancelar</string>
     <string name="notif_error_titulo_vacio">El título no puede estar vacío</string>
     <string name="notif_error_mensaje_vacio">El mensaje no puede estar vacío</string>
+    <string name="notif_detalle_titulo">Detalle de Notificación</string>
+    <string name="notif_seleccionar_indicacion">Selecciona una notificación para ver su detalle completo.</string>
 
     <string name="pantalla_registro">Registro de usuario</string>
     <string name="pantalla_login">Inicio de sesión</string>
