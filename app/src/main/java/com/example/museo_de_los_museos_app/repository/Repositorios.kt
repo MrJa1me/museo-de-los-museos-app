@@ -8,4 +8,5 @@ object Repositorios {
     val museos: MuseumRepository = InMemoryMuseumRepository()
     val productos: ProductRepository = InMemoryProductRepository()
     val notificaciones: NotificationRepository = InMemoryNotificationRepository()
+    val pedidos: OrderRepository = InMemoryOrderRepository()
 }

@@ -1,11 +1,20 @@
 package com.example.museo_de_los_museos_app.ui.screens.notificaciones
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,7 +37,11 @@ import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -41,9 +54,13 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -58,9 +75,9 @@ import java.util.Date
 import java.util.Locale
 
 /**
- * Pantalla de Notificaciones y Avisos de la app (P2).
- * Permite filtrar por leídas/no leídas, marcar como leídas, navegar a pantallas relacionadas
- * y crear avisos de prueba si el usuario tiene rol Administrador.
+ * Pantalla adaptativa de Notificaciones y Avisos de la app (P2).
+ * Soporta dos paneles en pantallas anchas, animaciones fluidas, selector de destinatarios para Admin
+ * y retroalimentación visual completa de errores.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,6 +86,8 @@ fun NotificacionesScreen(
     viewModel: NotificacionesViewModel = viewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val configuration = LocalConfiguration.current
+    val esPantallaAncha = configuration.screenWidthDp >= 600
 
     Scaffold(
         topBar = {
@@ -97,7 +116,7 @@ fun NotificacionesScreen(
             )
         },
         floatingActionButton = {
-            if (uiState.esAdmin) {
+            if (uiState.esAdmin && uiState.tieneSesionActiva) {
                 FloatingActionButton(
                     onClick = { viewModel.setMostrarDialogoCrear(mostrar = true) },
                     containerColor = MaterialTheme.colorScheme.primary,
@@ -115,80 +134,96 @@ fun NotificacionesScreen(
             }
         },
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp),
-        ) {
-            // Chips de filtrado: Todas vs No leídas
+        if (!uiState.tieneSesionActiva) {
+            // Sin sesión activa
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(24.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(
+                        imageVector = Icons.Filled.NotificationsNone,
+                        contentDescription = null,
+                        modifier = Modifier.size(64.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = stringResource(R.string.notif_sin_sesion),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            }
+        } else if (esPantallaAncha) {
+            // Vista de dos paneles para pantalla ancha (Guía 9)
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                FilterChip(
-                    selected = uiState.filtroActual == FiltroNotificacion.TODAS,
-                    onClick = { viewModel.cambiarFiltro(FiltroNotificacion.TODAS) },
-                    label = { Text(stringResource(R.string.notif_filtro_todas)) },
-                )
-                FilterChip(
-                    selected = uiState.filtroActual == FiltroNotificacion.NO_LEIDAS,
-                    onClick = { viewModel.cambiarFiltro(FiltroNotificacion.NO_LEIDAS) },
-                    label = { Text("${stringResource(R.string.notif_filtro_no_leidas)} (${uiState.noLeidasCount})") },
-                )
-            }
+                Column(modifier = Modifier.weight(1f)) {
+                    BarraFiltros(uiState = uiState, onFiltroChanged = viewModel::cambiarFiltro)
+                    ListaNotificaciones(
+                        uiState = uiState,
+                        onSeleccionar = viewModel::seleccionarNotificacion,
+                        onMarcarLeida = viewModel::marcarComoLeida,
+                        onNavegarRuta = { navController.navigate(it) },
+                    )
+                }
 
-            if (uiState.lista.isEmpty()) {
-                // Estado vacío
                 Box(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(24.dp),
-                    contentAlignment = Alignment.Center,
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .padding(vertical = 8.dp),
                 ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(
-                            imageVector = Icons.Filled.NotificationsNone,
-                            contentDescription = null,
-                            modifier = Modifier.size(64.dp),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = stringResource(R.string.notif_sin_notificaciones),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.Center,
-                        )
-                    }
+                    DetalleNotificacionPanel(
+                        item = uiState.notificacionSeleccionada,
+                        onMarcarLeida = {
+                            uiState.notificacionSeleccionada?.id?.let { viewModel.marcarComoLeida(it) }
+                        },
+                        onNavegarRuta = { navController.navigate(it) },
+                    )
                 }
-            } else {
-                // Lista de notificaciones
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                    modifier = Modifier.fillMaxSize(),
-                ) {
-                    items(uiState.lista, key = { it.id }) { item ->
-                        TarjetaNotificacion(
-                            item = item,
-                            onMarcarLeida = { viewModel.marcarComoLeida(item.id) },
-                            onNavegarRuta = { navController.navigate(it) },
-                        )
-                    }
-                }
+            }
+        } else {
+            // Vista en una sola columna para pantalla compacta
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(horizontal = 16.dp),
+            ) {
+                BarraFiltros(uiState = uiState, onFiltroChanged = viewModel::cambiarFiltro)
+                ListaNotificaciones(
+                    uiState = uiState,
+                    onSeleccionar = viewModel::seleccionarNotificacion,
+                    onMarcarLeida = viewModel::marcarComoLeida,
+                    onNavegarRuta = { navController.navigate(it) },
+                )
             }
         }
 
-        // Diálogo para que el Administrador cree un aviso de prueba
-        if (uiState.mostrarDialogoCrear) {
+        // Diálogo animado de creación de aviso
+        AnimatedVisibility(
+            visible = uiState.mostrarDialogoCrear,
+            enter = fadeIn() + scaleIn(initialScale = 0.9f),
+            exit = fadeOut() + scaleOut(targetScale = 0.9f),
+        ) {
             DialogoCrearAviso(
                 uiState = uiState,
-                onTituloChange = { viewModel.onNuevoTituloChanged(it) },
-                onMensajeChange = { viewModel.onNuevoMensajeChanged(it) },
-                onRutaChange = { viewModel.onNuevaRutaChanged(it) },
-                onDismiss = { viewModel.setMostrarDialogoCrear(false) },
+                onDestinatarioChange = viewModel::onDestinatarioChanged,
+                onTituloChange = viewModel::onNuevoTituloChanged,
+                onMensajeChange = viewModel::onNuevoMensajeChanged,
+                onRutaChange = viewModel::onNuevaRutaChanged,
+                onDismiss = { viewModel.setMostrarDialogoCrear(mostrar = false) },
                 onConfirmar = { viewModel.publicarAvisoDePrueba() },
             )
         }
@@ -196,23 +231,108 @@ fun NotificacionesScreen(
 }
 
 @Composable
+private fun BarraFiltros(
+    uiState: NotificacionesUiState,
+    onFiltroChanged: (FiltroNotificacion) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        FilterChip(
+            selected = uiState.filtroActual == FiltroNotificacion.TODAS,
+            onClick = { onFiltroChanged(FiltroNotificacion.TODAS) },
+            label = { Text(stringResource(R.string.notif_filtro_todas)) },
+        )
+        FilterChip(
+            selected = uiState.filtroActual == FiltroNotificacion.NO_LEIDAS,
+            onClick = { onFiltroChanged(FiltroNotificacion.NO_LEIDAS) },
+            label = { Text("${stringResource(R.string.notif_filtro_no_leidas)} (${uiState.noLeidasCount})") },
+        )
+    }
+}
+
+@Composable
+private fun ListaNotificaciones(
+    uiState: NotificacionesUiState,
+    onSeleccionar: (NotificationItem) -> Unit,
+    onMarcarLeida: (String) -> Unit,
+    onNavegarRuta: (String) -> Unit,
+) {
+    if (uiState.lista.isEmpty()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Icon(
+                    imageVector = Icons.Filled.NotificationsNone,
+                    contentDescription = null,
+                    modifier = Modifier.size(64.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = stringResource(R.string.notif_sin_notificaciones),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
+    } else {
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            items(uiState.lista, key = { it.id }) { item ->
+                AnimatedVisibility(
+                    visible = true,
+                    enter = fadeIn(animationSpec = tween(400)) + slideInVertically(initialOffsetY = { 20 }),
+                ) {
+                    TarjetaNotificacion(
+                        item = item,
+                        esSeleccionada = item.id == uiState.notificacionSeleccionada?.id,
+                        onClick = { onSeleccionar(item) },
+                        onMarcarLeida = { onMarcarLeida(item.id) },
+                        onNavegarRuta = onNavegarRuta,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
 private fun TarjetaNotificacion(
     item: NotificationItem,
+    esSeleccionada: Boolean,
+    onClick: () -> Unit,
     onMarcarLeida: () -> Unit,
     onNavegarRuta: (String) -> Unit,
 ) {
     val fechaFormateada = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date(item.fechaMillis))
 
+    // Tarea 2: Transición de color animada al marcar como leída
+    val colorFondoAnimado by animateColorAsState(
+        targetValue = when {
+            esSeleccionada -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f)
+            !item.leida -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.25f)
+            else -> MaterialTheme.colorScheme.surfaceContainerLow
+        },
+        animationSpec = tween(500),
+        label = "colorFondoNotificacion",
+    )
+
     Card(
+        onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = if (!item.leida) {
-                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
-            } else {
-                MaterialTheme.colorScheme.surfaceContainerLow
-            },
-        ),
+        colors = CardDefaults.cardColors(containerColor = colorFondoAnimado),
         elevation = CardDefaults.cardElevation(defaultElevation = if (!item.leida) 3.dp else 1.dp),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -293,14 +413,109 @@ private fun TarjetaNotificacion(
 }
 
 @Composable
+private fun DetalleNotificacionPanel(
+    item: NotificationItem?,
+    onMarcarLeida: () -> Unit,
+    onNavegarRuta: (String) -> Unit,
+) {
+    Card(
+        modifier = Modifier.fillMaxSize(),
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
+    ) {
+        if (item == null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(24.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = stringResource(R.string.notif_seleccionar_indicacion),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                )
+            }
+        } else {
+            val fechaFormateada = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date(item.fechaMillis))
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.notif_detalle_titulo),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text(
+                    text = item.titulo,
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = fechaFormateada,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = item.mensaje,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.weight(1f),
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                ) {
+                    if (!item.leida) {
+                        TextButton(onClick = onMarcarLeida) {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = null)
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(stringResource(R.string.notif_marcar_leida))
+                        }
+                    }
+
+                    if (item.ruta != null) {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        OutlinedButton(onClick = { onNavegarRuta(item.ruta) }) {
+                            Text(stringResource(R.string.notif_ir_a_seccion))
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                                contentDescription = null,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 private fun DialogoCrearAviso(
     uiState: NotificacionesUiState,
+    onDestinatarioChange: (OpcionDestinatario) -> Unit,
     onTituloChange: (String) -> Unit,
     onMensajeChange: (String) -> Unit,
     onRutaChange: (String) -> Unit,
     onDismiss: () -> Unit,
     onConfirmar: () -> Unit,
 ) {
+    var expandedDropdown by remember { mutableStateOf(false) }
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
@@ -311,18 +526,50 @@ private fun DialogoCrearAviso(
         },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                // Selector de Destinatario (Tarea 1)
+                ExposedDropdownMenuBox(
+                    expanded = expandedDropdown,
+                    onExpandedChange = { expandedDropdown = !expandedDropdown },
+                ) {
+                    OutlinedTextField(
+                        value = stringResource(uiState.destinatarioSeleccionado.labelRes),
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text(stringResource(R.string.notif_campo_destinatario)) },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedDropdown) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = expandedDropdown,
+                        onDismissRequest = { expandedDropdown = false },
+                    ) {
+                        OpcionDestinatario.entries.forEach { opcion ->
+                            DropdownMenuItem(
+                                text = { Text(stringResource(opcion.labelRes)) },
+                                onClick = {
+                                    onDestinatarioChange(opcion)
+                                    expandedDropdown = false
+                                },
+                            )
+                        }
+                    }
+                }
+
                 OutlinedTextField(
                     value = uiState.nuevoTitulo,
                     onValueChange = onTituloChange,
                     label = { Text(stringResource(R.string.notif_campo_titulo)) },
-                    isError = uiState.errorTitulo != null,
+                    isError = uiState.errorTituloRes != null,
                     supportingText = {
-                        uiState.errorTitulo?.let {
-                            Text(text = it, color = MaterialTheme.colorScheme.error)
+                        uiState.errorTituloRes?.let { resId ->
+                            Text(text = stringResource(resId), color = MaterialTheme.colorScheme.error)
                         }
                     },
                     trailingIcon = {
-                        if (uiState.errorTitulo != null) {
+                        if (uiState.errorTituloRes != null) {
                             Icon(
                                 imageVector = Icons.Filled.Error,
                                 contentDescription = null,
@@ -338,14 +585,14 @@ private fun DialogoCrearAviso(
                     value = uiState.nuevoMensaje,
                     onValueChange = onMensajeChange,
                     label = { Text(stringResource(R.string.notif_campo_mensaje)) },
-                    isError = uiState.errorMensaje != null,
+                    isError = uiState.errorMensajeRes != null,
                     supportingText = {
-                        uiState.errorMensaje?.let {
-                            Text(text = it, color = MaterialTheme.colorScheme.error)
+                        uiState.errorMensajeRes?.let { resId ->
+                            Text(text = stringResource(resId), color = MaterialTheme.colorScheme.error)
                         }
                     },
                     trailingIcon = {
-                        if (uiState.errorMensaje != null) {
+                        if (uiState.errorMensajeRes != null) {
                             Icon(
                                 imageVector = Icons.Filled.Error,
                                 contentDescription = null,
@@ -369,7 +616,7 @@ private fun DialogoCrearAviso(
             }
         },
         confirmButton = {
-            TextButton(onClick = { onConfirmar() }) {
+            TextButton(onClick = onConfirmar) {
                 Text(stringResource(R.string.notif_btn_publicar))
             }
         },

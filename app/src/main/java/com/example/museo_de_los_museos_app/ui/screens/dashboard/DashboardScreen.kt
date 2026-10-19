@@ -1,6 +1,8 @@
 package com.example.museo_de_los_museos_app.ui.screens.dashboard
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
@@ -56,6 +58,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -66,11 +69,18 @@ import com.example.museo_de_los_museos_app.model.Museum
 import com.example.museo_de_los_museos_app.model.Product
 import com.example.museo_de_los_museos_app.model.Rol
 import com.example.museo_de_los_museos_app.navigation.Routes
+import java.text.NumberFormat
+import java.util.Locale
+
+/** Formatea precios en pesos chilenos con Locale explícito (es-CL). */
+private fun formatearPrecioClp(monto: Int): String {
+    val formato = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("es-CL"))
+    return formato.format(monto)
+}
 
 /**
  * Pantalla de Dashboard / Inicio adaptativa (P2).
- * Presenta métricas y contenido personalizado según el rol activo (Cliente, Administrador, Investigador),
- * permitiendo navegación directa a museos, catálogo, QR, notificaciones y solicitudes.
+ * Presenta métricas con contador animado y contenido personalizado según el rol activo.
  */
 @Composable
 fun DashboardScreen(
@@ -98,7 +108,7 @@ fun DashboardScreen(
             )
 
             if (esPantallaAncha) {
-                // Vista adaptativa para pantallas anchas (tablets / horizontal)
+                // Vista adaptativa para pantallas anchas (tablets / horizontal - Guía 9)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -130,28 +140,62 @@ fun DashboardScreen(
                         .padding(horizontal = 20.dp),
                 ) {
                     Spacer(modifier = Modifier.height(12.dp))
-                    SeccionAccionesRapidas(navController = navController)
+
+                    AnimatedVisibility(
+                        visible = true,
+                        enter = fadeIn(animationSpec = tween(500)) + slideInVertically(initialOffsetY = { 30 }),
+                    ) {
+                        SeccionAccionesRapidas(navController = navController)
+                    }
 
                     Spacer(modifier = Modifier.height(20.dp))
-                    ContenidoPorRol(uiState = uiState, navController = navController)
+
+                    AnimatedVisibility(
+                        visible = true,
+                        enter = fadeIn(animationSpec = tween(600, delayMillis = 150)) +
+                                slideInVertically(initialOffsetY = { 30 }),
+                    ) {
+                        ContenidoPorRol(uiState = uiState, navController = navController)
+                    }
 
                     Spacer(modifier = Modifier.height(20.dp))
-                    SeccionMuseosDestacados(
-                        museos = uiState.museosDestacados,
-                        navController = navController,
-                    )
+
+                    AnimatedVisibility(
+                        visible = true,
+                        enter = fadeIn(animationSpec = tween(700, delayMillis = 300)) +
+                                slideInVertically(initialOffsetY = { 30 }),
+                    ) {
+                        SeccionMuseosDestacados(
+                            museos = uiState.museosDestacados,
+                            navController = navController,
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(20.dp))
-                    SeccionCursosDestacados(
-                        cursos = uiState.cursosDestacados,
-                        navController = navController,
-                    )
+
+                    AnimatedVisibility(
+                        visible = true,
+                        enter = fadeIn(animationSpec = tween(800, delayMillis = 450)) +
+                                slideInVertically(initialOffsetY = { 30 }),
+                    ) {
+                        SeccionCursosDestacados(
+                            cursos = uiState.cursosDestacados,
+                            navController = navController,
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(20.dp))
-                    SeccionProductosDestacados(
-                        productos = uiState.productosDestacados,
-                        navController = navController,
-                    )
+
+                    AnimatedVisibility(
+                        visible = true,
+                        enter = fadeIn(animationSpec = tween(900, delayMillis = 600)) +
+                                slideInVertically(initialOffsetY = { 30 }),
+                    ) {
+                        SeccionProductosDestacados(
+                            productos = uiState.productosDestacados,
+                            navController = navController,
+                        )
+                    }
                 }
             }
         }
@@ -293,7 +337,7 @@ private fun BotonAccionRapida(
             Text(
                 text = etiqueta,
                 style = MaterialTheme.typography.labelSmall,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                textAlign = TextAlign.Center,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -306,15 +350,10 @@ private fun ContenidoPorRol(
     uiState: DashboardUiState,
     navController: NavHostController,
 ) {
-    AnimatedVisibility(
-        visible = true,
-        enter = fadeIn() + slideInVertically(),
-    ) {
-        when (uiState.rol) {
-            Rol.ADMINISTRADOR -> PanelAdmin(uiState = uiState, navController = navController)
-            Rol.INVESTIGADOR -> PanelInvestigador(uiState = uiState, navController = navController)
-            Rol.CLIENTE -> PanelClienteBanner(navController = navController)
-        }
+    when (uiState.rol) {
+        Rol.ADMINISTRADOR -> PanelAdmin(uiState = uiState, navController = navController)
+        Rol.INVESTIGADOR -> PanelInvestigador(uiState = uiState, navController = navController)
+        Rol.CLIENTE -> PanelClienteBanner(navController = navController)
     }
 }
 
@@ -348,16 +387,18 @@ private fun PanelAdmin(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                TarjetaMetrica(
-                    titulo = "Solicitudes",
-                    valor = "${uiState.solicitudesPendientesCount} pendientes",
+                TarjetaMetricaAnimada(
+                    titulo = stringResource(R.string.dashboard_metrica_solicitudes),
+                    valorNumerico = uiState.solicitudesPendientesCount,
+                    sufijo = stringResource(R.string.dashboard_metrica_pendientes, 0).replace("0", "").trim(),
                     icono = Icons.Filled.ConfirmationNumber,
                     modifier = Modifier.weight(1f),
                     onClick = { navController.navigate(Routes.Historial.route) },
                 )
-                TarjetaMetrica(
-                    titulo = "Catálogo",
-                    valor = "${uiState.totalProductos} ítems",
+                TarjetaMetricaAnimada(
+                    titulo = stringResource(R.string.dashboard_metrica_catalogo),
+                    valorNumerico = uiState.totalProductos,
+                    sufijo = stringResource(R.string.dashboard_metrica_items, 0).replace("0", "").trim(),
                     icono = Icons.Filled.Category,
                     modifier = Modifier.weight(1f),
                     onClick = { navController.navigate(Routes.Catalogo.route) },
@@ -397,16 +438,18 @@ private fun PanelInvestigador(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                TarjetaMetrica(
-                    titulo = "Mapa Museos",
-                    valor = "${uiState.totalMuseos} fichas",
+                TarjetaMetricaAnimada(
+                    titulo = stringResource(R.string.dashboard_metrica_mapa),
+                    valorNumerico = uiState.totalMuseos,
+                    sufijo = stringResource(R.string.dashboard_metrica_fichas, 0).replace("0", "").trim(),
                     icono = Icons.Filled.Map,
                     modifier = Modifier.weight(1f),
                     onClick = { navController.navigate(Routes.Mapa.route) },
                 )
-                TarjetaMetrica(
-                    titulo = "Escáner QR",
-                    valor = "Captura rápida",
+                TarjetaMetricaAnimada(
+                    titulo = stringResource(R.string.dashboard_metrica_escaner),
+                    valorNumerico = 0,
+                    sufijo = stringResource(R.string.dashboard_metrica_captura),
                     icono = Icons.Filled.QrCodeScanner,
                     modifier = Modifier.weight(1f),
                     onClick = { navController.navigate(Routes.EscanerQr.route) },
@@ -448,12 +491,12 @@ private fun PanelClienteBanner(navController: NavHostController) {
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "Mapa de Museos Virtuales",
+                    text = stringResource(R.string.dashboard_banner_mapa_titulo),
                     style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
-                    text = "Explora los espacios culturales de Iberoamérica de forma interactiva.",
+                    text = stringResource(R.string.dashboard_banner_mapa_desc),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -468,13 +511,21 @@ private fun PanelClienteBanner(navController: NavHostController) {
 }
 
 @Composable
-private fun TarjetaMetrica(
+private fun TarjetaMetricaAnimada(
     titulo: String,
-    valor: String,
+    valorNumerico: Int,
+    sufijo: String,
     icono: ImageVector,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
+    // Tarea 2: Contador animado para los totales del Dashboard
+    val valorAnimado by animateIntAsState(
+        targetValue = valorNumerico,
+        animationSpec = tween(durationMillis = 800),
+        label = "contadorMetrica",
+    )
+
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(12.dp),
@@ -498,7 +549,7 @@ private fun TarjetaMetrica(
                     style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
                 )
                 Text(
-                    text = valor,
+                    text = if (valorNumerico > 0) "$valorAnimado $sufijo" else sufijo,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -684,14 +735,14 @@ private fun ItemCursoFila(
                     overflow = TextOverflow.Ellipsis,
                 )
                 Text(
-                    text = "${curso.stock} cupos disponibles",
+                    text = stringResource(R.string.dashboard_cupos_disponibles, curso.stock),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
 
             Text(
-                text = "$ ${String.format("%,d", curso.precio).replace(',', '.')}",
+                text = formatearPrecioClp(curso.precio),
                 style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
                 color = MaterialTheme.colorScheme.primary,
             )
@@ -774,7 +825,7 @@ private fun TarjetaProductoCompacta(
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = "$ ${String.format("%,d", producto.precio).replace(',', '.')}",
+                text = formatearPrecioClp(producto.precio),
                 style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
                 color = MaterialTheme.colorScheme.primary,
             )
