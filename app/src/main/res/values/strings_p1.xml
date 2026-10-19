@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Textos de P1 (registro, login y validaciones de cuenta). Archivo propio para no chocar con strings.xml. -->
+<resources>
+    <!-- Mensajes de validación de cuenta (registro y login) -->
+    <string name="cuenta_error_obligatorio">Este campo es obligatorio</string>
+    <string name="cuenta_error_texto_corto">El texto es demasiado corto</string>
+    <string name="cuenta_error_correo_invalido">Ingresa un correo válido, por ejemplo nombre@dominio.cl</string>
+    <string name="cuenta_error_contrasena_corta">La contraseña debe tener al menos 8 caracteres</string>
+    <string name="cuenta_error_contrasena_debil">Debe incluir al menos una letra y un número</string>
+    <string name="cuenta_error_no_coinciden">Las contraseñas no coinciden</string>
+    <string name="cuenta_error_correo_en_uso">Este correo ya está registrado</string>
+    <string name="cuenta_error_credenciales_incorrectas">Correo, contraseña o perfil incorrectos</string>
+
+    <!-- Campos comunes -->
+    <string name="campo_nombre">Nombre</string>
+    <string name="campo_correo">Correo electrónico</string>
+    <string name="campo_contrasena">Contraseña</string>
+    <string name="campo_confirmar_contrasena">Confirmar contraseña</string>
+    <string name="cd_mostrar_contrasena">Mostrar contraseña</string>
+    <string name="cd_ocultar_contrasena">Ocultar contraseña</string>
+
+    <!-- Registro -->
+    <string name="registro_titulo">Crea tu cuenta</string>
+    <string name="registro_subtitulo">Regístrate para explorar museos, cursos y productos.</string>
+    <string name="registro_boton">Registrarme</string>
+    <string name="registro_exitoso">¡Cuenta creada! Te llevamos a iniciar sesión.</string>
+    <string name="registro_ya_tengo_cuenta">¿Ya tienes cuenta? Inicia sesión</string>
+
+    <!-- Login -->
+    <string name="login_titulo">Inicia sesión</string>
+    <string name="login_subtitulo">Elige tu perfil e ingresa con tus credenciales.</string>
+    <string name="login_ingresar_como">Ingresar como</string>
+    <string name="login_boton">Ingresar</string>
+    <string name="login_usar_demo">Usar credenciales de prueba</string>
+    <string name="login_sin_cuenta">¿No tienes cuenta? Regístrate</string>
+</resources>
