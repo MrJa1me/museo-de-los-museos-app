@@ -51,16 +51,13 @@ class NotificacionesViewModel(
                 cargando = false,
             )
         } else {
-            val userId = usuario.id
             val esAdmin = usuario.rol == Rol.ADMINISTRADOR
-
-            val notifUsuario = todasNotif.filter { it.userId == userId }
-            val noLeidas = notifUsuario.count { !it.leida }
-
-            val listaFiltrada = when (filtro) {
-                FiltroNotificacion.TODAS -> notifUsuario
-                FiltroNotificacion.NO_LEIDAS -> notifUsuario.filter { !it.leida }
-            }
+            val listaFiltrada = NotificacionesValidator.filtrarNotificaciones(
+                notificaciones = todasNotif,
+                userId = usuario.id,
+                filtro = filtro,
+            )
+            val noLeidas = todasNotif.count { it.userId == usuario.id && !it.leida }
 
             NotificacionesUiState(
                 lista = listaFiltrada,
@@ -113,18 +110,20 @@ class NotificacionesViewModel(
 
     fun onNuevoTituloChanged(titulo: String) {
         _dialogoState.update {
+            val validacion = NotificacionesValidator.validarFormularioAviso(titulo, _dialogoState.value.mensaje)
             it.copy(
                 titulo = titulo,
-                errorTituloRes = if (titulo.isBlank()) R.string.notif_error_titulo_vacio else null,
+                errorTituloRes = validacion.errorTituloRes,
             )
         }
     }
 
     fun onNuevoMensajeChanged(mensaje: String) {
         _dialogoState.update {
+            val validacion = NotificacionesValidator.validarFormularioAviso(_dialogoState.value.titulo, mensaje)
             it.copy(
                 mensaje = mensaje,
-                errorMensajeRes = if (mensaje.isBlank()) R.string.notif_error_mensaje_vacio else null,
+                errorMensajeRes = validacion.errorMensajeRes,
             )
         }
     }
@@ -135,33 +134,19 @@ class NotificacionesViewModel(
 
     fun publicarAvisoDePrueba(): Boolean {
         val current = _dialogoState.value
-        var valido = true
+        val validacion = NotificacionesValidator.validarFormularioAviso(current.titulo, current.mensaje)
 
-        val errTitulo = if (current.titulo.isBlank()) {
-            valido = false
-            R.string.notif_error_titulo_vacio
-        } else null
-
-        val errMensaje = if (current.mensaje.isBlank()) {
-            valido = false
-            R.string.notif_error_mensaje_vacio
-        } else null
-
-        if (!valido) {
+        if (!validacion.esValido) {
             _dialogoState.update {
-                it.copy(errorTituloRes = errTitulo, errorMensajeRes = errMensaje)
+                it.copy(
+                    errorTituloRes = validacion.errorTituloRes,
+                    errorMensajeRes = validacion.errorMensajeRes,
+                )
             }
             return false
         }
 
-        val targetUserIds = when (current.destinatario) {
-            OpcionDestinatario.TODOS_CLIENTES -> SeedData.usuarios
-                .filter { it.rol == Rol.CLIENTE }
-                .map { it.id }
-
-            OpcionDestinatario.CLIENTE_UNO -> listOf("u03")
-            OpcionDestinatario.CLIENTE_DOS -> listOf("u04")
-        }
+        val targetUserIds = NotificacionesValidator.obtenerTargetUserIds(current.destinatario, SeedData.usuarios)
 
         targetUserIds.forEach { targetId ->
             val nuevoAviso = NotificationItem(
