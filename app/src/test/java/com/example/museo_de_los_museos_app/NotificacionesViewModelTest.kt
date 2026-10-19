@@ -7,6 +7,14 @@ import com.example.museo_de_los_museos_app.repository.SessionManager
 import com.example.museo_de_los_museos_app.ui.screens.notificaciones.FiltroNotificacion
 import com.example.museo_de_los_museos_app.ui.screens.notificaciones.NotificacionesViewModel
 import com.example.museo_de_los_museos_app.ui.screens.notificaciones.OpcionDestinatario
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -14,20 +22,30 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class NotificacionesViewModelTest {
 
+    private val testDispatcher = UnconfinedTestDispatcher()
     private lateinit var repository: InMemoryNotificationRepository
     private lateinit var viewModel: NotificacionesViewModel
 
     @Before
     fun setUp() {
+        Dispatchers.setMain(testDispatcher)
         repository = InMemoryNotificationRepository()
         viewModel = NotificacionesViewModel(repository)
         SessionManager.iniciarSesion(SeedData.usuarios.first { it.id == "u01" }) // Admin
     }
 
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
+
     @Test
-    fun validacionAviso_tituloVacio_falla() {
+    fun validacionAviso_tituloVacio_falla() = runTest {
+        val collectJob = backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
+
         viewModel.onNuevoTituloChanged("   ")
         viewModel.onNuevoMensajeChanged("Mensaje de prueba")
 
@@ -35,10 +53,13 @@ class NotificacionesViewModelTest {
 
         assertFalse(resultado)
         assertNotNull(viewModel.uiState.value.errorTituloRes)
+        collectJob.cancel()
     }
 
     @Test
-    fun validacionAviso_mensajeVacio_falla() {
+    fun validacionAviso_mensajeVacio_falla() = runTest {
+        val collectJob = backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
+
         viewModel.onNuevoTituloChanged("Título Válido")
         viewModel.onNuevoMensajeChanged("")
 
@@ -46,39 +67,49 @@ class NotificacionesViewModelTest {
 
         assertFalse(resultado)
         assertNotNull(viewModel.uiState.value.errorMensajeRes)
+        collectJob.cancel()
     }
 
     @Test
-    fun validacionAviso_ambosValidos_exito() {
+    fun validacionAviso_ambosValidos_exito() = runTest {
+        val collectJob = backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
+
         viewModel.onNuevoTituloChanged("Aviso General")
         viewModel.onNuevoMensajeChanged("Contenido del aviso para clientes")
 
         val resultado = viewModel.publicarAvisoDePrueba()
 
         assertTrue(resultado)
+        collectJob.cancel()
     }
 
     @Test
-    fun marcarComoLeida_cambiaSoloEseItem() {
+    fun marcarComoLeida_cambiaSoloEseItem() = runTest {
+        val collectJob = backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
+
         val originalNoLeida = repository.obtenerPorUsuario("u03").first { !it.leida }
         viewModel.marcarComoLeida(originalNoLeida.id)
 
         val notifActualizada = repository.notificaciones.value.first { it.id == originalNoLeida.id }
         assertTrue(notifActualizada.leida)
+        collectJob.cancel()
     }
 
     @Test
-    fun filtroNoLeidas_devuelveSoloNoLeidas() {
+    fun filtroNoLeidas_devuelveSoloNoLeidas() = runTest {
         SessionManager.iniciarSesion(SeedData.usuarios.first { it.id == "u03" })
+        val collectJob = backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
+
         viewModel.cambiarFiltro(FiltroNotificacion.NO_LEIDAS)
 
         val noLeidasRepositorio = repository.obtenerPorUsuario("u03").filter { !it.leida }
         assertEquals(noLeidasRepositorio.size, viewModel.uiState.value.lista.size)
         assertTrue(viewModel.uiState.value.lista.all { !it.leida })
+        collectJob.cancel()
     }
 
     @Test
-    fun cadaUsuario_veSoloSusAvisos() {
+    fun cadaUsuario_veSoloSusAvisos() = runTest {
         val avisosCliente1 = repository.obtenerPorUsuario("u03")
         val avisosAdmin = repository.obtenerPorUsuario("u01")
 
@@ -87,7 +118,9 @@ class NotificacionesViewModelTest {
     }
 
     @Test
-    fun crearAvisoTodosClientes_generaUnAvisoPorCadaCliente() {
+    fun crearAvisoTodosClientes_generaUnAvisoPorCadaCliente() = runTest {
+        val collectJob = backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
+
         viewModel.onDestinatarioChanged(OpcionDestinatario.TODOS_CLIENTES)
         viewModel.onNuevoTituloChanged("Aviso Masivo")
         viewModel.onNuevoMensajeChanged("Mensaje para todos los clientes")
@@ -100,5 +133,6 @@ class NotificacionesViewModelTest {
         assertTrue(resultado)
         val sizeDespues = repository.notificaciones.value.size
         assertEquals(sizeAntes + clientesCount, sizeDespues)
+        collectJob.cancel()
     }
 }

@@ -4,6 +4,7 @@ import com.example.museo_de_los_museos_app.R
 import com.example.museo_de_los_museos_app.model.NotificationItem
 import com.example.museo_de_los_museos_app.model.Rol
 import com.example.museo_de_los_museos_app.model.User
+import com.example.museo_de_los_museos_app.repository.SeedData
 
 data class ResultadoValidacionAviso(
     val esValido: Boolean,
@@ -30,7 +31,7 @@ object NotificacionesValidator {
 
     fun obtenerTargetUserIds(
         opcion: OpcionDestinatario,
-        todosUsuarios: List<User>,
+        todosUsuarios: List<User> = SeedData.usuarios,
     ): List<String> {
         return when (opcion) {
             OpcionDestinatario.TODOS_CLIENTES -> todosUsuarios

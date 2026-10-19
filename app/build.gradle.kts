@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.play.services.code.scanner)
 
     testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
     // org.json real para pruebas unitarias en el PC (en Android ya viene incluido)
     testImplementation(libs.org.json)
     androidTestImplementation(platform(libs.androidx.compose.bom))
