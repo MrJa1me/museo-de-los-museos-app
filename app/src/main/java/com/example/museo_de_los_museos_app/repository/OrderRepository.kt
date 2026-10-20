@@ -6,12 +6,16 @@ import com.example.museo_de_los_museos_app.model.OrderItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 /** Pedidos de la app. La app usa RoomOrderRepository (SQLite). */
 interface OrderRepository {
     val pedidos: StateFlow<List<Order>>
     fun obtenerPorUsuario(userId: String): List<Order>
     fun obtenerPendientes(): List<Order>
+
+    /** Guarda una nueva solicitud de compra (la crea el Carrito de P4 al confirmar). */
+    fun crear(pedido: Order)
 }
 
 /** Pedidos de ejemplo (datos ficticios). */
@@ -36,4 +40,5 @@ class InMemoryOrderRepository : OrderRepository {
     override val pedidos: StateFlow<List<Order>> = _pedidos.asStateFlow()
     override fun obtenerPorUsuario(userId: String) = _pedidos.value.filter { it.userId == userId }
     override fun obtenerPendientes() = _pedidos.value.filter { it.estado == EstadoPedido.PENDIENTE }
+    override fun crear(pedido: Order) = _pedidos.update { listOf(pedido) + it }
 }

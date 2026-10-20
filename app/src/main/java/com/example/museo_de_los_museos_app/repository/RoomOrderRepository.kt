@@ -39,4 +39,8 @@ class RoomOrderRepository(private val dao: PedidoDao) : OrderRepository {
     override fun obtenerPorUsuario(userId: String) = pedidos.value.filter { it.userId == userId }
 
     override fun obtenerPendientes() = pedidos.value.filter { it.estado == EstadoPedido.PENDIENTE }
+
+    override fun crear(pedido: Order) {
+        alcance.launch { dao.insertarConItems(listOf(pedido.aEntidad()), pedido.itemsEntidad()) }
+    }
 }

@@ -21,4 +21,39 @@
     <string name="detalle_peso">Peso: %1$s kg</string>
     <string name="detalle_sin_sesion">Inicia sesión para agregar productos al carrito</string>
     <string name="detalle_producto_no_encontrado">No encontramos este producto</string>
+
+    <!-- Carrito y cálculo de envío -->
+    <string name="carrito_sin_sesion">Inicia sesión para ver tu carrito</string>
+    <string name="carrito_vacio">Tu carrito está vacío</string>
+    <string name="carrito_ir_catalogo">Ir al catálogo</string>
+    <string name="carrito_precio_unitario">%1$s c/u</string>
+    <string name="carrito_eliminar">Quitar del carrito</string>
+    <string name="carrito_sin_stock">No hay stock suficiente de \"%1$s\"</string>
+    <string name="carrito_solo_cursos">Tu carrito solo tiene cursos: no requiere envío.</string>
+    <string name="carrito_destino_titulo">Destino del envío</string>
+    <string name="carrito_nacional">Nacional</string>
+    <string name="carrito_internacional">Internacional</string>
+    <string name="carrito_campo_nombre">Nombre de quien recibe</string>
+    <string name="carrito_campo_direccion">Dirección</string>
+    <string name="carrito_campo_ciudad">Ciudad</string>
+    <string name="carrito_campo_telefono">Teléfono</string>
+    <string name="carrito_campo_region">Región</string>
+    <string name="carrito_campo_pais">País</string>
+    <string name="carrito_modalidad">Modalidad de envío</string>
+    <string name="carrito_modalidad_estandar">Estándar</string>
+    <string name="carrito_modalidad_express">Express (×1,6)</string>
+    <string name="carrito_resumen">Resumen</string>
+    <string name="carrito_subtotal">Subtotal</string>
+    <string name="carrito_peso_total">Peso total</string>
+    <string name="carrito_envio">Envío</string>
+    <string name="carrito_envio_pendiente">Elige el destino</string>
+    <string name="carrito_envio_no_aplica">No aplica</string>
+    <string name="carrito_envio_gratis">Gratis</string>
+    <string name="carrito_total">Total</string>
+    <string name="carrito_confirmar">Confirmar solicitud</string>
+    <string name="carrito_dialogo_titulo">¿Confirmar la solicitud?</string>
+    <string name="carrito_dialogo_confirmar">Confirmar</string>
+    <string name="carrito_dialogo_cancelar">Revisar</string>
+    <string name="carrito_pedido_confirmado">¡Solicitud %1$s enviada! Puedes seguir su estado en el historial.</string>
+    <string name="carrito_ver_historial">Ver historial</string>
 </resources>
