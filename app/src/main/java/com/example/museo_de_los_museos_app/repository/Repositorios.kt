@@ -5,7 +5,8 @@ import com.example.museo_de_los_museos_app.repository.db.AppDatabase
 
 
 object Repositorios {
-    val museos: MuseumRepository = InMemoryMuseumRepository()
+    var museos: MuseumRepository = InMemoryMuseumRepository()
+        private set
 
     var productos: ProductRepository = InMemoryProductRepository()
         private set
@@ -16,6 +17,7 @@ object Repositorios {
     fun inicializarBaseDatos(context: Context) {
         val bd = AppDatabase.crear(context)
         productos = RoomProductRepository(bd.productoDao())
+        museos = RoomMuseumRepository(bd.museoDao())
     }
 
 
