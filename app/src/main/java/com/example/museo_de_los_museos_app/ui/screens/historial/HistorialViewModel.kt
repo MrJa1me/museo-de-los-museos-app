@@ -76,7 +76,7 @@ class HistorialViewModel(
             NotificationItem(
                 id = "estado_${pedidoId}_${System.currentTimeMillis()}",
                 userId = pedido.userId,
-                titulo = "Solicitud ${nuevo.etiqueta.lowercase()}",
+                titulo = "Tu solicitud cambió a ${nuevo.etiqueta}",
                 mensaje = "Tu solicitud #${codigoCorto(pedidoId)} cambió al estado ${nuevo.etiqueta.uppercase()}.",
                 ruta = Routes.Historial.route
             )
