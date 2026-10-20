@@ -6,12 +6,17 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 /** Base de datos SQLite de la app (archivo museo.db). */
-@Database(entities = [ProductoEntity::class, MuseoEntity::class, UsuarioEntity::class], version = 3, exportSchema = false)
+@Database(
+    entities = [ProductoEntity::class, MuseoEntity::class, UsuarioEntity::class,
+                FavoritoEntity::class, HistorialQrEntity::class],
+    version = 4, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun productoDao(): ProductoDao
     abstract fun museoDao(): MuseoDao
     abstract fun usuarioDao(): UsuarioDao
+    abstract fun favoritoDao(): FavoritoDao
+    abstract fun historialQrDao(): HistorialQrDao
 
     companion object {
         const val NOMBRE_BD = "museo.db"
