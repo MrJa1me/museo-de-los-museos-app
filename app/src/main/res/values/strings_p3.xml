@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Textos de P3: mapa, detalle del museo, escáner QR, resultado QR y favoritos -->
+<resources>
+    <!-- Comunes -->
+    <string name="p3_volver">Volver</string>
+    <string name="p3_ir_a_login">Iniciar sesión</string>
+
+    <!-- Mapa -->
+    <string name="mapa_filtro_todos">Todos</string>
+    <string name="mapa_contador">%1$d museos en el mapa</string>
+    <string name="mapa_ver_ficha">Ver ficha</string>
+    <string name="mapa_cerrar_seleccion">Cerrar</string>
+    <string name="mapa_nueva_ficha">Nueva ficha</string>
+    <string name="mapa_mi_ubicacion">Mi ubicación</string>
+    <string name="mapa_ir_favoritos">Favoritos</string>
+    <string name="mapa_ir_escaner">Escanear QR</string>
+    <string name="mapa_buscando_ubicacion">Buscando tu ubicación… asegúrate de tener el GPS activado.</string>
+    <string name="mapa_permiso_titulo">Permiso de ubicación</string>
+    <string name="mapa_permiso_explicacion">Usamos tu ubicación solo para mostrar tu posición en el mapa y que veas qué museos virtuales están cerca. No se guarda ni se comparte.</string>
+    <string name="mapa_permiso_permitir">Permitir</string>
+    <string name="mapa_permiso_ahora_no">Ahora no</string>
+    <string name="mapa_permiso_denegado">Sin permiso de ubicación: el mapa funciona igual, pero no podemos mostrar tu posición.</string>
+    <string name="mapa_permiso_reintentar">Volver a pedir</string>
+    <string name="mapa_permiso_ajustes">Abrir ajustes</string>
+    <string name="mapa_sin_internet">El mapa necesita Internet para descargar las calles.</string>
+
+    <!-- Detalle del museo -->
+    <string name="detalle_no_encontrado">No encontramos este museo. Puede que haya sido eliminado.</string>
+    <string name="detalle_ubicacion">%1$s, %2$s</string>
+    <string name="detalle_coordenadas">Lat %1$.4f · Lon %2$.4f</string>
+    <string name="detalle_proyecto">Proyecto: %1$s</string>
+    <string name="detalle_recorrido">Abrir recorrido virtual</string>
+    <string name="detalle_recorrido_error">No hay una app para abrir el enlace en este teléfono.</string>
+    <string name="detalle_agregar_favorito">Agregar a favoritos</string>
+    <string name="detalle_quitar_favorito">Quitar de favoritos</string>
+    <string name="detalle_favorito_agregado">Museo agregado a tus favoritos</string>
+    <string name="detalle_favorito_quitado">Museo quitado de tus favoritos</string>
+    <string name="detalle_favorito_sin_sesion">Inicia sesión para guardar museos en favoritos.</string>
+    <string name="detalle_editar_ficha">Editar ficha</string>
+    <string name="detalle_titulo_nueva">Nueva ficha de museo</string>
+    <string name="detalle_titulo_editar">Editar ficha de museo</string>
+    <string name="detalle_solo_investigador">Solo el Investigador puede crear fichas de museos.</string>
+    <string name="ficha_nombre">Nombre del museo</string>
+    <string name="ficha_pais">País</string>
+    <string name="ficha_ciudad">Ciudad</string>
+    <string name="ficha_latitud">Latitud (ej. -33.4489)</string>
+    <string name="ficha_longitud">Longitud (ej. -70.6693)</string>
+    <string name="ficha_clasificacion">Clasificación</string>
+    <string name="ficha_descripcion">Descripción</string>
+    <string name="ficha_enlace">Enlace del recorrido virtual</string>
+    <string name="ficha_guardar">Guardar ficha</string>
+    <string name="ficha_cancelar">Cancelar</string>
+    <string name="ficha_guardada">Ficha guardada correctamente</string>
+
+    <!-- Errores de la ficha -->
+    <string name="ficha_error_obligatorio">Este campo es obligatorio</string>
+    <string name="ficha_error_texto_corto">El texto es demasiado corto</string>
+    <string name="ficha_error_solo_letras">Usa solo letras</string>
+    <string name="ficha_error_numero_invalido">Ingresa un número válido</string>
+    <string name="ficha_error_latitud">La latitud debe estar entre -90 y 90</string>
+    <string name="ficha_error_longitud">La longitud debe estar entre -180 y 180</string>
+    <string name="ficha_error_descripcion_corta">La descripción debe tener al menos 20 caracteres</string>
+    <string name="ficha_error_enlace">El enlace debe empezar con http:// o https://</string>
+
+    <!-- Escáner QR -->
+    <string name="escaner_explicacion">Apunta la cámara a un código QR de un museo o producto. El lector de Google abre su propia cámara: no necesitas dar permisos.</string>
+    <string name="escaner_boton">Escanear código QR</string>
+    <string name="escaner_manual_titulo">¿Sin cámara? Ingresa el código</string>
+    <string name="escaner_manual_campo">Contenido del QR</string>
+    <string name="escaner_manual_boton">Revisar código</string>
+    <string name="escaner_manual_ejemplo">Usar un código de ejemplo</string>
+    <string name="escaner_cancelado">Escaneo cancelado.</string>
+    <string name="escaner_fallo">No se pudo abrir el lector. Revisa que el teléfono tenga Google Play e Internet.</string>
+    <string name="escaner_historial">Historial de escaneos</string>
+    <string name="escaner_historial_vacio">Aún no has escaneado códigos.</string>
+    <string name="escaner_historial_sin_sesion">Inicia sesión para guardar tu historial de escaneos.</string>
+    <string name="escaner_historial_invalido">Código no válido</string>
+
+    <!-- Resultado QR -->
+    <string name="resultado_exito">¡Código leído!</string>
+    <string name="resultado_error">Código no válido</string>
+    <string name="resultado_vacio">No hay un escaneo reciente.</string>
+    <string name="resultado_museo">Museo virtual</string>
+    <string name="resultado_producto">Producto del catálogo</string>
+    <string name="resultado_enlace">Enlace seguro</string>
+    <string name="resultado_ver_museo">Ver ficha del museo</string>
+    <string name="resultado_ver_producto">Ver producto</string>
+    <string name="resultado_abrir_enlace">Abrir enlace</string>
+    <string name="resultado_escanear_otro">Escanear otro código</string>
+    <string name="resultado_volver_mapa">Volver al mapa</string>
+    <string name="qr_error_vacio">El código está vacío</string>
+    <string name="qr_error_formato">El código no tiene un formato reconocido</string>
+    <string name="qr_error_tipo">El código no es de un museo ni de un producto</string>
+    <string name="qr_error_sin_id">Al código le falta el identificador</string>
+    <string name="qr_error_enlace">Por seguridad solo se aceptan enlaces http:// o https://</string>
+    <string name="qr_error_no_encontrado">No encontramos ese museo o producto en la app</string>
+
+    <!-- Favoritos -->
+    <string name="favoritos_vacio">Aún no tienes museos favoritos. Explora el mapa y toca el corazón en la ficha de un museo.</string>
+    <string name="favoritos_sin_sesion">Inicia sesión para ver tus museos favoritos.</string>
+    <string name="favoritos_explorar">Explorar el mapa</string>
+    <string name="favoritos_contador">%1$d museos guardados</string>
+</resources>
