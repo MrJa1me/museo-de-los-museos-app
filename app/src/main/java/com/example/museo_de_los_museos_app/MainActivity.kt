@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         // osmdroid (mapa de P3): identifica la app ante los servidores de OpenStreetMap
-        Configuration.getInstance().userAgentValue = packageName
+        Configuration.getInstance().userAgentValue = "MuseoDeLosMuseos/1.0"
 
 
         Repositorios.inicializarBaseDatos(this)
