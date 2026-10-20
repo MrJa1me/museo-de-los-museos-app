@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Textos de P4: detalle de producto, carrito y envío, historial de solicitudes -->
+<resources>
+    <!-- Comunes -->
+    <string name="p4_volver">Volver</string>
+    <string name="p4_ir_a_login">Iniciar sesión</string>
+
+    <!-- Detalle y solicitud de compra -->
+    <string name="detalle_cantidad">Cantidad</string>
+    <string name="detalle_cantidad_cupos">Cupos a reservar</string>
+    <string name="detalle_quitar_uno">Quitar uno</string>
+    <string name="detalle_agregar_uno">Agregar uno</string>
+    <string name="detalle_ya_en_carrito">Ya tienes %1$d en tu carrito</string>
+    <string name="detalle_subtotal">Subtotal: %1$s</string>
+    <string name="detalle_agregar_carrito">Agregar al carrito</string>
+    <string name="detalle_solicitar_info">Solicitar información del curso</string>
+    <string name="detalle_agregado_carrito">Producto agregado al carrito</string>
+    <string name="detalle_info_solicitada">Solicitud enviada. Revisa tus avisos.</string>
+    <string name="detalle_producto_agotado">Este producto no está disponible por ahora</string>
+    <string name="detalle_sin_envio">Curso: no requiere envío</string>
+    <string name="detalle_peso">Peso: %1$s kg</string>
+    <string name="detalle_sin_sesion">Inicia sesión para agregar productos al carrito</string>
+    <string name="detalle_no_encontrado">No encontramos este producto</string>
+</resources>

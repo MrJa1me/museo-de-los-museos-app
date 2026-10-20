@@ -303,14 +303,15 @@ private fun TarjetaProducto(
 }
 
 @Composable
-private fun textoDisponibilidad(producto: Product): String = when {
+internal fun textoDisponibilidad(producto: Product): String = when {
     !producto.activo -> stringResource(R.string.catalogo_no_disponible)
     producto.stock <= 0 -> stringResource(R.string.catalogo_agotado)
     producto.categoria == CategoriaProducto.CURSO -> stringResource(R.string.catalogo_cupos, producto.stock)
     else -> stringResource(R.string.catalogo_stock, producto.stock)
 }
 
-private fun iconoCategoria(categoria: CategoriaProducto): ImageVector = when (categoria) {
+/** También la usa el Detalle de producto. */
+internal fun iconoCategoria(categoria: CategoriaProducto): ImageVector = when (categoria) {
     CategoriaProducto.CURSO -> Icons.Filled.School
     CategoriaProducto.PUBLICACION -> Icons.AutoMirrored.Filled.MenuBook
     CategoriaProducto.MATERIAL_CONSERVACION -> Icons.Filled.Inventory2
