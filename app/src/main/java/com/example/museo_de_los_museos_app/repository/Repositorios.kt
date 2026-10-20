@@ -1,12 +1,30 @@
 package com.example.museo_de_los_museos_app.repository
 
-/**
- * Punto único para obtener los repositorios (sin Hilt, como en el curso).
- * Uso en un ViewModel:  Repositorios.museos.museos  /  Repositorios.productos.obtenerPorId("c01")
- */
+import android.content.Context
+import com.example.museo_de_los_museos_app.repository.db.AppDatabase
+
+
 object Repositorios {
-    val museos: MuseumRepository = InMemoryMuseumRepository()
-    val productos: ProductRepository = InMemoryProductRepository()
+    var museos: MuseumRepository = InMemoryMuseumRepository()
+        private set
+
+    var productos: ProductRepository = InMemoryProductRepository()
+        private set
+
     val notificaciones: NotificationRepository = InMemoryNotificationRepository()
-    val pedidos: OrderRepository = InMemoryOrderRepository()
+    var pedidos: OrderRepository = InMemoryOrderRepository()
+        private set
+
+    lateinit var baseDatos: AppDatabase
+        private set
+
+    fun inicializarBaseDatos(context: Context) {
+        baseDatos = AppDatabase.crear(context)
+        productos = RoomProductRepository(baseDatos.productoDao())
+        museos = RoomMuseumRepository(baseDatos.museoDao())
+        pedidos = RoomOrderRepository(baseDatos.pedidoDao())
+
+    }
+
+
 }

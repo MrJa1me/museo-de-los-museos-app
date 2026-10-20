@@ -18,5 +18,5 @@ val Repositorios.usuarios: UserRepository
 
 /** MainActivity lo llama una vez al iniciar, antes de mostrar cualquier pantalla. */
 fun Repositorios.inicializarUsuarios(context: Context) {
-    AlmacenUsuarios.repositorio = DataStoreUserRepository(context.applicationContext)
+    AlmacenUsuarios.repositorio = RoomUserRepository(baseDatos.usuarioDao())
 }
