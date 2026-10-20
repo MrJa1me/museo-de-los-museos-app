@@ -251,7 +251,7 @@ fun MapaScreen(
                 var ultimoMuseo by remember { mutableStateOf<Museum?>(null) }
                 LaunchedEffect(estado.museoSeleccionado) { estado.museoSeleccionado?.let { ultimoMuseo = it } }
 
-                AnimatedVisibility(
+                androidx.compose.animation.AnimatedVisibility(
                     visible = estado.museoSeleccionado != null,
                     enter = slideInVertically { it } + fadeIn(),
                     exit = slideOutVertically { it } + fadeOut(),
