@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="perfil_titulo">Mi perfil</string>
+    <string name="perfil_cd_foto">Foto de perfil</string>
+    <string name="perfil_galeria">Galería</string>
+    <string name="perfil_camara">Cámara</string>
+    <string name="perfil_nombre">Nombre</string>
+    <string name="perfil_correo">Correo</string>
+    <string name="perfil_rol">Rol: %1$s</string>
+    <string name="perfil_guardar">Guardar cambios</string>
+    <string name="perfil_cerrar_sesion">Cerrar sesión</string>
+    <string name="perfil_guardado">Perfil actualizado</string>
+    <string name="perfil_foto_actualizada">Foto actualizada</string>
+    <string name="perfil_error_foto">No se pudo cargar la imagen</string>
+</resources>
