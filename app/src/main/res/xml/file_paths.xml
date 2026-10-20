@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Carpetas que el FileProvider puede compartir con la app de cámara.
+     files-path = carpeta privada de la app; "avatares/" = solo esa subcarpeta. -->
+<paths>
+    <files-path
+        name="avatares"
+        path="avatares/" />
+</paths>

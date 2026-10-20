@@ -7,8 +7,10 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <!-- CAMERA y FileProvider (cámara/galería del perfil) los agrega P1 junto con ImagenInteligente.
-         El escáner QR de Google (Code Scanner) NO necesita el permiso CAMERA. -->
+    <!-- Perfil (P1): la cámara se abre con TakePicture() y la galería con GetContent().
+         Ninguno necesita permisos, porque la foto la toma otra app y la escribe en
+         un archivo que le prestamos con el FileProvider.
+         OJO: si se declara CAMERA aquí sin pedirlo, TakePicture() se cae. -->
 
     <application
         android:allowBackup="true"
@@ -24,6 +26,16 @@
         <meta-data
             android:name="com.google.mlkit.vision.DEPENDENCIES"
             android:value="barcode_ui" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
         <activity
             android:name=".MainActivity"
