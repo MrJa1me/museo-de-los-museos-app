@@ -12,7 +12,8 @@ object Repositorios {
         private set
 
     val notificaciones: NotificationRepository = InMemoryNotificationRepository()
-    val pedidos: OrderRepository = InMemoryOrderRepository()
+    var pedidos: OrderRepository = InMemoryOrderRepository()
+        private set
 
     lateinit var baseDatos: AppDatabase
         private set
@@ -21,6 +22,7 @@ object Repositorios {
         baseDatos = AppDatabase.crear(context)
         productos = RoomProductRepository(baseDatos.productoDao())
         museos = RoomMuseumRepository(baseDatos.museoDao())
+        pedidos = RoomOrderRepository(baseDatos.pedidoDao())
 
     }
 
