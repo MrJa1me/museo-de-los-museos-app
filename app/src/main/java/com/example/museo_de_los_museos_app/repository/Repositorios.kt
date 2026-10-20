@@ -7,4 +7,6 @@ package com.example.museo_de_los_museos_app.repository
 object Repositorios {
     val museos: MuseumRepository = InMemoryMuseumRepository()
     val productos: ProductRepository = InMemoryProductRepository()
+    val notificaciones: NotificationRepository = InMemoryNotificationRepository()
+    val pedidos: OrderRepository = InMemoryOrderRepository()
 }
