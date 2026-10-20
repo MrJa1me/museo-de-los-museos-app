@@ -16,6 +16,9 @@ interface OrderRepository {
 
     /** Guarda una nueva solicitud de compra (la crea el Carrito de P4 al confirmar). */
     fun crear(pedido: Order)
+
+    /** Cambia el estado de una solicitud (lo usa el Administrador en el Historial de P4). */
+    fun cambiarEstado(id: String, estado: EstadoPedido)
 }
 
 /** Pedidos de ejemplo (datos ficticios). */
@@ -41,4 +44,6 @@ class InMemoryOrderRepository : OrderRepository {
     override fun obtenerPorUsuario(userId: String) = _pedidos.value.filter { it.userId == userId }
     override fun obtenerPendientes() = _pedidos.value.filter { it.estado == EstadoPedido.PENDIENTE }
     override fun crear(pedido: Order) = _pedidos.update { listOf(pedido) + it }
+    override fun cambiarEstado(id: String, estado: EstadoPedido) =
+        _pedidos.update { lista -> lista.map { if (it.id == id) it.copy(estado = estado) else it } }
 }
