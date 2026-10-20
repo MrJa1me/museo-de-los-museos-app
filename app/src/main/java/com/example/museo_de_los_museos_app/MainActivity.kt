@@ -8,6 +8,8 @@ import com.example.museo_de_los_museos_app.navigation.AppNavHost
 import com.example.museo_de_los_museos_app.repository.Repositorios
 import com.example.museo_de_los_museos_app.repository.inicializarP3
 import com.example.museo_de_los_museos_app.repository.inicializarUsuarios
+import com.example.museo_de_los_museos_app.repository.Repositorios
+import com.example.museo_de_los_museos_app.repository.inicializarUsuarios
 import com.example.museo_de_los_museos_app.repository.SessionManager
 import com.example.museo_de_los_museos_app.ui.theme.MuseodelosmuseosappTheme
 import org.osmdroid.config.Configuration
@@ -19,7 +21,8 @@ class MainActivity : ComponentActivity() {
         // osmdroid (mapa de P3): identifica la app ante los servidores de OpenStreetMap
         Configuration.getInstance().userAgentValue = packageName
 
-        // Persistencia (P1): repositorios con DataStore y sesión guardada
+
+        Repositorios.inicializarBaseDatos(this)
         Repositorios.inicializarUsuarios(this)
         SessionManager.init(this)
         SessionManager.restaurar()
