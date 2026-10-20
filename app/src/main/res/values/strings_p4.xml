@@ -20,5 +20,5 @@
     <string name="detalle_sin_envio">Curso: no requiere envío</string>
     <string name="detalle_peso">Peso: %1$s kg</string>
     <string name="detalle_sin_sesion">Inicia sesión para agregar productos al carrito</string>
-    <string name="detalle_no_encontrado">No encontramos este producto</string>
+    <string name="detalle_producto_no_encontrado">No encontramos este producto</string>
 </resources>

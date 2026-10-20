@@ -325,7 +325,7 @@ private fun ProductoNoEncontrado(alVolver: () -> Unit, modifier: Modifier = Modi
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Icon(Icons.Filled.SearchOff, contentDescription = null, modifier = Modifier.size(64.dp))
-        Text(stringResource(R.string.detalle_no_encontrado), textAlign = TextAlign.Center)
+        Text(stringResource(R.string.detalle_producto_no_encontrado), textAlign = TextAlign.Center)
         TextButton(onClick = alVolver) { Text(stringResource(R.string.p4_volver)) }
     }
 }
