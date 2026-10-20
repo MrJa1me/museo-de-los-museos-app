@@ -14,10 +14,14 @@ object Repositorios {
     val notificaciones: NotificationRepository = InMemoryNotificationRepository()
     val pedidos: OrderRepository = InMemoryOrderRepository()
 
+    lateinit var baseDatos: AppDatabase
+        private set
+
     fun inicializarBaseDatos(context: Context) {
-        val bd = AppDatabase.crear(context)
-        productos = RoomProductRepository(bd.productoDao())
-        museos = RoomMuseumRepository(bd.museoDao())
+        baseDatos = AppDatabase.crear(context)
+        productos = RoomProductRepository(baseDatos.productoDao())
+        museos = RoomMuseumRepository(baseDatos.museoDao())
+
     }
 
 
