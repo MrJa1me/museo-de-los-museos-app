@@ -1,6 +1,8 @@
 package com.example.museo_de_los_museos_app.ui.utils
 
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import com.example.museo_de_los_museos_app.R
 import com.example.museo_de_los_museos_app.domain.ErrorValidacion
 
@@ -25,3 +27,7 @@ fun ErrorValidacion.mensaje(): Int = when (this) {
     ErrorValidacion.REGION_INVALIDA -> R.string.error_region_invalida
     ErrorValidacion.PAIS_NO_DISPONIBLE -> R.string.error_pais_no_disponible
 }
+
+/** Uso en la UI:  mensajeError = estado.errorCantidad.texto()  (null si no hay error). */
+@Composable
+fun ErrorValidacion?.texto(): String? = this?.let { stringResource(it.mensaje()) }
