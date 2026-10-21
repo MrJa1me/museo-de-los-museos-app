@@ -10,18 +10,12 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
-/**
- * Carrito de cada usuario (P4). Toda operación recibe el userId de SessionManager,
- * así los carritos de distintos usuarios no se mezclan en el mismo teléfono.
- */
+
 interface CartRepository {
-    /** Ítems del carrito del usuario. El Flow se actualiza solo al agregar, cambiar o quitar. */
     fun observar(userId: String): Flow<List<CartItem>>
 
-    /** Suma [cantidad] a lo que ya había de ese producto (o lo agrega si no estaba). */
     suspend fun agregar(userId: String, productoId: String, cantidad: Int)
 
-    /** Fija la cantidad de un producto. Con 0 o menos lo quita del carrito. */
     suspend fun cambiarCantidad(userId: String, productoId: String, cantidad: Int)
 
     suspend fun eliminar(userId: String, productoId: String)
@@ -29,7 +23,6 @@ interface CartRepository {
     suspend fun vaciar(userId: String)
 }
 
-/** Carrito guardado en SQLite (tabla "carrito" de P1): persiste al cerrar la app. */
 class RoomCartRepository(private val dao: CarritoDao) : CartRepository {
 
     override fun observar(userId: String): Flow<List<CartItem>> =

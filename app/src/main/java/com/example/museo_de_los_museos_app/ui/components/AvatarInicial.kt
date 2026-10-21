@@ -15,10 +15,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-/**
- * Avatar circular con la inicial del nombre. Cambia de color con animación al escribir un nombre.
- * Provisorio: cuando exista ImagenInteligente (cámara/galería) se usará la foto del usuario.
- */
 @Composable
 fun AvatarInicial(
     nombre: String,

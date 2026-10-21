@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-/** Contrato de acceso a las notificaciones del sistema. */
+
 interface NotificationRepository {
     val notificaciones: StateFlow<List<NotificationItem>>
     fun obtenerPorUsuario(userId: String): List<NotificationItem>

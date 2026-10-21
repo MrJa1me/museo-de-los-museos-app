@@ -8,16 +8,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-/** Pedidos de la app. La app usa RoomOrderRepository (SQLite). */
+
 interface OrderRepository {
     val pedidos: StateFlow<List<Order>>
     fun obtenerPorUsuario(userId: String): List<Order>
     fun obtenerPendientes(): List<Order>
 
-    /** Guarda una nueva solicitud de compra (la crea el Carrito de P4 al confirmar). */
     fun crear(pedido: Order)
 
-    /** Cambia el estado de una solicitud (lo usa el Administrador en el Historial de P4). */
     fun cambiarEstado(id: String, estado: EstadoPedido)
 }
 
