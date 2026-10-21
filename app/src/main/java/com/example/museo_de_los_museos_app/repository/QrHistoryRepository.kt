@@ -1,39 +1,30 @@
 package com.example.museo_de_los_museos_app.repository
 
-import android.content.Context
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.museo_de_los_museos_app.model.QrHistory
+import com.example.museo_de_los_museos_app.repository.db.HistorialQrDao
+import com.example.museo_de_los_museos_app.repository.db.aEntidad
+import com.example.museo_de_los_museos_app.repository.db.aModelo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.json.JSONArray
 import org.json.JSONObject
 
-/** Historial de códigos QR escaneados por cada usuario (P3). */
+
 interface QrHistoryRepository {
-    /** Escaneos del usuario, del más reciente al más antiguo. */
     fun observar(userId: String): Flow<List<QrHistory>>
 
-    /** Guarda el escaneo sin duplicar: si el mismo código ya estaba, sube al primer lugar. */
     suspend fun registrar(item: QrHistory)
 }
 
-/** Historial en DataStore como JSON con la clave "historial_qr_<userId>". */
-class DataStoreQrHistoryRepository(context: Context) : QrHistoryRepository {
 
-    private val almacen = context.applicationContext.dataStore
+class RoomQrHistoryRepository(private val dao: HistorialQrDao) : QrHistoryRepository {
 
-    private fun clave(userId: String) = stringPreferencesKey("historial_qr_$userId")
-
+    // Entity a modelo
     override fun observar(userId: String): Flow<List<QrHistory>> =
-        almacen.data.map { preferencias -> historialDesdeJson(preferencias[clave(userId)]) }
+        dao.observar(userId).map { filas -> filas.map { it.aModelo() } }
 
-    override suspend fun registrar(item: QrHistory) {
-        almacen.edit { preferencias ->
-            val actuales = historialDesdeJson(preferencias[clave(item.userId)])
-            preferencias[clave(item.userId)] = actuales.agregarSinDuplicados(item).aJsonHistorial()
-        }
-    }
+    override suspend fun registrar(item: QrHistory) =
+        dao.registrar(item.aEntidad(), MAXIMO_HISTORIAL_QR)
 }
 
 const val MAXIMO_HISTORIAL_QR = 20
@@ -56,7 +47,7 @@ internal fun List<QrHistory>.aJsonHistorial(): String {
     return arreglo.toString()
 }
 
-/** Si el JSON está vacío o dañado devuelve una lista vacía, así la app nunca se cae por el historial. */
+/** Si el JSON está vacío o dañado devuelve una lista vacía */
 internal fun historialDesdeJson(json: String?): List<QrHistory> {
     if (json.isNullOrBlank()) return emptyList()
     return runCatching {
