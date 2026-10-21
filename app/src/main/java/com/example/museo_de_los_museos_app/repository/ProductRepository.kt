@@ -6,15 +6,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-/**
- * Contrato de acceso al catálogo (cursos y productos). Igual que MuseumRepository:
- * la implementación se puede cambiar a DataStore sin tocar las pantallas.
- */
+
 interface ProductRepository {
     val productos: StateFlow<List<Product>>
     fun obtenerPorId(id: String): Product?
 
-    /** Crea el producto si el id no existe o lo reemplaza si ya existe (alta/edición/desactivación del Administrador). */
+
     fun guardar(producto: Product)
 }
 

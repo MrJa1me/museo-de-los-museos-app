@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-/** Pedidos guardados en SQLite */
+
 class RoomOrderRepository(private val dao: PedidoDao) : OrderRepository {
 
     private val alcance = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -29,7 +29,6 @@ class RoomOrderRepository(private val dao: PedidoDao) : OrderRepository {
         }
     }
 
-    /** Junta cada pedido con sus productos. */
     override val pedidos: StateFlow<List<Order>> =
         combine(dao.observarPedidos(), dao.observarItems()) { pedidos, items ->
             val itemsPorPedido = items.groupBy { it.pedidoId }

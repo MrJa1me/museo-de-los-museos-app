@@ -8,7 +8,7 @@ import com.example.museo_de_los_museos_app.model.Rol
 import com.example.museo_de_los_museos_app.model.User
 
 /**
- * Datos ficticios oficiales del equipo (sección 10 del plan de trabajo).
+ * Datos ficticios oficiales del equipo.
  * Nadie inventa otros: todos usan estos usuarios, museos y productos.
  */
 object SeedData {

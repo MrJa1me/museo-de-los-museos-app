@@ -29,7 +29,6 @@ class RoomQrHistoryRepository(private val dao: HistorialQrDao) : QrHistoryReposi
 
 const val MAXIMO_HISTORIAL_QR = 20
 
-/** Pone [item] al inicio, quita el escaneo anterior con el mismo contenido y limita el largo de la lista. */
 internal fun List<QrHistory>.agregarSinDuplicados(item: QrHistory, maximo: Int = MAXIMO_HISTORIAL_QR): List<QrHistory> =
     (listOf(item) + filterNot { it.contenido == item.contenido }).take(maximo)
 
@@ -47,7 +46,6 @@ internal fun List<QrHistory>.aJsonHistorial(): String {
     return arreglo.toString()
 }
 
-/** Si el JSON está vacío o dañado devuelve una lista vacía */
 internal fun historialDesdeJson(json: String?): List<QrHistory> {
     if (json.isNullOrBlank()) return emptyList()
     return runCatching {

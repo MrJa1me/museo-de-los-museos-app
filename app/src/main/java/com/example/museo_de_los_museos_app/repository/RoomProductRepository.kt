@@ -13,9 +13,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-/**
- * Catálogo guardado en SQLite (Room). Implementa la misma interfaz que la versión en memoria,
- */
+
 class RoomProductRepository(
     private val dao: ProductoDao,
     private val alcance: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)

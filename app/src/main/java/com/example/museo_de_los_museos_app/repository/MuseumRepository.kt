@@ -6,15 +6,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-/**
- * Contrato de acceso a los museos. Las pantallas dependen de esta interfaz, no de la implementación:
- * P1 puede cambiar la implementación en memoria por DataStore (o Room) sin tocar las pantallas.
- */
+
 interface MuseumRepository {
     val museos: StateFlow<List<Museum>>
     fun obtenerPorId(id: String): Museum?
 
-    /** Crea el museo si el id no existe o lo reemplaza si ya existe (ficha del Investigador). */
     fun guardar(museo: Museum)
 }
 
