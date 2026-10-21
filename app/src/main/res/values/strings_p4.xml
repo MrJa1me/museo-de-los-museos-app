@@ -56,4 +56,19 @@
     <string name="carrito_dialogo_cancelar">Revisar</string>
     <string name="carrito_pedido_confirmado">¡Solicitud %1$s enviada! Puedes seguir su estado en el historial.</string>
     <string name="carrito_ver_historial">Ver historial</string>
+
+    <!-- Historial y gestión de solicitudes -->
+    <string name="historial_titulo_admin">Gestión de solicitudes</string>
+    <string name="historial_sin_sesion">Inicia sesión para ver tus solicitudes</string>
+    <string name="historial_vacio">Todavía no tienes solicitudes de compra</string>
+    <string name="historial_vacio_filtro">No hay solicitudes con ese estado</string>
+    <string name="historial_contador">%1$d solicitudes</string>
+    <string name="historial_solicitud">Solicitud #%1$s</string>
+    <string name="historial_cliente">Cliente: %1$s</string>
+    <string name="historial_resumen_items">%1$d productos · %2$s</string>
+    <string name="historial_ver_detalle">Ver detalle</string>
+    <string name="historial_ocultar">Ocultar detalle</string>
+    <string name="historial_destino">Destino</string>
+    <string name="historial_avanzar">Marcar como %1$s</string>
+    <string name="historial_estado_actualizado">Solicitud #%1$s actualizada a %2$s. Se notificó al cliente.</string>
 </resources>

@@ -43,4 +43,8 @@ class RoomOrderRepository(private val dao: PedidoDao) : OrderRepository {
     override fun crear(pedido: Order) {
         alcance.launch { dao.insertarConItems(listOf(pedido.aEntidad()), pedido.itemsEntidad()) }
     }
+
+    override fun cambiarEstado(id: String, estado: EstadoPedido) {
+        alcance.launch { dao.cambiarEstado(id, estado) }
+    }
 }
