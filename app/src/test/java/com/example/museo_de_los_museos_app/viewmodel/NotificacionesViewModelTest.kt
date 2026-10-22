@@ -1,4 +1,4 @@
-package com.example.museo_de_los_museos_app
+package com.example.museo_de_los_museos_app.viewmodel
 
 import com.example.museo_de_los_museos_app.model.Rol
 import com.example.museo_de_los_museos_app.repository.InMemoryNotificationRepository
