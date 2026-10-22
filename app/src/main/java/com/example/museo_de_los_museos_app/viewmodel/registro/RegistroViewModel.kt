@@ -4,10 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.museo_de_los_museos_app.domain.ErrorCuenta
 import com.example.museo_de_los_museos_app.domain.ValidadoresCuenta
+import com.example.museo_de_los_museos_app.model.Preferencias
 import com.example.museo_de_los_museos_app.model.Rol
 import com.example.museo_de_los_museos_app.model.User
+import com.example.museo_de_los_museos_app.repository.PreferenciasRepository
 import com.example.museo_de_los_museos_app.repository.Repositorios
 import com.example.museo_de_los_museos_app.repository.UserRepository
+import com.example.museo_de_los_museos_app.repository.preferencias
 import com.example.museo_de_los_museos_app.repository.usuarios
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +21,8 @@ import kotlinx.coroutines.launch
 
 /** Toda la validación del registro vive aquí (y en ValidadoresCuenta), nunca en el Composable. */
 class RegistroViewModel(
-    private val usuarios: UserRepository = Repositorios.usuarios
+    private val usuarios: UserRepository = Repositorios.usuarios,
+    private val repoPreferencias: PreferenciasRepository = Repositorios.preferencias
 ) : ViewModel() {
 
     private val _estado = MutableStateFlow(RegistroUiState())
@@ -28,6 +32,7 @@ class RegistroViewModel(
     fun onCorreoChange(valor: String) = actualizar { copy(correo = valor) }
     fun onContrasenaChange(valor: String) = actualizar { copy(contrasena = valor) }
     fun onConfirmacionChange(valor: String) = actualizar { copy(confirmacion = valor) }
+    fun onNotificacionesChange(valor: Boolean) = _estado.update { it.copy(recibirNotificaciones = valor) }
 
     private fun actualizar(cambio: RegistroUiState.() -> RegistroUiState) {
         _estado.update { actual ->
@@ -62,14 +67,18 @@ class RegistroViewModel(
                 return@launch
             }
 
+            val nuevoId = "u" + System.currentTimeMillis()
             usuarios.registrar(
                 User(
-                    id = "u" + System.currentTimeMillis(),
+                    id = nuevoId,
                     nombre = actual.nombre.trim(),
                     correo = actual.correo.trim().lowercase(),
                     contrasena = actual.contrasena,
                     rol = Rol.CLIENTE
                 )
+            )
+            repoPreferencias.guardar(
+                Preferencias(userId = nuevoId, notificaciones = actual.recibirNotificaciones)
             )
             _estado.update { it.copy(cargando = false, registroExitoso = true) }
         }

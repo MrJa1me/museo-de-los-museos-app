@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="config_titulo">Configuración</string>
+    <string name="config_notificaciones">Recibir notificaciones</string>
+    <string name="config_texto_grande">Texto grande (accesibilidad)</string>
+    <string name="config_idioma">Idioma</string>
+    <string name="config_idioma_es">Español</string>
+    <string name="config_idioma_en">English</string>
+    <string name="config_idioma_nota">Se guarda tu preferencia; la traducción completa llegará en una próxima versión.</string>
+    <string name="config_permisos">Permisos</string>
+    <string name="config_ubicacion_si">Ubicación: concedida</string>
+    <string name="config_ubicacion_no">Ubicación: no concedida</string>
+    <string name="config_permitir">Permitir</string>
+    <string name="config_camara">Cámara: no requiere permiso (usa la app de cámara del sistema)</string>
+    <string name="config_abrir_ajustes">Abrir ajustes de la app</string>
+    <string name="config_opciones_rol">Opciones de %1$s</string>
+    <string name="config_rol_admin">Avisarme de fichas de museos pendientes de revisión</string>
+    <string name="config_rol_investigador">Mostrar mis museos primero en el mapa</string>
+    <string name="config_rol_cliente">Recibir ofertas de cursos y productos</string>
+    <string name="registro_notificaciones">Quiero recibir notificaciones</string>
+</resources>

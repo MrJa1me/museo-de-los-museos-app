@@ -9,8 +9,8 @@ import androidx.room.RoomDatabase
 @Database(
     entities = [ProductoEntity::class, MuseoEntity::class, UsuarioEntity::class,
                 FavoritoEntity::class, HistorialQrEntity::class, CarritoEntity::class,
-                PedidoEntity::class, PedidoItemEntity::class],
-    version = 5, exportSchema = false)
+                PedidoEntity::class, PedidoItemEntity::class, PreferenciasEntity::class],
+    version = 6, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun productoDao(): ProductoDao
@@ -20,6 +20,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun historialQrDao(): HistorialQrDao
     abstract fun carritoDao(): CarritoDao
     abstract fun pedidoDao(): PedidoDao
+    abstract fun preferenciasDao(): PreferenciasDao
 
     companion object {
         const val NOMBRE_BD = "museo.db"

@@ -156,6 +156,18 @@ fun PerfilScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
+        // Configuración (pantalla 15 de la guía): aparece cuando ya cargaron las preferencias.
+        estado.preferencias?.let { prefs ->
+            SeccionConfiguracion(
+                preferencias = prefs,
+                rol = estado.rolUsuario,
+                alCambiarNotificaciones = viewModel::onNotificacionesChange,
+                alCambiarTextoGrande = viewModel::onTextoGrandeChange,
+                alCambiarIdioma = viewModel::onIdiomaChange,
+                alCambiarOpcionRol = viewModel::onOpcionRolChange
+            )
+        }
+
         AnimatedVisibility(visible = estado.mensaje != null) {
             estado.mensaje?.let { BannerMensaje(texto = stringResource(it), esError = estado.mensajeEsError) }
         }
