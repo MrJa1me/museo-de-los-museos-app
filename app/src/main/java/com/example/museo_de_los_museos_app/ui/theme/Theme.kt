@@ -8,8 +8,11 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 
 private val DarkColorScheme = darkColorScheme(
     primary = AzulMarinoClaro,
@@ -50,6 +53,8 @@ fun MuseodelosmuseosappTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
+    /** Accesibilidad (Perfil): agranda todos los textos un 30 %. */
+    textoGrande: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -62,9 +67,15 @@ fun MuseodelosmuseosappTheme(
         else -> LightColorScheme
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    // La "densidad" dice cuánto mide 1 sp. Si multiplicamos su fontScale, todo texto en sp crece.
+    val densidad = LocalDensity.current
+    val escala = if (textoGrande) densidad.fontScale * 1.3f else densidad.fontScale
+
+    CompositionLocalProvider(LocalDensity provides Density(densidad.density, escala)) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            content = content
+        )
+    }
 }

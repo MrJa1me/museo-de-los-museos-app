@@ -17,6 +17,8 @@ data class RegistroUiState(
     val correo: String = "",
     val contrasena: String = "",
     val confirmacion: String = "",
+    /** Preferencia inicial: se guarda en la tabla preferencias al crear la cuenta. */
+    val recibirNotificaciones: Boolean = true,
     val errores: RegistroErrores = RegistroErrores(),
     /** Después del primer intento de envío, los campos se validan mientras el usuario escribe. */
     val intentoEnvio: Boolean = false,

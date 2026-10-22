@@ -3,7 +3,9 @@ package com.example.museo_de_los_museos_app.ui.screens.registro
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -12,6 +14,7 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -107,6 +110,11 @@ fun RegistroScreen(
             esContrasena = true,
             accionIme = ImeAction.Done
         )
+
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(stringResource(R.string.registro_notificaciones), modifier = Modifier.weight(1f))
+            Switch(checked = estado.recibirNotificaciones, onCheckedChange = viewModel::onNotificacionesChange)
+        }
 
         AnimatedVisibility(visible = estado.registroExitoso) {
             BannerMensaje(
