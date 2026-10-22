@@ -57,6 +57,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -80,7 +81,7 @@ import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 
-/** Punto inicial: centro de Iberoamérica con zoom 3 (plan, sección 9.3). */
+
 private val CENTRO_IBEROAMERICA = GeoPoint(10.0, -40.0)
 private const val ZOOM_INICIAL = 3.0
 private const val ZOOM_PAIS = 5.0
@@ -235,7 +236,13 @@ fun MapaScreen(
                 )
             }
 
-            Box(modifier = Modifier.fillMaxWidth().weight(1f).padding(top = 8.dp)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(top = 8.dp)
+                    .clipToBounds())   // el mapa no puede dibujar fuera de su recuadro
+                    {
                 AndroidView(
                     factory = { mapView },
                     update = { mapa -> dibujarMarcadores(mapa, estado.museos, viewModel::onMuseoSeleccionado) },
