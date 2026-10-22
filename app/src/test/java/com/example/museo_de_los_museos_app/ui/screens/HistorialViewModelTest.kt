@@ -6,7 +6,7 @@ import com.example.museo_de_los_museos_app.repository.InMemoryNotificationReposi
 import com.example.museo_de_los_museos_app.repository.InMemoryOrderRepository
 import com.example.museo_de_los_museos_app.repository.SeedData
 import com.example.museo_de_los_museos_app.repository.SessionManager
-import com.example.museo_de_los_museos_app.ui.screens.historial.HistorialViewModel
+import com.example.museo_de_los_museos_app.viewmodel.historial.HistorialViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher

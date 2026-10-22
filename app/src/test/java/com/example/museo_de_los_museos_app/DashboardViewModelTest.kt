@@ -6,7 +6,7 @@ import com.example.museo_de_los_museos_app.repository.InMemoryOrderRepository
 import com.example.museo_de_los_museos_app.repository.InMemoryProductRepository
 import com.example.museo_de_los_museos_app.repository.SeedData
 import com.example.museo_de_los_museos_app.repository.SessionManager
-import com.example.museo_de_los_museos_app.ui.screens.dashboard.DashboardViewModel
+import com.example.museo_de_los_museos_app.viewmodel.dashboard.DashboardViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch

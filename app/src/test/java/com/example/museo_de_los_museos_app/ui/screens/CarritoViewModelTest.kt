@@ -8,8 +8,8 @@ import com.example.museo_de_los_museos_app.repository.InMemoryOrderRepository
 import com.example.museo_de_los_museos_app.repository.InMemoryProductRepository
 import com.example.museo_de_los_museos_app.repository.SeedData
 import com.example.museo_de_los_museos_app.repository.SessionManager
-import com.example.museo_de_los_museos_app.ui.screens.carrito.CarritoViewModel
-import com.example.museo_de_los_museos_app.ui.screens.carrito.TipoEnvio
+import com.example.museo_de_los_museos_app.viewmodel.carrito.CarritoViewModel
+import com.example.museo_de_los_museos_app.viewmodel.carrito.TipoEnvio
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first

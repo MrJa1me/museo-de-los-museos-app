@@ -50,6 +50,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.museo_de_los_museos_app.R
 import com.example.museo_de_los_museos_app.navigation.Routes
+import com.example.museo_de_los_museos_app.viewmodel.bienvenida.AccesoRapidoItem
+import com.example.museo_de_los_museos_app.viewmodel.bienvenida.BienvenidaViewModel
 
 /**
  * Pantalla de Bienvenida principal de la app (P2).

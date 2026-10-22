@@ -69,6 +69,8 @@ import com.example.museo_de_los_museos_app.model.Museum
 import com.example.museo_de_los_museos_app.model.Product
 import com.example.museo_de_los_museos_app.model.Rol
 import com.example.museo_de_los_museos_app.navigation.Routes
+import com.example.museo_de_los_museos_app.viewmodel.dashboard.DashboardUiState
+import com.example.museo_de_los_museos_app.viewmodel.dashboard.DashboardViewModel
 import java.text.NumberFormat
 import java.util.Locale
 

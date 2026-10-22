@@ -7,8 +7,8 @@ import com.example.museo_de_los_museos_app.repository.InMemoryNotificationReposi
 import com.example.museo_de_los_museos_app.repository.InMemoryProductRepository
 import com.example.museo_de_los_museos_app.repository.SeedData
 import com.example.museo_de_los_museos_app.repository.SessionManager
-import com.example.museo_de_los_museos_app.ui.screens.detalleproducto.DetalleProductoViewModel
-import com.example.museo_de_los_museos_app.ui.screens.detalleproducto.MensajeDetalleProducto
+import com.example.museo_de_los_museos_app.viewmodel.detalleproducto.DetalleProductoViewModel
+import com.example.museo_de_los_museos_app.viewmodel.detalleproducto.MensajeDetalleProducto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first

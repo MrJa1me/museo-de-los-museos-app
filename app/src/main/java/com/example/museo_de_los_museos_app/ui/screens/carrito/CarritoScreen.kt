@@ -89,6 +89,9 @@ import com.example.museo_de_los_museos_app.ui.components.CampoTextoValidado
 import com.example.museo_de_los_museos_app.ui.screens.catalogo.iconoCategoria
 import com.example.museo_de_los_museos_app.ui.utils.formatearPrecio
 import com.example.museo_de_los_museos_app.ui.utils.texto
+import com.example.museo_de_los_museos_app.viewmodel.carrito.CarritoUiState
+import com.example.museo_de_los_museos_app.viewmodel.carrito.CarritoViewModel
+import com.example.museo_de_los_museos_app.viewmodel.carrito.TipoEnvio
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -69,7 +69,9 @@ import androidx.navigation.NavHostController
 import com.example.museo_de_los_museos_app.R
 import com.example.museo_de_los_museos_app.model.Museum
 import com.example.museo_de_los_museos_app.navigation.Routes
-import com.example.museo_de_los_museos_app.ui.screens.detallemuseo.DetalleMuseoViewModel
+import com.example.museo_de_los_museos_app.viewmodel.detallemuseo.DetalleMuseoViewModel
+import com.example.museo_de_los_museos_app.viewmodel.mapa.EstadoPermiso
+import com.example.museo_de_los_museos_app.viewmodel.mapa.MapaViewModel
 import kotlinx.coroutines.launch
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
