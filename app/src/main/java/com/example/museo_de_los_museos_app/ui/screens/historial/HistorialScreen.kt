@@ -69,6 +69,7 @@ import com.example.museo_de_los_museos_app.model.Order
 import com.example.museo_de_los_museos_app.navigation.Routes
 import com.example.museo_de_los_museos_app.ui.components.BannerMensaje
 import com.example.museo_de_los_museos_app.ui.utils.formatearPrecio
+import com.example.museo_de_los_museos_app.viewmodel.historial.HistorialViewModel
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Date

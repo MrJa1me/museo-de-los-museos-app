@@ -63,6 +63,7 @@ import com.example.museo_de_los_museos_app.model.CategoriaProducto
 import com.example.museo_de_los_museos_app.model.Product
 import com.example.museo_de_los_museos_app.navigation.Routes
 import com.example.museo_de_los_museos_app.ui.utils.formatearPrecio
+import com.example.museo_de_los_museos_app.viewmodel.catalogo.CatalogoViewModel
 
 /** Ancho desde el cual se usa la vista expandida (cuadrícula), como en la Guía 9. */
 private val ANCHO_EXPANDIDO = 600.dp

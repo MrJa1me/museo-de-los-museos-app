@@ -68,6 +68,9 @@ import com.example.museo_de_los_museos_app.ui.screens.catalogo.iconoCategoria
 import com.example.museo_de_los_museos_app.ui.screens.catalogo.textoDisponibilidad
 import com.example.museo_de_los_museos_app.ui.utils.formatearPrecio
 import com.example.museo_de_los_museos_app.ui.utils.texto
+import com.example.museo_de_los_museos_app.viewmodel.detalleproducto.DetalleProductoUiState
+import com.example.museo_de_los_museos_app.viewmodel.detalleproducto.DetalleProductoViewModel
+import com.example.museo_de_los_museos_app.viewmodel.detalleproducto.MensajeDetalleProducto
 import kotlinx.coroutines.delay
 
 /** Tiempo que se muestra el mensaje de éxito antes de ocultarse. */

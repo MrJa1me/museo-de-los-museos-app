@@ -79,6 +79,9 @@ import com.example.museo_de_los_museos_app.ui.components.BannerMensaje
 import com.example.museo_de_los_museos_app.ui.components.BotonPrincipal
 import com.example.museo_de_los_museos_app.ui.components.CampoTextoValidado
 import com.example.museo_de_los_museos_app.ui.utils.texto
+import com.example.museo_de_los_museos_app.viewmodel.detallemuseo.DetalleMuseoUiState
+import com.example.museo_de_los_museos_app.viewmodel.detallemuseo.DetalleMuseoViewModel
+import com.example.museo_de_los_museos_app.viewmodel.detallemuseo.MensajeDetalle
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

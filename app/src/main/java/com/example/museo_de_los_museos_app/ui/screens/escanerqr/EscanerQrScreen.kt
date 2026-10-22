@@ -63,6 +63,8 @@ import com.example.museo_de_los_museos_app.model.QrHistory
 import com.example.museo_de_los_museos_app.navigation.Routes
 import com.example.museo_de_los_museos_app.ui.components.CampoTextoValidado
 import com.example.museo_de_los_museos_app.ui.utils.texto
+import com.example.museo_de_los_museos_app.viewmodel.escanerqr.EscanerQrViewModel
+import com.example.museo_de_los_museos_app.viewmodel.escanerqr.MensajeEscaner
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning

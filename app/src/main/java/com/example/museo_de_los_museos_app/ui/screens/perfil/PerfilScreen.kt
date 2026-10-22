@@ -53,6 +53,7 @@ import com.example.museo_de_los_museos_app.ui.utils.copiarAvatar
 import com.example.museo_de_los_museos_app.ui.utils.crearArchivoAvatar
 import com.example.museo_de_los_museos_app.ui.utils.texto
 import com.example.museo_de_los_museos_app.ui.utils.uriCompartible
+import com.example.museo_de_los_museos_app.viewmodel.perfil.PerfilViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

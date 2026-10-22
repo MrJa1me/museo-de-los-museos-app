@@ -51,6 +51,7 @@ import androidx.navigation.NavHostController
 import com.example.museo_de_los_museos_app.R
 import com.example.museo_de_los_museos_app.model.Museum
 import com.example.museo_de_los_museos_app.navigation.Routes
+import com.example.museo_de_los_museos_app.viewmodel.favoritos.FavoritosViewModel
 
 private val ROJO_FAVORITO = Color(0xFFD32F2F)
 

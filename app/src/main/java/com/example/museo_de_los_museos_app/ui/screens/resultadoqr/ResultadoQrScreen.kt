@@ -59,6 +59,7 @@ import com.example.museo_de_los_museos_app.domain.ResultadoQr
 import com.example.museo_de_los_museos_app.navigation.Routes
 import com.example.museo_de_los_museos_app.ui.utils.formatearPrecio
 import com.example.museo_de_los_museos_app.ui.utils.texto
+import com.example.museo_de_los_museos_app.viewmodel.resultadoqr.ResultadoQrViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -70,6 +70,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.museo_de_los_museos_app.R
 import com.example.museo_de_los_museos_app.model.NotificationItem
+import com.example.museo_de_los_museos_app.viewmodel.notificaciones.FiltroNotificacion
+import com.example.museo_de_los_museos_app.viewmodel.notificaciones.NotificacionesUiState
+import com.example.museo_de_los_museos_app.viewmodel.notificaciones.NotificacionesViewModel
+import com.example.museo_de_los_museos_app.viewmodel.notificaciones.OpcionDestinatario
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
