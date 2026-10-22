@@ -41,6 +41,7 @@ dependencies {
     // Persistencia SQLite con Room (Guía SQLitePersonas)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.ui.graphics)
     kapt(libs.androidx.room.compiler)
 
     implementation(platform(libs.androidx.compose.bom))

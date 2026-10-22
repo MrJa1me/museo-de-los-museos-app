@@ -18,6 +18,7 @@ datastore = "1.1.0"
 osmdroid = "6.1.20"
 codeScanner = "16.1.0"
 orgJson = "20231013"
+uiGraphics = "1.12.1"
 
 [libraries]
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
@@ -49,6 +50,7 @@ androidx-datastore-preferences = { group = "androidx.datastore", name = "datasto
 osmdroid-android = { group = "org.osmdroid", name = "osmdroid-android", version.ref = "osmdroid" }
 play-services-code-scanner = { group = "com.google.android.gms", name = "play-services-code-scanner", version.ref = "codeScanner" }
 org-json = { group = "org.json", name = "json", version.ref = "orgJson" }
+androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics", version.ref = "uiGraphics" }
 
 [plugins]
 legacy-kapt = { id = "com.android.legacy-kapt", version.ref = "agp" }
