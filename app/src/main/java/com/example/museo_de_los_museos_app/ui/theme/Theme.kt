@@ -8,35 +8,48 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = AzulMarinoClaro,
+    onPrimary = AzulMarinoOscuro,
+    primaryContainer = AzulMarino,
+    onPrimaryContainer = AzulMarinoContenedor,
+    secondary = DoradoClaro,
+    onSecondary = DoradoOscuro,
+    tertiary = BurdeosClaro,
+    onTertiary = BurdeosOscuro,
+    background = FondoNoche,
+    onBackground = TextoClaro,
+    surface = FondoNoche,
+    onSurface = TextoClaro
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
+    primary = AzulMarino,
     onPrimary = Color.White,
+    primaryContainer = AzulMarinoContenedor,
+    onPrimaryContainer = AzulMarinoOscuro,
+    secondary = Dorado,
     onSecondary = Color.White,
+    secondaryContainer = DoradoContenedor,
+    onSecondaryContainer = DoradoOscuro,
+    tertiary = Burdeos,
     onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    tertiaryContainer = BurdeosContenedor,
+    onTertiaryContainer = BurdeosOscuro,
+    background = FondoMarfil,
+    onBackground = TextoOscuro,
+    surface = FondoMarfil,
+    onSurface = TextoOscuro
 )
 
 @Composable
 fun MuseodelosmuseosappTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
