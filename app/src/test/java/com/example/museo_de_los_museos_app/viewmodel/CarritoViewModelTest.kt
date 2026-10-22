@@ -1,4 +1,4 @@
-package com.example.museo_de_los_museos_app.ui.screens
+package com.example.museo_de_los_museos_app.viewmodel
 
 import com.example.museo_de_los_museos_app.domain.ErrorValidacion
 import com.example.museo_de_los_museos_app.domain.ModalidadEnvio
