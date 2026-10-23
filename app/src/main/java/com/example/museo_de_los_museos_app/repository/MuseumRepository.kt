@@ -12,6 +12,9 @@ interface MuseumRepository {
     fun obtenerPorId(id: String): Museum?
 
     fun guardar(museo: Museum)
+
+    /** Marca la ficha como publicada (solo el Administrador). */
+    fun aprobar(id: String)
 }
 
 /** Implementación temporal en memoria, cargada con [SeedData]. No persiste al cerrar la app. */
@@ -29,5 +32,9 @@ class InMemoryMuseumRepository(inicial: List<Museum> = SeedData.museos) : Museum
                 lista + museo
             }
         }
+    }
+
+    override fun aprobar(id: String) {
+        _museos.update { lista -> lista.map { if (it.id == id) it.copy(publicado = true) else it } }
     }
 }

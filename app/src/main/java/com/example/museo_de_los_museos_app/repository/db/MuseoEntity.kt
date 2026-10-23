@@ -1,5 +1,6 @@
 package com.example.museo_de_los_museos_app.repository.db
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.museo_de_los_museos_app.model.ClasificacionMuseo
@@ -17,9 +18,14 @@ data class MuseoEntity(
     val clasificacion: ClasificacionMuseo,
     val descripcion: String,
     val enlace: String,
-    val proyecto: String
+    val proyecto: String,
+    // defaultValue debe coincidir con el DEFAULT de la migración 6 → 7 (AppDatabase), si no Room la rechaza
+    @ColumnInfo(defaultValue = "''") val imagen: String,
+    @ColumnInfo(defaultValue = "0") val publicado: Boolean
 )
 
-fun MuseoEntity.aModelo() = Museum(id, nombre, pais, ciudad, latitud, longitud, clasificacion, descripcion, enlace, proyecto)
+fun MuseoEntity.aModelo() =
+    Museum(id, nombre, pais, ciudad, latitud, longitud, clasificacion, descripcion, enlace, proyecto, imagen, publicado)
 
-fun Museum.aEntidad() = MuseoEntity(id, nombre, pais, ciudad, latitud, longitud, clasificacion, descripcion, enlace, proyecto)
+fun Museum.aEntidad() =
+    MuseoEntity(id, nombre, pais, ciudad, latitud, longitud, clasificacion, descripcion, enlace, proyecto, imagen, publicado)

@@ -29,7 +29,8 @@ object SeedData {
             latitud = 19.4326, longitud = -99.1332,
             clasificacion = ClasificacionMuseo.COMUNIDAD,
             descripcion = "Recorrido digital por las tradiciones y oficios de comunidades mexicanas. Reúne relatos, música y artesanía contados por sus propias voces.",
-            enlace = BASE_ENLACE + "m01"
+            enlace = BASE_ENLACE + "m01",
+            imagen = "museo_culturas_vivas", publicado = true
         ),
         Museum(
             id = "m02", nombre = "Museo Virtual del Oro Digital",
@@ -37,7 +38,8 @@ object SeedData {
             latitud = 4.7110, longitud = -74.0721,
             clasificacion = ClasificacionMuseo.HISTORIA,
             descripcion = "Exposición en línea sobre la orfebrería precolombina. Permite explorar piezas en detalle y conocer su contexto histórico.",
-            enlace = BASE_ENLACE + "m02"
+            enlace = BASE_ENLACE + "m02",
+            imagen = "museo_oro", publicado = true
         ),
         Museum(
             id = "m03", nombre = "Museo Virtual de los Andes",
@@ -45,7 +47,8 @@ object SeedData {
             latitud = -12.0464, longitud = -77.0428,
             clasificacion = ClasificacionMuseo.HISTORIA,
             descripcion = "Viaje virtual por las culturas andinas, sus caminos y su textilería. Incluye mapas interactivos y recorridos guiados.",
-            enlace = BASE_ENLACE + "m03"
+            enlace = BASE_ENLACE + "m03",
+            imagen = "museo_de_los_andes", publicado = true
         ),
         Museum(
             id = "m04", nombre = "Museo Virtual de la Memoria Sur",
@@ -53,7 +56,8 @@ object SeedData {
             latitud = -33.4489, longitud = -70.6693,
             clasificacion = ClasificacionMuseo.COMUNIDAD,
             descripcion = "Archivo participativo de testimonios y objetos cotidianos del cono sur. Cada persona puede aportar su propia historia.",
-            enlace = BASE_ENLACE + "m04"
+            enlace = BASE_ENLACE + "m04",
+            imagen = "museo_de_la_memoria", publicado = true
         ),
         Museum(
             id = "m05", nombre = "Museo Virtual del Río de la Plata",
@@ -61,7 +65,8 @@ object SeedData {
             latitud = -34.6037, longitud = -58.3816,
             clasificacion = ClasificacionMuseo.ARTE,
             descripcion = "Galería digital de arte rioplatense contemporáneo. Presenta obras en alta resolución y entrevistas con artistas.",
-            enlace = BASE_ENLACE + "m05"
+            enlace = BASE_ENLACE + "m05",
+            imagen = "museo_rio_de_la_plata", publicado = true
         ),
         Museum(
             id = "m06", nombre = "Museo Virtual de la Selva Urbana",
@@ -69,7 +74,8 @@ object SeedData {
             latitud = -23.5505, longitud = -46.6333,
             clasificacion = ClasificacionMuseo.CIENCIA,
             descripcion = "Muestra interactiva sobre biodiversidad y vida silvestre dentro de la ciudad. Invita a registrar especies observadas.",
-            enlace = BASE_ENLACE + "m06"
+            enlace = BASE_ENLACE + "m06",
+            imagen = "museo_de_la_selva_urbana", publicado = true
         ),
         Museum(
             id = "m07", nombre = "Museo Virtual del Candombe",
@@ -77,7 +83,8 @@ object SeedData {
             latitud = -34.9011, longitud = -56.1645,
             clasificacion = ClasificacionMuseo.ARTE,
             descripcion = "Recorrido sonoro y visual por la música y la danza del candombe. Incluye grabaciones y trajes tradicionales.",
-            enlace = BASE_ENLACE + "m07"
+            enlace = BASE_ENLACE + "m07",
+            imagen = "museo_del_candombe", publicado = true
         ),
         Museum(
             id = "m08", nombre = "Museo Virtual de la Mitad del Mundo",
@@ -85,7 +92,8 @@ object SeedData {
             latitud = -0.1807, longitud = -78.4678,
             clasificacion = ClasificacionMuseo.CIENCIA,
             descripcion = "Espacio de divulgación sobre geografía, astronomía y la línea ecuatorial. Ofrece experimentos virtuales para todas las edades.",
-            enlace = BASE_ENLACE + "m08"
+            enlace = BASE_ENLACE + "m08",
+            imagen = "museo_mitad_del_mundo", publicado = true
         ),
         Museum(
             id = "m09", nombre = "Museo Virtual de las Rutas Atlánticas",
@@ -93,7 +101,8 @@ object SeedData {
             latitud = 40.4168, longitud = -3.7038,
             clasificacion = ClasificacionMuseo.HISTORIA,
             descripcion = "Historia de los intercambios culturales a través del Atlántico. Reconstruye rutas, puertos y mercancías en mapas animados.",
-            enlace = BASE_ENLACE + "m09"
+            enlace = BASE_ENLACE + "m09",
+            imagen = "museo_rutas_atlanticas", publicado = true
         ),
         Museum(
             id = "m10", nombre = "Museo Virtual de la Navegación",
@@ -101,7 +110,8 @@ object SeedData {
             latitud = 38.7223, longitud = -9.1393,
             clasificacion = ClasificacionMuseo.HISTORIA,
             descripcion = "Colección digital de instrumentos y cartas náuticas de la era de los descubrimientos. Permite recorrer cada pieza en 3D.",
-            enlace = BASE_ENLACE + "m10"
+            enlace = BASE_ENLACE + "m10",
+            imagen = "museo_de_la_navegacion", publicado = true
         )
     )
 
