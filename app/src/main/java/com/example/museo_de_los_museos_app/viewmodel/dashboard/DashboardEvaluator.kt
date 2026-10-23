@@ -7,6 +7,7 @@ import com.example.museo_de_los_museos_app.model.Order
 import com.example.museo_de_los_museos_app.model.Product
 import com.example.museo_de_los_museos_app.model.Rol
 import com.example.museo_de_los_museos_app.model.User
+import com.example.museo_de_los_museos_app.model.visiblePara
 
 /**
  * Lógica pura de evaluación de métricas y contenidos del Dashboard para pruebas unitarias sin dependencias Android.
@@ -23,14 +24,16 @@ object DashboardEvaluator {
         val cursos = listaProductos.filter { it.categoria == CategoriaProducto.CURSO }
         val productosFisicos = listaProductos.filter { it.categoria != CategoriaProducto.CURSO }
         val pendientes = listaPedidos.count { it.estado == EstadoPedido.PENDIENTE }
+        val museosVisibles = listaMuseos.filter { it.visiblePara(usuario?.rol) }
 
         return DashboardUiState(
             usuario = usuario,
             rol = rolActivo,
-            museosDestacados = listaMuseos.take(4),
+            museosDestacados = museosVisibles.filter { it.publicado }.take(4),
+            museosPendientes = if (rolActivo == Rol.ADMINISTRADOR) listaMuseos.filter { !it.publicado } else emptyList(),
             cursosDestacados = cursos.take(3),
             productosDestacados = productosFisicos.take(4),
-            totalMuseos = listaMuseos.size,
+            totalMuseos = museosVisibles.size,
             totalProductos = productosFisicos.size,
             totalCursos = cursos.size,
             solicitudesPendientesCount = pendientes,
