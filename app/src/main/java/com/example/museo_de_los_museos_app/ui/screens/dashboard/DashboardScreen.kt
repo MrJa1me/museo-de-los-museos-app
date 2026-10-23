@@ -73,6 +73,10 @@ import com.example.museo_de_los_museos_app.viewmodel.dashboard.DashboardUiState
 import com.example.museo_de_los_museos_app.viewmodel.dashboard.DashboardViewModel
 import java.text.NumberFormat
 import java.util.Locale
+import androidx.compose.foundation.clickable
+import androidx.compose.material3.Button
+import androidx.compose.runtime.key
+import com.example.museo_de_los_museos_app.ui.components.ImagenMuseoMiniatura
 
 /** Formatea precios en pesos chilenos con Locale explícito (es-CL). */
 private fun formatearPrecioClp(monto: Int): String {
@@ -120,7 +124,7 @@ fun DashboardScreen(
                     Column(modifier = Modifier.weight(1f)) {
                         SeccionAccionesRapidas(navController = navController)
                         Spacer(modifier = Modifier.height(16.dp))
-                        ContenidoPorRol(uiState = uiState, navController = navController)
+                        ContenidoPorRol(uiState = uiState, navController = navController, onAprobarMuseo = viewModel::aprobarMuseo)
                     }
                     Column(modifier = Modifier.weight(1f)) {
                         SeccionMuseosDestacados(
@@ -157,7 +161,7 @@ fun DashboardScreen(
                         enter = fadeIn(animationSpec = tween(600, delayMillis = 150)) +
                                 slideInVertically(initialOffsetY = { 30 }),
                     ) {
-                        ContenidoPorRol(uiState = uiState, navController = navController)
+                        ContenidoPorRol(uiState = uiState, navController = navController, onAprobarMuseo = viewModel::aprobarMuseo)
                     }
 
                     Spacer(modifier = Modifier.height(20.dp))
@@ -351,9 +355,17 @@ private fun BotonAccionRapida(
 private fun ContenidoPorRol(
     uiState: DashboardUiState,
     navController: NavHostController,
+    onAprobarMuseo: (String) -> Unit,
 ) {
     when (uiState.rol) {
-        Rol.ADMINISTRADOR -> PanelAdmin(uiState = uiState, navController = navController)
+        Rol.ADMINISTRADOR -> Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            PanelAdmin(uiState = uiState, navController = navController)
+            SeccionMuseosPendientes(
+                museos = uiState.museosPendientes,
+                onAprobar = onAprobarMuseo,
+                onVerFicha = { id -> navController.navigate(Routes.DetalleMuseo.crear(id)) },
+            )
+        }
         Rol.INVESTIGADOR -> PanelInvestigador(uiState = uiState, navController = navController)
         Rol.CLIENTE -> PanelClienteBanner(navController = navController)
     }
@@ -405,6 +417,63 @@ private fun PanelAdmin(
                     modifier = Modifier.weight(1f),
                     onClick = { navController.navigate(Routes.Catalogo.route) },
                 )
+            }
+        }
+    }
+}
+
+/** Fichas creadas por el Investigador que el Administrador debe aprobar antes de que las vean los clientes. */
+@Composable
+private fun SeccionMuseosPendientes(
+    museos: List<Museum>,
+    onAprobar: (String) -> Unit,
+    onVerFicha: (String) -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Text(
+            text = stringResource(R.string.dashboard_pendientes_titulo, museos.size),
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+        )
+        if (museos.isEmpty()) {
+            Text(
+                text = stringResource(R.string.dashboard_pendientes_vacio),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        museos.forEach { museo ->
+            // Al aprobar, Room actualiza la lista sola y la ficha desaparece de aquí
+            key(museo.id) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onVerFicha(museo.id) },
+                    shape = RoundedCornerShape(14.dp),
+                ) {
+                    Row(
+                        modifier = Modifier.padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        ImagenMuseoMiniatura(imagen = museo.imagen, descripcion = museo.nombre)
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(horizontal = 12.dp),
+                        ) {
+                            Text(
+                                text = museo.nombre,
+                                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                            )
+                            Text(
+                                text = "${museo.ciudad}, ${museo.pais}",
+                                style = MaterialTheme.typography.bodySmall,
+                            )
+                        }
+                        Button(onClick = { onAprobar(museo.id) }) {
+                            Text(stringResource(R.string.dashboard_pendientes_aprobar))
+                        }
+                    }
+                }
             }
         }
     }

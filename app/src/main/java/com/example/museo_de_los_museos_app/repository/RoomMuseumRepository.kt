@@ -36,4 +36,8 @@ class RoomMuseumRepository(
     override fun guardar(museo: Museum) {
         alcance.launch { dao.guardar(museo.aEntidad()) }
     }
+
+    override fun aprobar(id: String) {
+        alcance.launch { dao.aprobar(id) }
+    }
 }

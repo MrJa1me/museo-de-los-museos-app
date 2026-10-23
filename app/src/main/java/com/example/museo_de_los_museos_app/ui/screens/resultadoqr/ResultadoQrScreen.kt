@@ -11,6 +11,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -57,6 +58,7 @@ import androidx.navigation.NavHostController
 import com.example.museo_de_los_museos_app.R
 import com.example.museo_de_los_museos_app.domain.ResultadoQr
 import com.example.museo_de_los_museos_app.navigation.Routes
+import com.example.museo_de_los_museos_app.ui.components.ImagenMuseoMiniatura
 import com.example.museo_de_los_museos_app.ui.utils.formatearPrecio
 import com.example.museo_de_los_museos_app.ui.utils.texto
 import com.example.museo_de_los_museos_app.viewmodel.resultadoqr.ResultadoQrViewModel
@@ -194,8 +196,13 @@ private fun TarjetaResultado(
             when (resultado) {
                 is ResultadoQr.MuseoEncontrado -> {
                     Etiqueta(stringResource(R.string.resultado_museo))
-                    Text(resultado.museo.nombre, style = MaterialTheme.typography.titleLarge)
-                    Text(stringResource(R.string.detalle_ubicacion, resultado.museo.ciudad, resultado.museo.pais))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        ImagenMuseoMiniatura(imagen = resultado.museo.imagen, descripcion = resultado.museo.nombre)
+                        Column(modifier = Modifier.padding(start = 12.dp)) {
+                            Text(resultado.museo.nombre, style = MaterialTheme.typography.titleLarge)
+                            Text(stringResource(R.string.detalle_ubicacion, resultado.museo.ciudad, resultado.museo.pais))
+                        }
+                    }
                     Button(onClick = { alVerMuseo(resultado.museo.id) }, modifier = Modifier.fillMaxWidth()) {
                         Text(stringResource(R.string.resultado_ver_museo))
                     }

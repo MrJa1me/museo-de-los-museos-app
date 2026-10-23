@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.museo_de_los_museos_app.model.Museum
 import com.example.museo_de_los_museos_app.model.Rol
+import com.example.museo_de_los_museos_app.model.visiblePara
 import com.example.museo_de_los_museos_app.repository.MuseumRepository
 import com.example.museo_de_los_museos_app.repository.Repositorios
 import com.example.museo_de_los_museos_app.repository.SessionManager
@@ -24,20 +25,24 @@ class MapaViewModel(
     private val _uiState = MutableStateFlow(MapaUiState())
     val uiState: StateFlow<MapaUiState> = _uiState.asStateFlow()
 
-    /** Copia de todos los museos del repositorio, sin filtrar. */
+    /** Museos que el rol actual puede ver (el Cliente solo los publicados), sin filtrar por país. */
     private var todos: List<Museum> = emptyList()
+    private var todosSinFiltrar: List<Museum> = emptyList()
+    private var rol: Rol? = null
 
     init {
         // Si el Investigador crea o edita una ficha, el mapa se actualiza solo.
         viewModelScope.launch {
             repositorio.museos.collect { lista ->
-                todos = lista
+                todosSinFiltrar = lista
                 aplicarFiltro()
             }
         }
         viewModelScope.launch {
             SessionManager.usuarioActual.collect { usuario ->
+                rol = usuario?.rol
                 _uiState.update { it.copy(esInvestigador = usuario?.rol == Rol.INVESTIGADOR) }
+                aplicarFiltro()
             }
         }
     }
@@ -98,6 +103,7 @@ class MapaViewModel(
     }
 
     private fun aplicarFiltro() {
+        todos = visibles(todosSinFiltrar, rol)
         _uiState.update { recalcular(it) }
     }
 
@@ -116,6 +122,8 @@ class MapaViewModel(
         /** Funciones puras (sin estado) para que sean fáciles de probar. */
         fun filtrar(museos: List<Museum>, pais: String?): List<Museum> =
             if (pais == null) museos else museos.filter { it.pais == pais }
+
+        fun visibles(museos: List<Museum>, rol: Rol?): List<Museum> = museos.filter { it.visiblePara(rol) }
 
         fun paises(museos: List<Museum>): List<String> = museos.map { it.pais }.distinct().sorted()
     }

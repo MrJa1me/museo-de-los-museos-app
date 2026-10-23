@@ -170,7 +170,10 @@ class DetalleMuseoViewModel(
                 descripcion = formulario.descripcion.trim(),
                 enlace = formulario.enlace.trim()
             )
-            museos.guardar(actual.museo?.let { nuevo.copy(proyecto = it.proyecto) } ?: nuevo)
+            // Al editar se conservan imagen y estado de publicación; una ficha nueva queda pendiente de aprobación
+            museos.guardar(
+                actual.museo?.let { nuevo.copy(proyecto = it.proyecto, imagen = it.imagen, publicado = it.publicado) } ?: nuevo
+            )
 
             _uiState.update {
                 it.copy(guardando = false, editando = it.esNuevo, fichaGuardada = true, cerrar = it.esNuevo)

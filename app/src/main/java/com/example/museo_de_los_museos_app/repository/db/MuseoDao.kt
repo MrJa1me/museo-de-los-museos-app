@@ -20,4 +20,8 @@ interface MuseoDao {
 
     @Upsert
     suspend fun guardar(museo: MuseoEntity)
+
+    /** El Administrador aprueba una ficha: desde ahora la ven también los clientes. */
+    @Query("UPDATE museos SET publicado = 1 WHERE id = :id")
+    suspend fun aprobar(id: String)
 }

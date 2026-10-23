@@ -100,4 +100,9 @@
     <string name="favoritos_sin_sesion">Inicia sesión para ver tus museos favoritos.</string>
     <string name="favoritos_explorar">Explorar el mapa</string>
     <string name="favoritos_contador">%1$d museos guardados</string>
+
+    <!-- Aprobación de fichas (Administrador, en el Dashboard) -->
+    <string name="dashboard_pendientes_titulo">Fichas por aprobar (%1$d)</string>
+    <string name="dashboard_pendientes_vacio">No hay fichas de museos pendientes de aprobación.</string>
+    <string name="dashboard_pendientes_aprobar">Aprobar</string>
 </resources>

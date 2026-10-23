@@ -1,11 +1,13 @@
 package com.example.museo_de_los_museos_app.ui.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
+import androidx.annotation.DrawableRes
 import androidx.core.content.FileProvider
 import java.io.File
 
@@ -69,4 +71,16 @@ private fun Context.girarSegunExif(uri: Uri, imagen: Bitmap): Bitmap {
     if (grados == 0f) return imagen
     val matriz = Matrix().apply { postRotate(grados) }
     return Bitmap.createBitmap(imagen, 0, 0, imagen.width, imagen.height, matriz, true)
+}
+/**
+ * Id del recurso res/drawable con ese nombre (ej. "museo_oro"), o 0 si no existe.
+ * Acepta el nombre con o sin extensión: "museo_oro.jpg" también sirve.
+ * Se usa getIdentifier porque el nombre viene de la base de datos y no se conoce al compilar.
+ */
+@SuppressLint("DiscouragedApi")
+@DrawableRes
+fun Context.idImagenMuseo(nombre: String): Int {
+    val limpio = nombre.trim().substringBeforeLast('.')
+    if (limpio.isEmpty()) return 0
+    return resources.getIdentifier(limpio, "drawable", packageName)
 }

@@ -78,6 +78,7 @@ import com.example.museo_de_los_museos_app.model.Museum
 import com.example.museo_de_los_museos_app.ui.components.BannerMensaje
 import com.example.museo_de_los_museos_app.ui.components.BotonPrincipal
 import com.example.museo_de_los_museos_app.ui.components.CampoTextoValidado
+import com.example.museo_de_los_museos_app.ui.components.ImagenMuseoEncabezado
 import com.example.museo_de_los_museos_app.ui.utils.texto
 import com.example.museo_de_los_museos_app.viewmodel.detallemuseo.DetalleMuseoUiState
 import com.example.museo_de_los_museos_app.viewmodel.detallemuseo.DetalleMuseoViewModel
@@ -237,6 +238,8 @@ private fun VistaMuseo(
     )
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        ImagenMuseoEncabezado(imagen = museo.imagen, descripcion = museo.nombre)
+
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {

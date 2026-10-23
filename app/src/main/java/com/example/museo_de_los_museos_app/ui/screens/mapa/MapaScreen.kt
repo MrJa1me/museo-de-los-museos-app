@@ -80,6 +80,12 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.layout.ContentScale
 
 
 private val CENTRO_IBEROAMERICA = GeoPoint(10.0, -40.0)
@@ -296,7 +302,11 @@ private fun dibujarMarcadores(mapa: MapView, museos: List<Museum>, alTocar: (Str
         marcador.position = GeoPoint(museo.latitud, museo.longitud)
         marcador.title = museo.nombre
         marcador.snippet = "${museo.ciudad}, ${museo.pais}"
-        marcador.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+        marcador.icon = ContextCompat.getDrawable(mapa.context, R.drawable.ic_museum)
+        // El ícono es un círculo: se ancla por su centro, no por la punta como el alfiler por defecto
+        marcador.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
+        // Fichas pendientes de aprobación (solo las ven Administrador e Investigador) en semitransparente
+        if (!museo.publicado) marcador.alpha = 0.5f
         marcador.setOnMarkerClickListener { _, _ ->
             alTocar(museo.id)
             true
@@ -359,28 +369,56 @@ private fun AvisoPermisoDenegado(alReintentar: () -> Unit, alAbrirAjustes: () ->
 
 @Composable
 private fun TarjetaMuseoSeleccionado(museo: Museum, alVerFicha: () -> Unit, alCerrar: () -> Unit) {
+    val context = LocalContext.current
     Card(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
-        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = museo.nombre,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.weight(1f)
+        Row(
+            modifier = Modifier.padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            val imageResId = remember(key1 = museo.imagen) {
+                val nombreLimpio = museo.imagen
+                    .lowercase()
+                    .substringBefore(".")
+                    .replace(" ", "_")
+                context.resources.getIdentifier(nombreLimpio, "drawable", context.packageName)
+            }
+
+            if (imageResId != 0) {
+                Image(
+                    painter = painterResource(id = imageResId),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(60.dp)
+                        .clip(RoundedCornerShape(8.dp)),
+                    contentScale = ContentScale.Crop
                 )
-                IconButton(onClick = alCerrar) {
-                    Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.mapa_cerrar_seleccion))
+            }
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = museo.nombre,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1f)
+                    )
+                    IconButton(onClick = alCerrar) {
+                        Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.mapa_cerrar_seleccion))
+                    }
                 }
-            }
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Filled.Place, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                Text(
-                    text = stringResource(R.string.detalle_ubicacion, museo.ciudad, museo.pais) + " · " + museo.clasificacion.etiqueta,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-            Button(onClick = alVerFicha, modifier = Modifier.align(Alignment.End)) {
-                Text(stringResource(R.string.mapa_ver_ficha))
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Filled.Place, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                    Text(
+                        text = stringResource(R.string.detalle_ubicacion, museo.ciudad, museo.pais) + " · " + museo.clasificacion.etiqueta,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+                Button(onClick = alVerFicha, modifier = Modifier.align(Alignment.End)) {
+                    Text(stringResource(R.string.mapa_ver_ficha))
+                }
             }
         }
     }

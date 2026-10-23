@@ -6,6 +6,7 @@ import com.example.museo_de_los_museos_app.domain.LectorQr
 import com.example.museo_de_los_museos_app.domain.MotivoQrInvalido
 import com.example.museo_de_los_museos_app.domain.ResultadoQr
 import com.example.museo_de_los_museos_app.model.QrHistory
+import com.example.museo_de_los_museos_app.model.visiblePara
 import com.example.museo_de_los_museos_app.repository.MuseumRepository
 import com.example.museo_de_los_museos_app.repository.ProductRepository
 import com.example.museo_de_los_museos_app.repository.QrHistoryRepository
@@ -90,7 +91,9 @@ class EscanerQrViewModel(
 
     private fun procesar(texto: String?) {
         val contenido = texto?.trim().orEmpty()
-        val resultado = LectorQr.resolver(contenido, museos::obtenerPorId, productos::obtenerPorId)
+        // Un Cliente que escanea una ficha aún no aprobada recibe "no encontrado"
+        val buscarMuseo = { id: String -> museos.obtenerPorId(id)?.takeIf { it.visiblePara(SessionManager.rol) } }
+        val resultado = LectorQr.resolver(contenido, buscarMuseo, productos::obtenerPorId)
         UltimoEscaneo.guardar(EscaneoReciente(contenido, resultado))
 
         val userId = SessionManager.userId

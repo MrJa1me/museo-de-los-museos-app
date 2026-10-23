@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Marcador de museo para el mapa (osmdroid): círculo azul marino con el ícono "museum" de Material en dorado -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="40dp"
+    android:viewportWidth="40"
+    android:viewportHeight="40">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M20,1a19,19 0,1 1,0 38a19,19 0,1 1,0 -38z" />
+    <path
+        android:fillColor="#FF1F3A5F"
+        android:pathData="M20,3a17,17 0,1 1,0 34a17,17 0,1 1,0 -34z" />
+    <group
+        android:translateX="8"
+        android:translateY="8">
+        <path
+            android:fillColor="#FFE9C46A"
+            android:pathData="M22,11V9L12,2 2,9v2h2v9H2v2h20v-2h-2v-9h2zM16,18h-2v-4l-2,3 -2,-3v4H8v-7h2l2,3 2,-3h2v7z" />
+    </group>
+</vector>
