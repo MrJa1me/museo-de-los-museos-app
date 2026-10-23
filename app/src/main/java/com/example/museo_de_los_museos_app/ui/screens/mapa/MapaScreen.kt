@@ -296,7 +296,11 @@ private fun dibujarMarcadores(mapa: MapView, museos: List<Museum>, alTocar: (Str
         marcador.position = GeoPoint(museo.latitud, museo.longitud)
         marcador.title = museo.nombre
         marcador.snippet = "${museo.ciudad}, ${museo.pais}"
-        marcador.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+        marcador.icon = ContextCompat.getDrawable(mapa.context, R.drawable.ic_museum)
+        // El ícono es un círculo: se ancla por su centro, no por la punta como el alfiler por defecto
+        marcador.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
+        // Fichas pendientes de aprobación (solo las ven Administrador e Investigador) en semitransparente
+        if (!museo.publicado) marcador.alpha = 0.5f
         marcador.setOnMarkerClickListener { _, _ ->
             alTocar(museo.id)
             true
