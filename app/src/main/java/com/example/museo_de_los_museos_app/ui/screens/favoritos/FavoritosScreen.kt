@@ -22,7 +22,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Museum
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -51,6 +50,7 @@ import androidx.navigation.NavHostController
 import com.example.museo_de_los_museos_app.R
 import com.example.museo_de_los_museos_app.model.Museum
 import com.example.museo_de_los_museos_app.navigation.Routes
+import com.example.museo_de_los_museos_app.ui.components.ImagenMuseoMiniatura
 import com.example.museo_de_los_museos_app.viewmodel.favoritos.FavoritosViewModel
 
 private val ROJO_FAVORITO = Color(0xFFD32F2F)
@@ -133,12 +133,7 @@ fun FavoritosScreen(
 private fun TarjetaFavorito(museo: Museum, alAbrir: () -> Unit, alQuitar: () -> Unit, modifier: Modifier = Modifier) {
     Card(modifier = modifier.fillMaxWidth().clickable(onClick = alAbrir)) {
         Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                Icons.Filled.Museum,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(36.dp)
-            )
+            ImagenMuseoMiniatura(imagen = museo.imagen, descripcion = museo.nombre)
             Column(modifier = Modifier.weight(1f).padding(horizontal = 12.dp)) {
                 Text(museo.nombre, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 Row(verticalAlignment = Alignment.CenterVertically) {
