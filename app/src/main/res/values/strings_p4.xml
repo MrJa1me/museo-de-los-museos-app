@@ -71,4 +71,21 @@
     <string name="historial_destino">Destino</string>
     <string name="historial_avanzar">Marcar como %1$s</string>
     <string name="historial_estado_actualizado">Solicitud #%1$s actualizada a %2$s. Se notificó al cliente.</string>
+
+    <!-- Administración de productos (solo Administrador) -->
+    <string name="catalogo_agregar_producto">Agregar</string>
+    <string name="formulario_titulo_nuevo">Nuevo producto</string>
+    <string name="formulario_titulo_editar">Editar producto</string>
+    <string name="formulario_solo_admin">Solo el Administrador puede crear o editar productos</string>
+    <string name="formulario_tipo">Tipo de ítem</string>
+    <string name="formulario_ayuda_curso">Curso: se venden cupos y no tiene envío.</string>
+    <string name="formulario_ayuda_producto">Producto físico: necesita stock y peso para calcular el envío.</string>
+    <string name="formulario_nombre">Nombre</string>
+    <string name="formulario_descripcion">Descripción (opcional)</string>
+    <string name="formulario_precio">Precio (CLP)</string>
+    <string name="formulario_stock">Stock</string>
+    <string name="formulario_cupos">Cupos</string>
+    <string name="formulario_peso">Peso (kg)</string>
+    <string name="formulario_crear">Crear producto</string>
+    <string name="formulario_guardar_cambios">Guardar cambios</string>
 </resources>
