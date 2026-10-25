@@ -1,4 +1,4 @@
-package com.example.museo_de_los_museos_app.viewmodel
+package com.example.museo_de_los_museos_app.viewmodel.detalleproducto
 
 import com.example.museo_de_los_museos_app.domain.ErrorValidacion
 import com.example.museo_de_los_museos_app.model.Rol
@@ -7,8 +7,6 @@ import com.example.museo_de_los_museos_app.repository.InMemoryNotificationReposi
 import com.example.museo_de_los_museos_app.repository.InMemoryProductRepository
 import com.example.museo_de_los_museos_app.repository.SeedData
 import com.example.museo_de_los_museos_app.repository.SessionManager
-import com.example.museo_de_los_museos_app.viewmodel.detalleproducto.DetalleProductoViewModel
-import com.example.museo_de_los_museos_app.viewmodel.detalleproducto.MensajeDetalleProducto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first

@@ -1,12 +1,9 @@
-package com.example.museo_de_los_museos_app.viewmodel
+package com.example.museo_de_los_museos_app.viewmodel.notificaciones
 
 import com.example.museo_de_los_museos_app.model.Rol
 import com.example.museo_de_los_museos_app.repository.InMemoryNotificationRepository
 import com.example.museo_de_los_museos_app.repository.SeedData
 import com.example.museo_de_los_museos_app.repository.SessionManager
-import com.example.museo_de_los_museos_app.viewmodel.notificaciones.FiltroNotificacion
-import com.example.museo_de_los_museos_app.viewmodel.notificaciones.NotificacionesViewModel
-import com.example.museo_de_los_museos_app.viewmodel.notificaciones.OpcionDestinatario
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch

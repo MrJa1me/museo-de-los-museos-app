@@ -11,7 +11,7 @@ import com.example.museo_de_los_museos_app.model.Preferencias
 import com.example.museo_de_los_museos_app.navigation.AppNavHost
 import com.example.museo_de_los_museos_app.repository.Repositorios
 import com.example.museo_de_los_museos_app.repository.SessionManager
-import com.example.museo_de_los_museos_app.repository.inicializarP3
+import com.example.museo_de_los_museos_app.repository.inicializarFavoritosQr
 import com.example.museo_de_los_museos_app.repository.inicializarPreferencias
 import com.example.museo_de_los_museos_app.repository.inicializarUsuarios
 import com.example.museo_de_los_museos_app.repository.preferencias
@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
         SessionManager.restaurar()
 
         // Favoritos e historial QR por usuario (P3)
-        Repositorios.inicializarP3(this)
+        Repositorios.inicializarFavoritosQr(this)
 
         enableEdgeToEdge()
         setContent {

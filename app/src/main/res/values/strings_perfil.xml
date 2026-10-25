@@ -6,7 +6,6 @@
     <string name="perfil_camara">Cámara</string>
     <string name="perfil_nombre">Nombre</string>
     <string name="perfil_correo">Correo</string>
-    <string name="perfil_rol">Rol: %1$s</string>
     <string name="perfil_guardar">Guardar cambios</string>
     <string name="perfil_cerrar_sesion">Cerrar sesión</string>
     <string name="perfil_guardado">Perfil actualizado</string>

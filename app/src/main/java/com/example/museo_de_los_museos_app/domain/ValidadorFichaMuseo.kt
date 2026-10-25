@@ -2,7 +2,7 @@ package com.example.museo_de_los_museos_app.domain
 
 /**
  * Errores del formulario de ficha de museo (Investigador). Sin texto, igual que ErrorValidacion:
- * la UI los traduce con ErrorFicha.mensaje() (ui/utils/MensajesP3.kt).
+ * la UI los traduce con ErrorFicha.mensaje() (ui/utils/MensajesErrores.kt).
  */
 enum class ErrorFicha {
     OBLIGATORIO,

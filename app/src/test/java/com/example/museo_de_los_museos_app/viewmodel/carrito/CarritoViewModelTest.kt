@@ -1,4 +1,4 @@
-package com.example.museo_de_los_museos_app.viewmodel
+package com.example.museo_de_los_museos_app.viewmodel.carrito
 
 import com.example.museo_de_los_museos_app.domain.ErrorValidacion
 import com.example.museo_de_los_museos_app.domain.ModalidadEnvio
@@ -8,8 +8,6 @@ import com.example.museo_de_los_museos_app.repository.InMemoryOrderRepository
 import com.example.museo_de_los_museos_app.repository.InMemoryProductRepository
 import com.example.museo_de_los_museos_app.repository.SeedData
 import com.example.museo_de_los_museos_app.repository.SessionManager
-import com.example.museo_de_los_museos_app.viewmodel.carrito.CarritoViewModel
-import com.example.museo_de_los_museos_app.viewmodel.carrito.TipoEnvio
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first

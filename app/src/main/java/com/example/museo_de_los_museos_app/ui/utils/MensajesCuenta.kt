@@ -6,7 +6,7 @@ import androidx.compose.ui.res.stringResource
 import com.example.museo_de_los_museos_app.R
 import com.example.museo_de_los_museos_app.domain.ErrorCuenta
 
-/** Texto (strings_p1.xml) de cada error de cuenta. Mismo estilo que MensajesValidacion.kt de P4. */
+/** Texto (strings_cuenta.xml) de cada error de cuenta. Mismo estilo que MensajesValidacion.kt de P4. */
 @StringRes
 fun ErrorCuenta.mensaje(): Int = when (this) {
     ErrorCuenta.OBLIGATORIO -> R.string.cuenta_error_obligatorio

@@ -5,7 +5,7 @@ import com.example.museo_de_los_museos_app.model.Product
 import org.json.JSONException
 import org.json.JSONObject
 
-/** Motivos por los que un QR no se puede usar. La UI los traduce a strings_p3.xml (MensajesP3.kt). */
+/** Motivos por los que un QR no se puede usar. La UI los traduce a strings_museos.xml (MensajesErrores.kt). */
 enum class MotivoQrInvalido {
     VACIO,
     FORMATO_DESCONOCIDO,

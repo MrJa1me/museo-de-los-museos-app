@@ -10,7 +10,6 @@
 
     <!-- Títulos de pantallas. Cada integrante agrega sus textos nuevos en su propio bloque. -->
     <string name="pantalla_notificaciones">Notificaciones</string>
-    <string name="placeholder_pendiente">Pantalla pendiente de implementar · Responsable: %1$s</string>
 
     <!-- Pantalla de Bienvenida (P2) -->
     <string name="bienvenida_titulo">Museo de los Museos</string>

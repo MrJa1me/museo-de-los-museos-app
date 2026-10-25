@@ -29,20 +29,6 @@ object NotificacionesValidator {
         )
     }
 
-    fun obtenerTargetUserIds(
-        opcion: OpcionDestinatario,
-        todosUsuarios: List<User> = SeedData.usuarios,
-    ): List<String> {
-        return when (opcion) {
-            OpcionDestinatario.TODOS_CLIENTES -> todosUsuarios
-                .filter { it.rol == Rol.CLIENTE }
-                .map { it.id }
-
-            OpcionDestinatario.CLIENTE_UNO -> listOf("u03")
-            OpcionDestinatario.CLIENTE_DOS -> listOf("u04")
-        }
-    }
-
     fun filtrarNotificaciones(
         notificaciones: List<NotificationItem>,
         userId: String?,

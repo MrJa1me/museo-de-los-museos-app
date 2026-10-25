@@ -7,7 +7,7 @@ import com.example.museo_de_los_museos_app.R
 import com.example.museo_de_los_museos_app.domain.ErrorFicha
 import com.example.museo_de_los_museos_app.domain.MotivoQrInvalido
 
-/** Texto (strings_p3.xml) de cada error de la ficha de museo. Mismo estilo que MensajesValidacion.kt. */
+/** Texto (strings_museos.xml) de cada error de la ficha de museo. Mismo estilo que MensajesValidacion.kt. */
 @StringRes
 fun ErrorFicha.mensaje(): Int = when (this) {
     ErrorFicha.OBLIGATORIO -> R.string.ficha_error_obligatorio
