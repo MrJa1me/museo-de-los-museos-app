@@ -17,9 +17,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 
 /** Datos del usuario activo, edición del nombre, foto, configuración y cierre de sesión. */
 class PerfilViewModel(
@@ -34,20 +35,27 @@ class PerfilViewModel(
     val userId: String? get() = SessionManager.userId
 
     init {
-        // Espera al primer usuario con sesión y llena el formulario con sus datos y su configuración.
         viewModelScope.launch {
-            val usuario = SessionManager.usuarioActual.filterNotNull().first()
-            val prefs = repoPreferencias.obtener(usuario.id)
-            _estado.update {
-                it.copy(
-                    nombre = usuario.nombre,
-                    correo = usuario.correo,
-                    rol = usuario.rol.etiqueta,
-                    rolUsuario = usuario.rol,
-                    fotoUri = usuario.avatarUri?.let(Uri::parse),
-                    preferencias = prefs
-                )
-            }
+            SessionManager.usuarioActual
+                .filterNotNull()
+                .distinctUntilChangedBy { it.id }
+                .collectLatest { usuario ->
+                    _estado.update {
+                        it.copy(
+                            nombre = usuario.nombre,
+                            correo = usuario.correo,
+                            rol = usuario.rol.etiqueta,
+                            rolUsuario = usuario.rol,
+                            fotoUri = usuario.avatarUri?.let(Uri::parse),
+                            preferencias = null,
+                            errorNombre = null,
+                            mensaje = null
+                        )
+                    }
+                    repoPreferencias.observar(usuario.id).collect { prefs ->
+                        _estado.update { it.copy(preferencias = prefs) }
+                    }
+                }
         }
     }
 

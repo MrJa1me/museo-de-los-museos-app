@@ -13,6 +13,7 @@ data class DashboardUiState(
     val usuario: User? = null,
     val rol: Rol = Rol.CLIENTE,
     val museosDestacados: List<Museum> = emptyList(),
+    val museosTodos: List<Museum> = emptyList(),
     /** Fichas creadas por el Investigador que esperan la aprobación del Administrador. */
     val museosPendientes: List<Museum> = emptyList(),
     val cursosDestacados: List<Product> = emptyList(),

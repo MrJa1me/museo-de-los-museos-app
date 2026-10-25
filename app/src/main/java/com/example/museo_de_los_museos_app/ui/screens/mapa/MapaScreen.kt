@@ -80,12 +80,7 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
-import androidx.compose.foundation.Image
-import androidx.compose.ui.res.painterResource
-import androidx.compose.foundation.layout.size
-import androidx.compose.ui.draw.clip
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.layout.ContentScale
+import com.example.museo_de_los_museos_app.ui.components.ImagenMuseoMiniatura
 
 
 private val CENTRO_IBEROAMERICA = GeoPoint(10.0, -40.0)
@@ -369,31 +364,13 @@ private fun AvisoPermisoDenegado(alReintentar: () -> Unit, alAbrirAjustes: () ->
 
 @Composable
 private fun TarjetaMuseoSeleccionado(museo: Museum, alVerFicha: () -> Unit, alCerrar: () -> Unit) {
-    val context = LocalContext.current
     Card(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
         Row(
             modifier = Modifier.padding(16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val imageResId = remember(key1 = museo.imagen) {
-                val nombreLimpio = museo.imagen
-                    .lowercase()
-                    .substringBefore(".")
-                    .replace(" ", "_")
-                context.resources.getIdentifier(nombreLimpio, "drawable", context.packageName)
-            }
-
-            if (imageResId != 0) {
-                Image(
-                    painter = painterResource(id = imageResId),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(60.dp)
-                        .clip(RoundedCornerShape(8.dp)),
-                    contentScale = ContentScale.Crop
-                )
-            }
+            ImagenMuseoMiniatura(imagen = museo.imagen, descripcion = museo.nombre, tamano = 60.dp)
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(4.dp)

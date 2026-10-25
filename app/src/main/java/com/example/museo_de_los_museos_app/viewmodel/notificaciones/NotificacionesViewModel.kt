@@ -6,7 +6,6 @@ import com.example.museo_de_los_museos_app.model.NotificationItem
 import com.example.museo_de_los_museos_app.model.Rol
 import com.example.museo_de_los_museos_app.repository.NotificationRepository
 import com.example.museo_de_los_museos_app.repository.Repositorios
-import com.example.museo_de_los_museos_app.repository.SeedData
 import com.example.museo_de_los_museos_app.repository.SessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,6 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.onEach
 
 /**
  * ViewModel para la gestión de Notificaciones y Avisos (P2).
@@ -38,7 +38,7 @@ class NotificacionesViewModel(
     )
 
     val uiState: StateFlow<NotificacionesUiState> = combine(
-        SessionManager.usuarioActual,
+        SessionManager.usuarioActual.onEach { u -> u?.let(notificationRepository::entregarAvisosDeRol) },
         notificationRepository.notificaciones,
         _filtro,
         _notificacionSeleccionada,
@@ -145,19 +145,24 @@ class NotificacionesViewModel(
             return false
         }
 
-        val targetUserIds = NotificacionesValidator.obtenerTargetUserIds(current.destinatario, SeedData.usuarios)
+        val ahora = System.currentTimeMillis()
+        val ruta = current.ruta.trim().takeIf(OpcionRutaAviso::esValida)
+        val base = NotificationItem(
+            id = "n_$ahora",
+            userId = "",
+            titulo = current.titulo.trim(),
+            mensaje = current.mensaje.trim(),
+            leida = false,
+            fechaMillis = ahora,
+            ruta = ruta,
+        )
 
-        targetUserIds.forEach { targetId ->
-            val nuevoAviso = NotificationItem(
-                id = "n_${System.currentTimeMillis()}_$targetId",
-                userId = targetId,
-                titulo = current.titulo.trim(),
-                mensaje = current.mensaje.trim(),
-                leida = false,
-                fechaMillis = System.currentTimeMillis(),
-                ruta = current.ruta.trim().ifEmpty { null },
-            )
-            notificationRepository.agregarAviso(nuevoAviso)
+        val idUnico = current.destinatario.userIdTarget
+        if (idUnico == null) {
+            notificationRepository.publicarParaRol(Rol.CLIENTE, base)
+            SessionManager.usuarioActual.value?.let(notificationRepository::entregarAvisosDeRol)
+        } else {
+            notificationRepository.agregarAviso(base.copy(id = "n_${ahora}_$idUnico", userId = idUnico))
         }
 
         _dialogoState.value = DialogoCrearState()
