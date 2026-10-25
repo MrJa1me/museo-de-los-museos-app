@@ -25,6 +25,13 @@ sealed class Routes(val route: String) {
         fun crear(productoId: String) = "detalle_producto/$productoId"
     }
 
+    /** Alta (sin productoId) o edición (con productoId) de un producto del catálogo. Solo Administrador (P4). */
+    data object FormularioProducto : Routes("formulario_producto?productoId={productoId}") {
+        const val ARG_PRODUCTO_ID = "productoId"
+        fun crear(productoId: String? = null) =
+            if (productoId == null) "formulario_producto" else "formulario_producto?productoId=$productoId"
+    }
+
     data object Favoritos : Routes("favoritos")
     data object Carrito : Routes("carrito")
     data object Historial : Routes("historial")

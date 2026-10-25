@@ -106,6 +106,14 @@ object Validadores {
 
     // ---------- Formulario de producto (Administrador en Catálogo) ----------
 
+    /** Nombre obligatorio, de al menos [LARGO_MINIMO_NOMBRE] letras. */
+    fun validarNombreProducto(texto: String): ErrorValidacion? {
+        val valor = texto.trim()
+        if (valor.isEmpty()) return ErrorValidacion.CAMPO_VACIO
+        if (valor.length < LARGO_MINIMO_NOMBRE) return ErrorValidacion.TEXTO_MUY_CORTO
+        return null
+    }
+
     fun validarPrecio(texto: String): ErrorValidacion? {
         if (texto.isBlank()) return ErrorValidacion.CAMPO_VACIO
         val precio = texto.trim().toIntOrNull() ?: return ErrorValidacion.NUMERO_INVALIDO

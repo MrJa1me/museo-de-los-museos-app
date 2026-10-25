@@ -25,6 +25,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.History
@@ -37,6 +38,7 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -91,6 +93,16 @@ fun CatalogoScreen(
                 // Las barras del sistema ya las maneja el Scaffold del NavHost
                 windowInsets = WindowInsets(0, 0, 0, 0)
             )
+        },
+        floatingActionButton = {
+            // Solo el Administrador puede agregar productos al catálogo
+            AnimatedVisibility(visible = estado.esAdministrador, enter = fadeIn(), exit = fadeOut()) {
+                ExtendedFloatingActionButton(
+                    onClick = { navController.navigate(Routes.FormularioProducto.crear()) },
+                    icon = { Icon(Icons.Filled.Add, contentDescription = null) },
+                    text = { Text(stringResource(R.string.catalogo_agregar_producto)) }
+                )
+            }
         },
         contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { innerPadding ->
@@ -204,7 +216,8 @@ private fun ListaProductos(
     esAdministrador: Boolean,
     onProductoClick: (Product) -> Unit
 ) {
-    val espaciado = PaddingValues(16.dp)
+    // Espacio extra abajo para que el botón "Agregar" del Administrador no tape el último producto
+    val espaciado = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 88.dp)
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         if (maxWidth < ANCHO_EXPANDIDO) {
             LazyColumn(

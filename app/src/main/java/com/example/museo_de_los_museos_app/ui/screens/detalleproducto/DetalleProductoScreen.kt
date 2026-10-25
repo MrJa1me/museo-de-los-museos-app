@@ -25,6 +25,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AdminPanelSettings
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocalShipping
@@ -32,6 +34,9 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.SearchOff
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -135,6 +140,11 @@ fun DetalleProductoScreen(
                     InformacionProducto(producto)
 
                     when {
+                        estado.esAdministrador -> SeccionAdministrador(
+                            producto = producto,
+                            alEditar = { navController.navigate(Routes.FormularioProducto.crear(producto.id)) },
+                            alAlternarActivo = viewModel::alternarActivo
+                        )
                         !producto.disponible -> BannerMensaje(
                             texto = stringResource(R.string.detalle_producto_agotado),
                             esError = true
@@ -156,8 +166,12 @@ fun DetalleProductoScreen(
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             BannerMensaje(
                                 texto = stringResource(
-                                    if (estado.mensaje == MensajeDetalleProducto.INFORMACION_SOLICITADA) R.string.detalle_info_solicitada
-                                    else R.string.detalle_agregado_carrito
+                                    when (estado.mensaje) {
+                                        MensajeDetalleProducto.INFORMACION_SOLICITADA -> R.string.detalle_info_solicitada
+                                        MensajeDetalleProducto.PRODUCTO_ACTIVADO -> R.string.detalle_admin_activado
+                                        MensajeDetalleProducto.PRODUCTO_DESACTIVADO -> R.string.detalle_admin_desactivado
+                                        else -> R.string.detalle_agregado_carrito
+                                    }
                                 ),
                                 esError = false
                             )
@@ -300,6 +314,44 @@ private fun SeccionCompra(
         if (estado.esCurso) {
             OutlinedButton(onClick = viewModel::solicitarInformacion, modifier = Modifier.fillMaxWidth()) {
                 Text(stringResource(R.string.detalle_solicitar_info))
+            }
+        }
+    }
+}
+
+/** Solo Administrador: editar el producto y desactivarlo (lo oculta a los Clientes) o activarlo. */
+@Composable
+private fun SeccionAdministrador(producto: Product, alEditar: () -> Unit, alAlternarActivo: () -> Unit) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(16.dp).animateContentSize(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Filled.AdminPanelSettings, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(stringResource(R.string.detalle_admin_titulo), style = MaterialTheme.typography.titleMedium)
+            }
+            Text(
+                stringResource(if (producto.activo) R.string.detalle_admin_visible else R.string.detalle_admin_oculto),
+                style = MaterialTheme.typography.bodyMedium,
+                color = if (producto.activo) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.error
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+                OutlinedButton(onClick = alEditar, modifier = Modifier.weight(1f)) {
+                    Icon(Icons.Filled.Edit, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(stringResource(R.string.detalle_admin_editar))
+                }
+                Button(onClick = alAlternarActivo, modifier = Modifier.weight(1f)) {
+                    Icon(
+                        if (producto.activo) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(stringResource(if (producto.activo) R.string.detalle_admin_desactivar else R.string.detalle_admin_activar))
+                }
             }
         }
     }

@@ -45,6 +45,8 @@ class ValidadoresTest {
 
     @Test
     fun formularioProducto() {
+        assertNull(Validadores.validarNombreProducto("Taller de Archivos"))
+        assertEquals(ErrorValidacion.CAMPO_VACIO, Validadores.validarNombreProducto("  "))
         assertNull(Validadores.validarPrecio("12000"))
         assertEquals(ErrorValidacion.PRECIO_INVALIDO, Validadores.validarPrecio("0"))
         assertEquals(ErrorValidacion.NUMERO_INVALIDO, Validadores.validarPrecio("12.000,5"))

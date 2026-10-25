@@ -18,6 +18,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -69,5 +70,29 @@ class DetalleProductoViewModelTest {
         viewModel.solicitarInformacion()
 
         assertEquals(1, notificaciones.obtenerPorUsuario(cliente.id).count { it.id.startsWith("info_c01") })
+    }
+
+    @Test
+    fun administrador_desactivaYActivaProducto() {
+        val productos = InMemoryProductRepository()
+        SessionManager.iniciarSesion(SeedData.usuarios.first { it.rol == Rol.ADMINISTRADOR })
+        val vmAdmin = DetalleProductoViewModel(productos, carrito, notificaciones)
+        vmAdmin.cargar("a01")
+
+        vmAdmin.alternarActivo()
+        assertFalse(productos.obtenerPorId("a01")!!.activo)
+        assertEquals(MensajeDetalleProducto.PRODUCTO_DESACTIVADO, vmAdmin.uiState.value.mensaje)
+
+        vmAdmin.alternarActivo()
+        assertTrue(productos.obtenerPorId("a01")!!.activo)
+    }
+
+    @Test
+    fun cliente_noPuedeDesactivar() {
+        val productos = InMemoryProductRepository()
+        val vmCliente = DetalleProductoViewModel(productos, carrito, notificaciones)
+        vmCliente.cargar("a01")
+        vmCliente.alternarActivo()
+        assertTrue(productos.obtenerPorId("a01")!!.activo)
     }
 }

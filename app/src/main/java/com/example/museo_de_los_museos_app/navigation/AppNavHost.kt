@@ -38,6 +38,7 @@ import com.example.museo_de_los_museos_app.ui.screens.detallemuseo.DetalleMuseoS
 import com.example.museo_de_los_museos_app.ui.screens.detalleproducto.DetalleProductoScreen
 import com.example.museo_de_los_museos_app.ui.screens.escanerqr.EscanerQrScreen
 import com.example.museo_de_los_museos_app.ui.screens.favoritos.FavoritosScreen
+import com.example.museo_de_los_museos_app.ui.screens.formularioproducto.FormularioProductoScreen
 import com.example.museo_de_los_museos_app.ui.screens.historial.HistorialScreen
 import com.example.museo_de_los_museos_app.ui.screens.login.LoginScreen
 import com.example.museo_de_los_museos_app.ui.screens.mapa.MapaScreen
@@ -115,6 +116,17 @@ fun AppNavHost(modifier: Modifier = Modifier) {
             ) { entrada ->
                 val productoId = entrada.arguments?.getString(Routes.DetalleProducto.ARG_PRODUCTO_ID).orEmpty()
                 DetalleProductoScreen(navController, productoId)
+            }
+            composable(
+                route = Routes.FormularioProducto.route,
+                arguments = listOf(navArgument(Routes.FormularioProducto.ARG_PRODUCTO_ID) {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                })
+            ) { entrada ->
+                val productoId = entrada.arguments?.getString(Routes.FormularioProducto.ARG_PRODUCTO_ID)
+                FormularioProductoScreen(navController, productoId)
             }
             composable(Routes.Favoritos.route) { FavoritosScreen(navController) }
             composable(Routes.Carrito.route) { CarritoScreen(navController) }
