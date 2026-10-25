@@ -77,6 +77,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.material3.Button
 import androidx.compose.runtime.key
 import com.example.museo_de_los_museos_app.ui.components.ImagenMuseoMiniatura
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import com.example.museo_de_los_museos_app.ui.components.ImagenMuseoBanner
 
 /** Formatea precios en pesos chilenos con Locale explícito (es-CL). */
 private fun formatearPrecioClp(monto: Int): String {
@@ -129,6 +133,7 @@ fun DashboardScreen(
                     Column(modifier = Modifier.weight(1f)) {
                         SeccionMuseosDestacados(
                             museos = uiState.museosDestacados,
+                            todos = uiState.museosTodos,
                             navController = navController,
                         )
                         Spacer(modifier = Modifier.height(16.dp))
@@ -173,6 +178,7 @@ fun DashboardScreen(
                     ) {
                         SeccionMuseosDestacados(
                             museos = uiState.museosDestacados,
+                            todos = uiState.museosTodos,
                             navController = navController,
                         )
                     }
@@ -366,7 +372,14 @@ private fun ContenidoPorRol(
                 onVerFicha = { id -> navController.navigate(Routes.DetalleMuseo.crear(id)) },
             )
         }
-        Rol.INVESTIGADOR -> PanelInvestigador(uiState = uiState, navController = navController)
+        Rol.INVESTIGADOR -> Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            PanelInvestigador(uiState = uiState, navController = navController)
+            SeccionMuseosPendientes(
+                museos = uiState.museosPendientes,
+                onAprobar = null,
+                onVerFicha = { id -> navController.navigate(Routes.DetalleMuseo.crear(id)) },
+            )
+        }
         Rol.CLIENTE -> PanelClienteBanner(navController = navController)
     }
 }
@@ -422,11 +435,12 @@ private fun PanelAdmin(
     }
 }
 
-/** Fichas creadas por el Investigador que el Administrador debe aprobar antes de que las vean los clientes. */
+
+/** Fichas pendientes: el Administrador las aprueba; el Investigador ve que están "Pendiente de aprobación". */
 @Composable
 private fun SeccionMuseosPendientes(
     museos: List<Museum>,
-    onAprobar: (String) -> Unit,
+    onAprobar: ((String) -> Unit)?,
     onVerFicha: (String) -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -442,7 +456,6 @@ private fun SeccionMuseosPendientes(
             )
         }
         museos.forEach { museo ->
-            // Al aprobar, Room actualiza la lista sola y la ficha desaparece de aquí
             key(museo.id) {
                 Card(
                     modifier = Modifier
@@ -469,8 +482,16 @@ private fun SeccionMuseosPendientes(
                                 style = MaterialTheme.typography.bodySmall,
                             )
                         }
-                        Button(onClick = { onAprobar(museo.id) }) {
-                            Text(stringResource(R.string.dashboard_pendientes_aprobar))
+                        if (onAprobar != null) {
+                            Button(onClick = { onAprobar(museo.id) }) {
+                                Text(stringResource(R.string.dashboard_pendientes_aprobar))
+                            }
+                        } else {
+                            Text(
+                                text = stringResource(R.string.museos_pendiente),
+                                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                                color = MaterialTheme.colorScheme.tertiary,
+                            )
                         }
                     }
                 }
@@ -632,8 +653,11 @@ private fun TarjetaMetricaAnimada(
 @Composable
 private fun SeccionMuseosDestacados(
     museos: List<Museum>,
+    todos: List<Museum>,
     navController: NavHostController,
 ) {
+    var verTodos by rememberSaveable { mutableStateOf(false) }
+
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -644,22 +668,87 @@ private fun SeccionMuseosDestacados(
                 text = stringResource(R.string.dashboard_seccion_museos_destacados),
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
             )
-            TextButton(onClick = { navController.navigate(Routes.Mapa.route) }) {
-                Text(stringResource(R.string.dashboard_btn_ver_todos))
+            TextButton(onClick = { verTodos = !verTodos }) {
+                Text(
+                    stringResource(
+                        if (verTodos) R.string.dashboard_btn_ver_menos else R.string.dashboard_btn_ver_todos
+                    )
+                )
             }
         }
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = PaddingValues(end = 12.dp),
+        if (verTodos) {
+            // Lista vertical (la pantalla ya hace scroll, por eso Column y no LazyColumn)
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                todos.forEach { museo ->
+                    TarjetaMuseoVertical(
+                        museo = museo,
+                        onClick = { navController.navigate(Routes.DetalleMuseo.crear(museo.id)) },
+                    )
+                }
+            }
+        } else {
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                contentPadding = PaddingValues(end = 12.dp),
+            ) {
+                items(museos, key = { it.id }) { museo ->
+                    TarjetaMuseo(
+                        museo = museo,
+                        onClick = { navController.navigate(Routes.DetalleMuseo.crear(museo.id)) },
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun TarjetaMuseoVertical(
+    museo: Museum,
+    onClick: () -> Unit,
+) {
+    Card(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+    ) {
+        Row(
+            modifier = Modifier.padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            items(museos, key = { it.id }) { museo ->
-                TarjetaMuseo(
-                    museo = museo,
-                    onClick = { navController.navigate(Routes.DetalleMuseo.crear(museo.id)) },
+            ImagenMuseoMiniatura(imagen = museo.imagen, descripcion = museo.nombre, tamano = 72.dp)
+            Spacer(modifier = Modifier.width(12.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = museo.nombre,
+                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
                 )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = "${museo.ciudad}, ${museo.pais}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = museo.clasificacion.etiqueta,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                if (!museo.publicado) {
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = stringResource(R.string.museos_pendiente),
+                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.tertiary,
+                    )
+                }
             }
         }
     }
@@ -679,52 +768,34 @@ private fun TarjetaMuseo(
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
-        Column(modifier = Modifier.padding(14.dp)) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(MaterialTheme.colorScheme.primaryContainer),
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.AccountBalance,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.size(36.dp),
+        Column {
+            ImagenMuseoBanner(imagen = museo.imagen, descripcion = museo.nombre, alto = 120.dp)
+
+            Column(modifier = Modifier.padding(14.dp)) {
+                Text(
+                    text = museo.nombre,
+                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = "${museo.ciudad}, ${museo.pais}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                AssistChip(
+                    onClick = onClick,
+                    label = {
+                        Text(
+                            text = museo.clasificacion.etiqueta,
+                            style = MaterialTheme.typography.labelSmall,
+                        )
+                    },
+                    modifier = Modifier.height(26.dp),
                 )
             }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Text(
-                text = museo.nombre,
-                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-
-            Spacer(modifier = Modifier.height(2.dp))
-
-            Text(
-                text = "${museo.ciudad}, ${museo.pais}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            AssistChip(
-                onClick = onClick,
-                label = {
-                    Text(
-                        text = museo.clasificacion.etiqueta,
-                        style = MaterialTheme.typography.labelSmall,
-                    )
-                },
-                modifier = Modifier.height(26.dp),
-            )
         }
     }
 }

@@ -25,5 +25,9 @@ fun NavHostController.navegarATab(ruta: String) {
 }
 
 fun NavHostController.navegarDesdeAviso(ruta: String) {
-    if (ruta in rutasDeTabs) navegarATab(ruta) else navigate(ruta)
+    try {
+        if (ruta in rutasDeTabs) navegarATab(ruta) else navigate(ruta)
+    } catch (e: IllegalArgumentException) {
+        android.util.Log.w("Navegacion", "Ruta de aviso inválida: $ruta")
+    }
 }

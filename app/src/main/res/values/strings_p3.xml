@@ -48,6 +48,8 @@
     <string name="ficha_clasificacion">Clasificación</string>
     <string name="ficha_descripcion">Descripción</string>
     <string name="ficha_enlace">Enlace del recorrido virtual</string>
+    <string name="ficha_imagen_elegir">Elegir imagen del museo</string>
+    <string name="ficha_imagen_cambiar">Cambiar imagen</string>
     <string name="ficha_guardar">Guardar ficha</string>
     <string name="ficha_cancelar">Cancelar</string>
     <string name="ficha_guardada">Ficha guardada correctamente</string>

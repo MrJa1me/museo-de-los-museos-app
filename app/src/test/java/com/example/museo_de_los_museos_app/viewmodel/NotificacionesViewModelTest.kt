@@ -21,6 +21,7 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import com.example.museo_de_los_museos_app.model.User
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class NotificacionesViewModelTest {
@@ -118,21 +119,19 @@ class NotificacionesViewModelTest {
     }
 
     @Test
-    fun crearAvisoTodosClientes_generaUnAvisoPorCadaCliente() = runTest {
+    fun avisoTodosClientes_llegaAClienteRegistradoDespues() = runTest {
         val collectJob = backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
 
         viewModel.onDestinatarioChanged(OpcionDestinatario.TODOS_CLIENTES)
         viewModel.onNuevoTituloChanged("Aviso Masivo")
         viewModel.onNuevoMensajeChanged("Mensaje para todos los clientes")
+        assertTrue(viewModel.publicarAvisoDePrueba())
 
-        val clientesCount = SeedData.usuarios.count { it.rol == Rol.CLIENTE }
-        val sizeAntes = repository.notificaciones.value.size
+        val nuevo = User(id = "u_nuevo", nombre = "Nuevo", correo = "nuevo@test.cl", contrasena = "x", rol = Rol.CLIENTE)
+        SessionManager.iniciarSesion(nuevo)
 
-        val resultado = viewModel.publicarAvisoDePrueba()
-
-        assertTrue(resultado)
-        val sizeDespues = repository.notificaciones.value.size
-        assertEquals(sizeAntes + clientesCount, sizeDespues)
+        assertTrue(repository.obtenerPorUsuario("u_nuevo").any { it.titulo == "Aviso Masivo" })
+        assertTrue(repository.obtenerPorUsuario("u01").none { it.titulo == "Aviso Masivo" })
         collectJob.cancel()
     }
 }

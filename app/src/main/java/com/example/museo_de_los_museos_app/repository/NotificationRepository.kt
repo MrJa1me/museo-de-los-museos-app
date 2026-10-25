@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import com.example.museo_de_los_museos_app.model.Rol
+import com.example.museo_de_los_museos_app.model.User
 
 
 interface NotificationRepository {
@@ -13,6 +15,8 @@ interface NotificationRepository {
     fun obtenerPorUsuario(userId: String): List<NotificationItem>
     fun marcarComoLeida(id: String)
     fun agregarAviso(item: NotificationItem)
+    fun publicarParaRol(rol: Rol, aviso: NotificationItem)
+    fun entregarAvisosDeRol(usuario: User)
 }
 
 /** Implementación en memoria pre-poblada con avisos de prueba por usuario. */
@@ -67,6 +71,22 @@ class InMemoryNotificationRepository : NotificationRepository {
             ),
         )
     )
+    private val avisosPorRol = MutableStateFlow<List<Pair<Rol, NotificationItem>>>(emptyList())
+
+    override fun publicarParaRol(rol: Rol, aviso: NotificationItem) {
+        avisosPorRol.update { it + (rol to aviso) }
+    }
+
+    override fun entregarAvisosDeRol(usuario: User) {
+        val pendientes = avisosPorRol.value
+            .filter { (rol, _) -> rol == usuario.rol }
+            .map { (_, a) -> a.copy(id = "${a.id}_${usuario.id}", userId = usuario.id, leida = false) }
+        if (pendientes.isEmpty()) return
+        _notificaciones.update { actual ->
+            val ids = actual.mapTo(HashSet()) { it.id }
+            pendientes.filter { it.id !in ids } + actual
+        }
+    }
 
     override val notificaciones: StateFlow<List<NotificationItem>> = _notificaciones.asStateFlow()
 

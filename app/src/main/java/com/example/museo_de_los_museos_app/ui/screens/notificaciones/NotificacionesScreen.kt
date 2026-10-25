@@ -76,8 +76,9 @@ import com.example.museo_de_los_museos_app.viewmodel.notificaciones.Notificacion
 import com.example.museo_de_los_museos_app.viewmodel.notificaciones.OpcionDestinatario
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 import com.example.museo_de_los_museos_app.navigation.navegarDesdeAviso
+import com.example.museo_de_los_museos_app.viewmodel.notificaciones.OpcionRutaAviso
+import androidx.compose.ui.platform.LocalLocale
 
 /**
  * Pantalla adaptativa de Notificaciones y Avisos de la app (P2).
@@ -320,7 +321,7 @@ private fun TarjetaNotificacion(
     onMarcarLeida: () -> Unit,
     onNavegarRuta: (String) -> Unit,
 ) {
-    val fechaFormateada = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date(item.fechaMillis))
+    val fechaFormateada = SimpleDateFormat("dd/MM/yyyy HH:mm", LocalLocale.current.platformLocale).format(Date(item.fechaMillis))
 
     // Tarea 2: Transición de color animada al marcar como leída
     val colorFondoAnimado by animateColorAsState(
@@ -443,7 +444,7 @@ private fun DetalleNotificacionPanel(
                 )
             }
         } else {
-            val fechaFormateada = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date(item.fechaMillis))
+            val fechaFormateada = SimpleDateFormat("dd/MM/yyyy HH:mm", LocalLocale.current.platformLocale).format(Date(item.fechaMillis))
 
             Column(
                 modifier = Modifier
@@ -520,6 +521,7 @@ private fun DialogoCrearAviso(
     onConfirmar: () -> Unit,
 ) {
     var expandedDropdown by remember { mutableStateOf(false) }
+    var expandedRuta by remember { mutableStateOf(false) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -610,14 +612,35 @@ private fun DialogoCrearAviso(
                     modifier = Modifier.fillMaxWidth(),
                 )
 
-                OutlinedTextField(
-                    value = uiState.nuevaRuta,
-                    onValueChange = onRutaChange,
-                    label = { Text(stringResource(R.string.notif_campo_ruta)) },
-                    singleLine = true,
-                    placeholder = { Text("ej. catalogo, mapa, historial") },
-                    modifier = Modifier.fillMaxWidth(),
-                )
+                ExposedDropdownMenuBox(
+                    expanded = expandedRuta,
+                    onExpandedChange = { expandedRuta = !expandedRuta },
+                ) {
+                    OutlinedTextField(
+                        value = stringResource(OpcionRutaAviso.desdeRuta(uiState.nuevaRuta).labelRes),
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text(stringResource(R.string.notif_campo_ruta)) },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedRuta) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
+                    )
+                    ExposedDropdownMenu(
+                        expanded = expandedRuta,
+                        onDismissRequest = { expandedRuta = false },
+                    ) {
+                        OpcionRutaAviso.entries.forEach { opcion ->
+                            DropdownMenuItem(
+                                text = { Text(stringResource(opcion.labelRes)) },
+                                onClick = {
+                                    onRutaChange(opcion.ruta ?: "")
+                                    expandedRuta = false
+                                },
+                            )
+                        }
+                    }
+                }
             }
         },
         confirmButton = {

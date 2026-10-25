@@ -18,13 +18,6 @@
     <string name="bienvenida_btn_comenzar">Iniciar sesión / Comenzar</string>
     <string name="bienvenida_btn_registro">Crear una cuenta</string>
     <string name="bienvenida_btn_invitado">Explorar como invitado</string>
-    <string name="bienvenida_seccion_accesos">Accesos directos</string>
-    <string name="bienvenida_acceso_catalogo_titulo">Catálogo y Cursos</string>
-    <string name="bienvenida_acceso_catalogo_desc">Descubre publicaciones, materiales y cursos de capacitación</string>
-    <string name="bienvenida_acceso_mapa_titulo">Mapa de Museos Virtuales</string>
-    <string name="bienvenida_acceso_mapa_desc">Recorre de forma interactiva los museos de Iberoamérica</string>
-    <string name="bienvenida_acceso_dashboard_titulo">Panel de Inicio</string>
-    <string name="bienvenida_acceso_dashboard_desc">Accede al contenido destacado y novedades del museo</string>
 
     <!-- Pantalla de Dashboard / Inicio (P2) -->
     <string name="dashboard_saludo_hola">¡Hola, %1$s!</string>
@@ -39,6 +32,7 @@
     <string name="dashboard_investigador_titulo">Panel de Investigación</string>
     <string name="dashboard_investigador_fichas">Registros y fichas de Iberoamérica</string>
     <string name="dashboard_btn_ver_todos">Ver todos</string>
+    <string name="dashboard_btn_ver_menos">Ver menos</string>
     <string name="dashboard_btn_escaner">Escáner QR</string>
     <string name="dashboard_btn_favoritos">Favoritos</string>
     <string name="dashboard_btn_carrito">Carrito</string>
@@ -78,6 +72,11 @@
     <string name="notif_error_mensaje_vacio">El mensaje no puede estar vacío</string>
     <string name="notif_detalle_titulo">Detalle de Notificación</string>
     <string name="notif_seleccionar_indicacion">Selecciona una notificación para ver su detalle completo.</string>
+    <string name="notif_ruta_ninguna">Sin ruta</string>
+    <string name="notif_ruta_favoritos">Favoritos</string>
+    <string name="notif_ruta_carrito">Carrito</string>
+    <string name="notif_ruta_historial">Historial</string>
+    <string name="notif_ruta_qr">Escáner QR</string>
 
     <string name="pantalla_mapa">Mapa de museos virtuales</string>
     <string name="pantalla_detalle_museo">Detalle del museo</string>
@@ -121,4 +120,6 @@
     <string name="error_telefono_invalido">Ingresa un teléfono de 8 a 15 dígitos</string>
     <string name="error_region_invalida">Selecciona una región de Chile</string>
     <string name="error_pais_no_disponible">No hay envíos a ese país</string>
+
+    <string name="museos_pendiente">Pendiente de aprobación</string>
 </resources>

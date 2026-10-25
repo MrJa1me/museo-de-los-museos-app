@@ -13,7 +13,8 @@ data class FormularioFicha(
     val longitud: String = "",
     val clasificacion: ClasificacionMuseo = ClasificacionMuseo.ARTE,
     val descripcion: String = "",
-    val enlace: String = ""
+    val enlace: String = "",
+    val imagen: String = ""
 )
 
 data class ErroresFicha(

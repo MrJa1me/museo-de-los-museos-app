@@ -30,7 +30,9 @@ object DashboardEvaluator {
             usuario = usuario,
             rol = rolActivo,
             museosDestacados = museosVisibles.filter { it.publicado }.take(4),
-            museosPendientes = if (rolActivo == Rol.ADMINISTRADOR) listaMuseos.filter { !it.publicado } else emptyList(),
+            museosPendientes = if (rolActivo == Rol.ADMINISTRADOR || rolActivo == Rol.INVESTIGADOR)
+                listaMuseos.filter { !it.publicado } else emptyList(),
+            museosTodos = museosVisibles.sortedBy { it.nombre },
             cursosDestacados = cursos.take(3),
             productosDestacados = productosFisicos.take(4),
             totalMuseos = museosVisibles.size,

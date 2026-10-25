@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import android.net.Uri
 
 /**
  * Detalle del museo (P3): favorito por usuario, enlace al recorrido virtual y,
@@ -105,7 +106,8 @@ class DetalleMuseoViewModel(
                     longitud = museo.longitud.toString(),
                     clasificacion = museo.clasificacion,
                     descripcion = museo.descripcion,
-                    enlace = museo.enlace
+                    enlace = museo.enlace,
+                    imagen = museo.imagen
                 )
             )
         }
@@ -123,6 +125,9 @@ class DetalleMuseoViewModel(
     fun onClasificacionChange(valor: ClasificacionMuseo) = actualizarFormulario { copy(clasificacion = valor) }
     fun onDescripcionChange(valor: String) = actualizarFormulario { copy(descripcion = valor) }
     fun onEnlaceChange(valor: String) = actualizarFormulario { copy(enlace = valor) }
+    fun onImagenElegida(uri: Uri?) {
+        if (uri != null) actualizarFormulario { copy(imagen = uri.toString()) }
+    }
 
     private fun actualizarFormulario(cambio: FormularioFicha.() -> FormularioFicha) {
         _uiState.update { actual ->
@@ -168,11 +173,12 @@ class DetalleMuseoViewModel(
                 longitud = ValidadorFichaMuseo.convertirDecimal(formulario.longitud) ?: 0.0,
                 clasificacion = formulario.clasificacion,
                 descripcion = formulario.descripcion.trim(),
-                enlace = formulario.enlace.trim()
+                enlace = formulario.enlace.trim(),
+                imagen = formulario.imagen
             )
-            // Al editar se conservan imagen y estado de publicación; una ficha nueva queda pendiente de aprobación
+            // Al editar se conserva el proyecto y el estado de publicación; una ficha nueva queda pendiente
             museos.guardar(
-                actual.museo?.let { nuevo.copy(proyecto = it.proyecto, imagen = it.imagen, publicado = it.publicado) } ?: nuevo
+                actual.museo?.let { nuevo.copy(proyecto = it.proyecto, publicado = it.publicado) } ?: nuevo
             )
 
             _uiState.update {

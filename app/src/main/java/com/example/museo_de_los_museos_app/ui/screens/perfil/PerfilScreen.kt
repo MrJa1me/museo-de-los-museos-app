@@ -80,6 +80,8 @@ fun PerfilScreen(
             navController.navigate(Routes.Bienvenida.route) {
                 popUpTo(navController.graph.id) { inclusive = true }
             }
+            listOf(Routes.Dashboard, Routes.Mapa, Routes.Catalogo, Routes.Notificaciones, Routes.Perfil)
+                .forEach { navController.clearBackStack(it.route) }
         }
     }
 

@@ -22,11 +22,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.museo_de_los_museos_app.ui.utils.idImagenMuseo
+import android.graphics.Bitmap
+import android.net.Uri
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.asImageBitmap
+import com.example.museo_de_los_museos_app.ui.utils.cargarImagenReducida
+import com.example.museo_de_los_museos_app.ui.utils.esImagenDeArchivo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
-/**
- * Imagen del museo desde res/drawable. Si el archivo no existe (o la ficha no tiene imagen),
- * muestra un fondo con el ícono de museo en vez de cerrar la app.
- */
+/** Imagen del museo desde res/drawable. */
 @Composable
 private fun ImagenMuseoBase(
     imagen: String,
@@ -36,17 +44,31 @@ private fun ImagenMuseoBase(
     tamanoIcono: Dp
 ) {
     val context = LocalContext.current
-    val idRecurso = remember(imagen) { context.idImagenMuseo(imagen) }
-
-    if (idRecurso != 0) {
-        Image(
+    val idRecurso = remember(imagen) { if (esImagenDeArchivo(imagen)) 0 else context.idImagenMuseo(imagen) }
+    // Foto subida: se lee reducida y fuera del hilo principal
+    var foto by remember(imagen) { mutableStateOf<Bitmap?>(null) }
+    LaunchedEffect(imagen) {
+        if (esImagenDeArchivo(imagen)) {
+            foto = withContext(Dispatchers.IO) {
+                context.cargarImagenReducida(Uri.parse(imagen), ladoMaximo = 1024)
+            }
+        }
+    }
+    val bitmap = foto
+    when {
+        idRecurso != 0 -> Image(
             painter = painterResource(idRecurso),
             contentDescription = descripcion,
             contentScale = contentScale,
             modifier = modifier
         )
-    } else {
-        Box(
+        bitmap != null -> Image(
+            bitmap = bitmap.asImageBitmap(),
+            contentDescription = descripcion,
+            contentScale = contentScale,
+            modifier = modifier
+        )
+        else -> Box(
             modifier = modifier.background(MaterialTheme.colorScheme.primaryContainer),
             contentAlignment = Alignment.Center
         ) {
@@ -60,16 +82,14 @@ private fun ImagenMuseoBase(
     }
 }
 
-/** Imagen completa a todo el ancho, para el encabezado del Detalle del museo. */
+
 @Composable
 fun ImagenMuseoEncabezado(imagen: String, descripcion: String, modifier: Modifier = Modifier) {
     val context = LocalContext.current
-    val existe = remember(imagen) { context.idImagenMuseo(imagen) != 0 }
+    val existe = remember(imagen) { esImagenDeArchivo(imagen) || context.idImagenMuseo(imagen) != 0 }
     ImagenMuseoBase(
         imagen = imagen,
         descripcion = descripcion,
-        // FillWidth muestra la foto entera (sin recortes) respetando su proporción;
-        // sin foto, el recuadro genérico necesita un alto fijo
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
@@ -88,5 +108,17 @@ fun ImagenMuseoMiniatura(imagen: String, descripcion: String, modifier: Modifier
         modifier = modifier.size(tamano).clip(RoundedCornerShape(12.dp)),
         contentScale = ContentScale.Crop,
         tamanoIcono = tamano / 2
+    )
+}
+
+/** Imagen ancha recortada con alto fijo, para tarjetas (Inicio). */
+@Composable
+fun ImagenMuseoBanner(imagen: String, descripcion: String, modifier: Modifier = Modifier, alto: Dp = 120.dp) {
+    ImagenMuseoBase(
+        imagen = imagen,
+        descripcion = descripcion,
+        modifier = modifier.fillMaxWidth().height(alto),
+        contentScale = ContentScale.Crop,
+        tamanoIcono = 40.dp
     )
 }

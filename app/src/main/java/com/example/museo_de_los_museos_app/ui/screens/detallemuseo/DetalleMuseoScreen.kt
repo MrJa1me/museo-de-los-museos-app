@@ -85,6 +85,15 @@ import com.example.museo_de_los_museos_app.viewmodel.detallemuseo.DetalleMuseoVi
 import com.example.museo_de_los_museos_app.viewmodel.detallemuseo.MensajeDetalle
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.material.icons.filled.AddPhotoAlternate
+import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.ui.platform.LocalContext
+import com.example.museo_de_los_museos_app.ui.components.ImagenMuseoMiniatura
+import com.example.museo_de_los_museos_app.ui.utils.copiarImagenMuseo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 private val ROJO_FAVORITO = Color(0xFFD32F2F)
 
@@ -268,6 +277,13 @@ private fun VistaMuseo(
                     }
                 }
                 AssistChip(onClick = {}, label = { Text(museo.clasificacion.etiqueta) })
+                if (!museo.publicado) {
+                    AssistChip(
+                        onClick = {},
+                        label = { Text(stringResource(R.string.museos_pendiente)) },
+                        leadingIcon = { Icon(Icons.Filled.Schedule, contentDescription = null) }
+                    )
+                }
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Filled.Place, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                     Text(stringResource(R.string.detalle_ubicacion, museo.ciudad, museo.pais))
@@ -309,8 +325,33 @@ private fun FormularioFichaMuseo(estado: DetalleMuseoUiState, viewModel: Detalle
     val formulario = estado.formulario
     val errores = estado.errores
     val mostrarValido = estado.intentoEnvio
+    val context = LocalContext.current
+    val alcance = rememberCoroutineScope()
+    val lanzadorGaleria = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        alcance.launch {
+            val copia = withContext(Dispatchers.IO) { context.copiarImagenMuseo(uri) }
+            viewModel.onImagenElegida(copia)
+        }
+    }
 
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            ImagenMuseoMiniatura(imagen = formulario.imagen, descripcion = formulario.nombre, tamano = 96.dp)
+            Spacer(modifier = Modifier.size(12.dp))
+            OutlinedButton(onClick = { lanzadorGaleria.launch("image/*") }) {
+                Icon(Icons.Filled.AddPhotoAlternate, contentDescription = null)
+                Spacer(modifier = Modifier.size(8.dp))
+                Text(
+                    stringResource(
+                        if (formulario.imagen.isEmpty()) R.string.ficha_imagen_elegir else R.string.ficha_imagen_cambiar
+                    )
+                )
+            }
+        }
         CampoTextoValidado(
             valor = formulario.nombre,
             alCambiar = viewModel::onNombreChange,

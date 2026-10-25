@@ -84,3 +84,20 @@ fun Context.idImagenMuseo(nombre: String): Int {
     if (limpio.isEmpty()) return 0
     return resources.getIdentifier(limpio, "drawable", packageName)
 }
+
+
+fun esImagenDeArchivo(valor: String): Boolean =
+    valor.startsWith("file:") || valor.startsWith("content:")
+
+/** Copia la foto del museo elegida en la galería a la carpeta privada "museos/" */
+fun Context.copiarImagenMuseo(uri: Uri): Uri? = try {
+    val carpeta = File(filesDir, "museos")
+    carpeta.mkdirs()
+    val destino = File(carpeta, "museo_${System.currentTimeMillis()}.jpg")
+    contentResolver.openInputStream(uri)?.use { entrada ->
+        destino.outputStream().use { salida -> entrada.copyTo(salida) }
+    }
+    Uri.fromFile(destino)
+} catch (e: Exception) {
+    null
+}
