@@ -77,6 +77,7 @@ import com.example.museo_de_los_museos_app.viewmodel.notificaciones.OpcionDestin
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import com.example.museo_de_los_museos_app.navigation.navegarDesdeAviso
 
 /**
  * Pantalla adaptativa de Notificaciones y Avisos de la app (P2).
@@ -178,7 +179,7 @@ fun NotificacionesScreen(
                         uiState = uiState,
                         onSeleccionar = viewModel::seleccionarNotificacion,
                         onMarcarLeida = viewModel::marcarComoLeida,
-                        onNavegarRuta = { navController.navigate(it) },
+                        onNavegarRuta = { navController.navegarDesdeAviso(it) },
                     )
                 }
 
@@ -193,7 +194,7 @@ fun NotificacionesScreen(
                         onMarcarLeida = {
                             uiState.notificacionSeleccionada?.id?.let { viewModel.marcarComoLeida(it) }
                         },
-                        onNavegarRuta = { navController.navigate(it) },
+                        onNavegarRuta = { navController.navegarDesdeAviso(it) },
                     )
                 }
             }
@@ -210,7 +211,7 @@ fun NotificacionesScreen(
                     uiState = uiState,
                     onSeleccionar = viewModel::seleccionarNotificacion,
                     onMarcarLeida = viewModel::marcarComoLeida,
-                    onNavegarRuta = { navController.navigate(it) },
+                    onNavegarRuta = { navController.navegarDesdeAviso(it) },
                 )
             }
         }

@@ -173,11 +173,21 @@ private fun ContenidoCarrito(estado: CarritoUiState, viewModel: CarritoViewModel
         items(estado.lineas, key = { it.producto.id }) { linea ->
             TarjetaLinea(
                 linea = linea,
+                disponible = linea.producto.activo,
                 alSumar = { viewModel.incrementar(linea.producto.id) },
                 alRestar = { viewModel.decrementar(linea.producto.id) },
                 alEliminar = { viewModel.eliminar(linea.producto.id) },
                 modifier = Modifier.animateItem()
             )
+        }
+
+        if (estado.hayNoDisponibles) {
+            item {
+                BannerMensaje(
+                    texto = stringResource(R.string.carrito_hay_no_disponibles),
+                    esError = true
+                )
+            }
         }
 
         item {
@@ -195,7 +205,7 @@ private fun ContenidoCarrito(estado: CarritoUiState, viewModel: CarritoViewModel
 
         if (estado.requiereEnvio) {
             item { FormularioEnvio(estado = estado, viewModel = viewModel) }
-        } else {
+        } else if (estado.lineasDisponibles.isNotEmpty()) {
             item {
                 Text(
                     stringResource(R.string.carrito_solo_cursos),
@@ -211,7 +221,8 @@ private fun ContenidoCarrito(estado: CarritoUiState, viewModel: CarritoViewModel
             BotonPrincipal(
                 texto = stringResource(R.string.carrito_confirmar),
                 alHacerClick = viewModel::solicitarConfirmacion,
-                cargando = estado.confirmando
+                cargando = estado.confirmando,
+                habilitado = !estado.hayNoDisponibles
             )
         }
     }
@@ -220,6 +231,7 @@ private fun ContenidoCarrito(estado: CarritoUiState, viewModel: CarritoViewModel
 @Composable
 private fun TarjetaLinea(
     linea: LineaCarrito,
+    disponible: Boolean,
     alSumar: () -> Unit,
     alRestar: () -> Unit,
     alEliminar: () -> Unit,
@@ -240,19 +252,27 @@ private fun TarjetaLinea(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                Text(
-                    formatearPrecio(linea.producto.precio * linea.cantidad),
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.primary
-                )
+                if (disponible) {
+                    Text(
+                        formatearPrecio(linea.producto.precio * linea.cantidad),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                } else {
+                    Text(
+                        stringResource(R.string.catalogo_no_disponible),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
             }
-            IconButton(onClick = alRestar) {
+            IconButton(onClick = alRestar, enabled = disponible) {
                 Icon(Icons.Filled.Remove, contentDescription = stringResource(R.string.detalle_quitar_uno))
             }
             AnimatedContent(targetState = linea.cantidad, transitionSpec = { fadeIn() togetherWith fadeOut() }, label = "cantidad") {
                 Text(it.toString(), style = MaterialTheme.typography.titleMedium)
             }
-            IconButton(onClick = alSumar) {
+            IconButton(onClick = alSumar, enabled = disponible) {
                 Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.detalle_agregar_uno))
             }
             IconButton(onClick = alEliminar) {

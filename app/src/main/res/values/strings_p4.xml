@@ -29,6 +29,7 @@
     <string name="carrito_precio_unitario">%1$s c/u</string>
     <string name="carrito_eliminar">Quitar del carrito</string>
     <string name="carrito_sin_stock">No hay stock suficiente de \"%1$s\"</string>
+    <string name="carrito_hay_no_disponibles">Hay productos que ya no están disponibles. Quítalos del carrito para confirmar.</string>
     <string name="carrito_solo_cursos">Tu carrito solo tiene cursos: no requiere envío.</string>
     <string name="carrito_destino_titulo">Destino del envío</string>
     <string name="carrito_nacional">Nacional</string>
