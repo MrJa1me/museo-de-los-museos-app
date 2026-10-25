@@ -13,6 +13,8 @@ data class DetalleProductoUiState(
     /** Unidades de este producto que el usuario ya tiene en su carrito. */
     val enCarrito: Int = 0,
     val haySesion: Boolean = false,
+    /** El Administrador ve los botones Editar y Desactivar/Activar en lugar de la compra. */
+    val esAdministrador: Boolean = false,
     val agregando: Boolean = false,
     val mensaje: MensajeDetalleProducto? = null
 ) {
@@ -22,5 +24,7 @@ data class DetalleProductoUiState(
 /** Mensaje de retroalimentación que se muestra con animación bajo los botones. */
 enum class MensajeDetalleProducto {
     AGREGADO_AL_CARRITO,
-    INFORMACION_SOLICITADA
+    INFORMACION_SOLICITADA,
+    PRODUCTO_ACTIVADO,
+    PRODUCTO_DESACTIVADO
 }

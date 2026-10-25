@@ -88,4 +88,12 @@
     <string name="formulario_peso">Peso (kg)</string>
     <string name="formulario_crear">Crear producto</string>
     <string name="formulario_guardar_cambios">Guardar cambios</string>
+    <string name="detalle_admin_titulo">Administración del producto</string>
+    <string name="detalle_admin_visible">Visible para los clientes en el catálogo</string>
+    <string name="detalle_admin_oculto">Desactivado: oculto para los clientes</string>
+    <string name="detalle_admin_editar">Editar</string>
+    <string name="detalle_admin_desactivar">Desactivar</string>
+    <string name="detalle_admin_activar">Activar</string>
+    <string name="detalle_admin_activado">Producto activado: ya lo ven los clientes</string>
+    <string name="detalle_admin_desactivado">Producto desactivado: ya no lo ven los clientes</string>
 </resources>

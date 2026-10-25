@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.museo_de_los_museos_app.domain.Validadores
 import com.example.museo_de_los_museos_app.model.NotificationItem
+import com.example.museo_de_los_museos_app.model.Rol
 import com.example.museo_de_los_museos_app.navigation.Routes
 import com.example.museo_de_los_museos_app.repository.CartRepository
 import com.example.museo_de_los_museos_app.repository.NotificationRepository
@@ -37,6 +38,14 @@ class DetalleProductoViewModel(
     val uiState: StateFlow<DetalleProductoUiState> = _uiState.asStateFlow()
 
     private var productoId: String? = null
+
+    init {
+        viewModelScope.launch {
+            SessionManager.usuarioActual.collect { usuario ->
+                _uiState.update { it.copy(esAdministrador = usuario?.rol == Rol.ADMINISTRADOR) }
+            }
+        }
+    }
 
     /** La pantalla lo llama con el id de la ruta. Si ya se cargó ese id, no hace nada (ej. al girar el teléfono). */
     fun cargar(id: String) {
@@ -121,6 +130,21 @@ class DetalleProductoViewModel(
             )
         )
         _uiState.update { it.copy(mensaje = MensajeDetalleProducto.INFORMACION_SOLICITADA) }
+    }
+
+    /**
+     * Solo Administrador: desactivar no borra el producto, lo esconde para los Clientes
+     * (el Catálogo filtra por activo). Activar lo vuelve a mostrar.
+     */
+    fun alternarActivo() {
+        val estado = _uiState.value
+        if (!estado.esAdministrador) return
+        val producto = estado.producto ?: return
+        val activo = !producto.activo
+        productos.guardar(producto.copy(activo = activo))
+        _uiState.update {
+            it.copy(mensaje = if (activo) MensajeDetalleProducto.PRODUCTO_ACTIVADO else MensajeDetalleProducto.PRODUCTO_DESACTIVADO)
+        }
     }
 
     fun onMensajeMostrado() {
