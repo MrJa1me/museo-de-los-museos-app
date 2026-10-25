@@ -121,12 +121,17 @@ class CarritoViewModel(
     private fun recalcular() {
         _uiState.update { estado ->
             val destino = destinoDe(estado.formulario)
+            val lineas = estado.lineasDisponibles
             val resultado = when {
-                estado.vacio -> null
-                // Solo cursos: no importa el destino, no hay envío
-                !estado.requiereEnvio -> CalculadoraEnvio.calcular(estado.lineas, Destino.Nacional(estado.formulario.region), ModalidadEnvio.ESTANDAR)
+                lineas.isEmpty() -> null
+                !estado.requiereEnvio -> CalculadoraEnvio.calcular(
+                    lineas,
+                    Destino.Nacional(estado.formulario.region),
+                    ModalidadEnvio.ESTANDAR
+                )
+
                 destino == null -> null
-                else -> CalculadoraEnvio.calcular(estado.lineas, destino, estado.formulario.modalidad)
+                else -> CalculadoraEnvio.calcular(lineas, destino, estado.formulario.modalidad)
             }
             estado.copy(resultado = resultado)
         }
@@ -138,12 +143,12 @@ class CarritoViewModel(
     fun solicitarConfirmacion() {
         val estado = _uiState.value
         val errores = if (estado.requiereEnvio) validarFormulario(estado.formulario) else ErroresDestino()
-        val sinStock = estado.lineas.firstOrNull { Validadores.validarCantidad(it.cantidad.toString(), it.producto) != null }
+        val sinStock = estado.lineasDisponibles.firstOrNull { Validadores.validarCantidad(it.cantidad.toString(), it.producto) != null }
         _uiState.update {
             it.copy(
                 errores = errores,
                 productoSinStock = sinStock?.producto?.nombre,
-                mostrandoConfirmacion = !errores.hayErrores && sinStock == null && it.resultado != null
+                mostrandoConfirmacion = !errores.hayErrores && sinStock == null && !it.hayNoDisponibles && it.resultado != null
             )
         }
     }
@@ -157,6 +162,10 @@ class CarritoViewModel(
         val estado = _uiState.value
         val userId = SessionManager.userId ?: return
         val resultado = estado.resultado ?: return
+        if (estado.hayNoDisponibles) {
+            _uiState.update { it.copy(mostrandoConfirmacion = false) }
+            return
+        }
         _uiState.update { it.copy(mostrandoConfirmacion = false, confirmando = true) }
 
         val pedido = Order(

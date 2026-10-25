@@ -143,15 +143,7 @@ private fun BarraInferior(navController: NavHostController, rutaActual: String) 
         destinosBarra.forEach { destino ->
             NavigationBarItem(
                 selected = rutaActual == destino.ruta,
-                onClick = {
-                    if (rutaActual != destino.ruta) {
-                        navController.navigate(destino.ruta) {
-                            popUpTo(Routes.Dashboard.route) { saveState = true }
-                            launchSingleTop = true
-                            restoreState = (destino.ruta != Routes.Dashboard.route)
-                        }
-                    }
-                },
+                onClick = { navController.navegarATab(destino.ruta) },
                 icon = { Icon(imageVector = destino.icono, contentDescription = null) },
                 label = { Text(stringResource(destino.etiqueta)) }
             )

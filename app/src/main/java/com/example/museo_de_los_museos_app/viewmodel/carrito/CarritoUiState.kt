@@ -40,17 +40,15 @@ data class CarritoUiState(
     val lineas: List<LineaCarrito> = emptyList(),
     val formulario: FormularioDestino = FormularioDestino(),
     val errores: ErroresDestino = ErroresDestino(),
-    /** Costo de envío y total. Es null si el destino aún no está completo (ej. país sin elegir). */
     val resultado: ResultadoEnvio? = null,
-    /** Nombre del producto que no tiene stock suficiente (para el aviso), o null. */
     val productoSinStock: String? = null,
-    /** true mientras se muestra el diálogo con el total final antes de confirmar. */
     val mostrandoConfirmacion: Boolean = false,
     val confirmando: Boolean = false,
-    /** Id de la solicitud creada; cuando no es null se muestra la pantalla de éxito. */
     val pedidoConfirmado: String? = null
 ) {
     val vacio: Boolean get() = lineas.isEmpty()
-    val requiereEnvio: Boolean get() = lineas.any { it.producto.requiereEnvio }
-    val subtotal: Int get() = CalculadoraEnvio.calcularSubtotal(lineas)
+    val lineasDisponibles: List<LineaCarrito> get() = lineas.filter { it.producto.activo }
+    val hayNoDisponibles: Boolean get() = lineas.any { !it.producto.activo }
+    val requiereEnvio: Boolean get() = lineasDisponibles.any { it.producto.requiereEnvio }
+    val subtotal: Int get() = CalculadoraEnvio.calcularSubtotal(lineasDisponibles)
 }
