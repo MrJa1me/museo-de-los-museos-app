@@ -73,6 +73,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/** El historial se sigue guardando en SQLite, pero no se muestra. */
+private const val MOSTRAR_HISTORIAL_QR = false
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EscanerQrScreen(
@@ -115,7 +118,7 @@ fun EscanerQrScreen(
         }
     }
 
-    // Ícono QR que "respira" para invitar a escanear
+    // Ícono QR
     val pulso = rememberInfiniteTransition(label = "pulsoQr")
     val escala by pulso.animateFloat(
         initialValue = 0.92f,
@@ -191,25 +194,27 @@ fun EscanerQrScreen(
                 }
             }
 
-            item {
-                HorizontalDivider()
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(stringResource(R.string.escaner_historial), style = MaterialTheme.typography.titleMedium)
-            }
+            if (MOSTRAR_HISTORIAL_QR) {
+                item {
+                    HorizontalDivider()
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(stringResource(R.string.escaner_historial), style = MaterialTheme.typography.titleMedium)
+                }
 
-            when {
-                !estado.haySesion -> item {
-                    Text(stringResource(R.string.escaner_historial_sin_sesion), color = MaterialTheme.colorScheme.onSurfaceVariant)
-                }
-                estado.historial.isEmpty() -> item {
-                    Text(stringResource(R.string.escaner_historial_vacio), color = MaterialTheme.colorScheme.onSurfaceVariant)
-                }
-                else -> items(estado.historial, key = { it.contenido }) { escaneo ->
-                    ElementoHistorial(
-                        escaneo = escaneo,
-                        alTocar = { viewModel.onHistorialSeleccionado(escaneo) },
-                        modifier = Modifier.animateItem()
-                    )
+                when {
+                    !estado.haySesion -> item {
+                        Text(stringResource(R.string.escaner_historial_sin_sesion), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    estado.historial.isEmpty() -> item {
+                        Text(stringResource(R.string.escaner_historial_vacio), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    else -> items(estado.historial, key = { it.contenido }) { escaneo ->
+                        ElementoHistorial(
+                            escaneo = escaneo,
+                            alTocar = { viewModel.onHistorialSeleccionado(escaneo) },
+                            modifier = Modifier.animateItem()
+                        )
+                    }
                 }
             }
         }
