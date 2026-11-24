@@ -92,6 +92,9 @@ import com.example.museo_de_los_museos_app.ui.utils.texto
 import com.example.museo_de_los_museos_app.viewmodel.carrito.CarritoUiState
 import com.example.museo_de_los_museos_app.viewmodel.carrito.CarritoViewModel
 import com.example.museo_de_los_museos_app.viewmodel.carrito.TipoEnvio
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.LaunchedEffect
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -100,8 +103,19 @@ fun CarritoScreen(
     viewModel: CarritoViewModel = viewModel()
 ) {
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbar = remember { SnackbarHostState() }
+
+    // Si el microservicio de pedidos no responde, el carrito queda igual y se explica por qué
+    val textoError = estado.errorRemoto?.texto()
+    LaunchedEffect(textoError) {
+        if (textoError != null) {
+            snackbar.showSnackbar(textoError)
+            viewModel.onErrorMostrado()
+        }
+    }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbar) },
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.pantalla_carrito)) },

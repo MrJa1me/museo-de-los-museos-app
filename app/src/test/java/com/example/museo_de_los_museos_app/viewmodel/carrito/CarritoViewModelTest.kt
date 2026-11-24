@@ -2,7 +2,10 @@ package com.example.museo_de_los_museos_app.viewmodel.carrito
 
 import com.example.museo_de_los_museos_app.domain.ErrorValidacion
 import com.example.museo_de_los_museos_app.domain.ModalidadEnvio
+import com.example.museo_de_los_museos_app.fakes.PedidosConFallo
 import com.example.museo_de_los_museos_app.model.Rol
+import com.example.museo_de_los_museos_app.remote.ErrorRemoto
+import com.example.museo_de_los_museos_app.remote.TipoErrorRemoto
 import com.example.museo_de_los_museos_app.repository.InMemoryCartRepository
 import com.example.museo_de_los_museos_app.repository.InMemoryOrderRepository
 import com.example.museo_de_los_museos_app.repository.InMemoryProductRepository
@@ -95,5 +98,27 @@ class CarritoViewModelTest {
         assertEquals(28500, pedido.total)
         assertTrue(carrito.observar(cliente.id).first().isEmpty())
         assertEquals(14, productos.obtenerPorId("m02k")?.stock) // tenía 15
+    }
+
+    @Test
+    fun confirmar_sinServidorDePedidos_noVaciaElCarritoNiDescuentaStock() = runTest {
+        val pedidosCaidos = PedidosConFallo().apply {
+            falla = ErrorRemoto(TipoErrorRemoto.SIN_CONEXION)
+        }
+        val vm = CarritoViewModel(productos, carrito, pedidosCaidos)
+        vm.onNombreChange("Ana Pérez")
+        vm.onDireccionChange("Av. Siempre Viva 742")
+        vm.onCiudadChange("Concepción")
+        vm.onTelefonoChange("+56 9 1234 5678")
+        vm.solicitarConfirmacion()
+
+        vm.confirmarPedido()
+
+        assertEquals(TipoErrorRemoto.SIN_CONEXION, vm.uiState.value.errorRemoto?.tipo)
+        assertNull(vm.uiState.value.pedidoConfirmado)
+        assertFalse(carrito.observar(cliente.id).first().isEmpty())
+        assertEquals(15, productos.obtenerPorId("m02k")?.stock)
+        vm.onErrorMostrado()
+        assertNull(vm.uiState.value.errorRemoto)
     }
 }

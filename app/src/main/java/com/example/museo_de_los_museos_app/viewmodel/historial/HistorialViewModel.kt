@@ -8,6 +8,7 @@ import com.example.museo_de_los_museos_app.model.Order
 import com.example.museo_de_los_museos_app.model.Rol
 import com.example.museo_de_los_museos_app.model.User
 import com.example.museo_de_los_museos_app.navigation.Routes
+import com.example.museo_de_los_museos_app.remote.aErrorRemoto
 import com.example.museo_de_los_museos_app.repository.NotificationRepository
 import com.example.museo_de_los_museos_app.repository.OrderRepository
 import com.example.museo_de_los_museos_app.repository.Repositorios
@@ -55,6 +56,9 @@ class HistorialViewModel(
             }
         }
         viewModelScope.launch {
+            pedidos.conexion.collect { conexion -> _uiState.update { it.copy(conexion = conexion) } }
+        }
+        viewModelScope.launch {
             val nombres = runCatching { cargarUsuarios() }.getOrDefault(emptyList()).associate { it.id to it.nombre }
             _uiState.update { it.copy(nombresClientes = nombres) }
         }
@@ -65,23 +69,65 @@ class HistorialViewModel(
         filtro.update { actual -> if (actual == estado) null else estado }
     }
 
-    /** Solo Administrador: pasa la solicitud al siguiente estado y avisa al cliente. */
+    /** Solo Administrador: pasa la solicitud al siguiente estado (PATCH en ms-pedidos) y avisa al cliente. */
     fun avanzarEstado(pedidoId: String) {
         if (!_uiState.value.esAdministrador) return
         val pedido = pedidos.pedidos.value.firstOrNull { it.id == pedidoId } ?: return
         val nuevo = pedido.estado.siguiente() ?: return
 
-        pedidos.cambiarEstado(pedidoId, nuevo)
-        notificaciones.agregarAviso(
-            NotificationItem(
-                id = "estado_${pedidoId}_${System.currentTimeMillis()}",
-                userId = pedido.userId,
-                titulo = "Tu solicitud cambió a ${nuevo.etiqueta}",
-                mensaje = "Tu solicitud #${codigoCorto(pedidoId)} cambió al estado ${nuevo.etiqueta.uppercase()}.",
-                ruta = Routes.Historial.route
-            )
-        )
-        _uiState.update { it.copy(ultimoCambio = CambioEstado(pedidoId, nuevo)) }
+        viewModelScope.launch {
+            pedidos.cambiarEstado(pedidoId, nuevo)
+                .onSuccess {
+                    notificaciones.agregarAviso(
+                        NotificationItem(
+                            id = "estado_${pedidoId}_${System.currentTimeMillis()}",
+                            userId = pedido.userId,
+                            titulo = "Tu solicitud cambió a ${nuevo.etiqueta}",
+                            mensaje = "Tu solicitud #${codigoCorto(pedidoId)} cambió al estado ${nuevo.etiqueta.uppercase()}.",
+                            ruta = Routes.Historial.route
+                        )
+                    )
+                    _uiState.update { it.copy(ultimoCambio = CambioEstado(pedidoId, nuevo)) }
+                }
+                .onFailure { error -> _uiState.update { it.copy(errorRemoto = error.aErrorRemoto()) } }
+        }
+    }
+
+    // ---------- Cancelar solicitud (DELETE en ms-pedidos) ----------
+
+    fun onSolicitarCancelacion(pedidoId: String) {
+        val pedido = pedidos.pedidos.value.firstOrNull { it.id == pedidoId } ?: return
+        if (_uiState.value.puedeCancelar(pedido, SessionManager.userId)) {
+            _uiState.update { it.copy(pedidoPorCancelar = pedido) }
+        }
+    }
+
+    fun onCerrarCancelacion() {
+        _uiState.update { it.copy(pedidoPorCancelar = null) }
+    }
+
+    fun confirmarCancelacion() {
+        val pedido = _uiState.value.pedidoPorCancelar ?: return
+        _uiState.update { it.copy(pedidoPorCancelar = null) }
+        viewModelScope.launch {
+            pedidos.eliminar(pedido.id)
+                .onSuccess { _uiState.update { it.copy(pedidoCancelado = true) } }
+                .onFailure { error -> _uiState.update { it.copy(errorRemoto = error.aErrorRemoto()) } }
+        }
+    }
+
+    /** Botón "Actualizar": vuelve a descargar las solicitudes del microservicio. */
+    fun actualizar() {
+        if (_uiState.value.actualizando) return
+        _uiState.update { it.copy(actualizando = true) }
+        viewModelScope.launch {
+            val resultado = pedidos.sincronizar()
+            _uiState.update { it.copy(actualizando = false, errorRemoto = resultado.exceptionOrNull()?.aErrorRemoto()) }
+        }
+    }
+
+    fun onErrorMostrado() {
+        _uiState.update { it.copy(errorRemoto = null, pedidoCancelado = false) }
     }
 
     fun onMensajeMostrado() {

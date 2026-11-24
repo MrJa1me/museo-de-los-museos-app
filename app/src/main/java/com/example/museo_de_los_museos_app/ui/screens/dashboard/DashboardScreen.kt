@@ -81,6 +81,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.example.museo_de_los_museos_app.ui.components.ImagenMuseoBanner
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import com.example.museo_de_los_museos_app.ui.utils.texto
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material.icons.filled.Palette
 
 /** Formatea precios en pesos chilenos con Locale explícito (es-CL). */
 private fun formatearPrecioClp(monto: Int): String {
@@ -101,7 +108,17 @@ fun DashboardScreen(
     val configuration = LocalConfiguration.current
     val esPantallaAncha = configuration.screenWidthDp >= 600
 
-    Scaffold { paddingValues ->
+    val snackbar = remember { SnackbarHostState() }
+    val errorAprobacion by viewModel.errorAprobacion.collectAsStateWithLifecycle()
+    val textoError = errorAprobacion?.texto()
+    LaunchedEffect(textoError) {
+        if (textoError != null) {
+            snackbar.showSnackbar(textoError)
+            viewModel.onErrorMostrado()
+        }
+    }
+
+    Scaffold(snackbarHost = { SnackbarHost(snackbar) }) { paddingValues ->
         val scrollState = rememberScrollState()
 
         Column(
@@ -314,6 +331,15 @@ private fun SeccionAccionesRapidas(navController: NavHostController) {
                 modifier = Modifier.weight(1f),
                 onClick = { navController.navigate(Routes.Historial.route) },
             )
+        }
+        // API externa: obras de arte del Art Institute of Chicago
+        OutlinedButton(
+            onClick = { navController.navigate(Routes.ObrasArte.crear()) },
+            modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
+        ) {
+            Icon(Icons.Filled.Palette, contentDescription = null)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(stringResource(R.string.dashboard_btn_obras))
         }
     }
 }

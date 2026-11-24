@@ -6,13 +6,13 @@ import com.example.museo_de_los_museos_app.domain.ValidadorFichaMuseo
 import com.example.museo_de_los_museos_app.model.ClasificacionMuseo
 import com.example.museo_de_los_museos_app.model.Museum
 import com.example.museo_de_los_museos_app.model.Rol
+import com.example.museo_de_los_museos_app.remote.aErrorRemoto
 import com.example.museo_de_los_museos_app.repository.FavoriteRepository
 import com.example.museo_de_los_museos_app.repository.MuseumRepository
 import com.example.museo_de_los_museos_app.repository.Repositorios
 import com.example.museo_de_los_museos_app.repository.SessionManager
 import com.example.museo_de_los_museos_app.repository.favoritos
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -60,7 +60,8 @@ class DetalleMuseoViewModel(
                         cargando = !esNuevo && museo == null && lista.isEmpty(),
                         noEncontrado = !esNuevo && museo == null && lista.isNotEmpty(),
                         esFavorito = id in favs,
-                        esInvestigador = usuario?.rol == Rol.INVESTIGADOR
+                        esInvestigador = usuario?.rol == Rol.INVESTIGADOR,
+                        esAdministrador = usuario?.rol == Rol.ADMINISTRADOR
                     )
                 }
             }
@@ -159,13 +160,11 @@ class DetalleMuseoViewModel(
         if (errores.hayErrores) return
 
         viewModelScope.launch {
-            _uiState.update { it.copy(guardando = true) }
-            delay(600) // carga simulada (patrón de la Guía 12)
+            _uiState.update { it.copy(guardando = true, errorRemoto = null) }
 
             val formulario = actual.formulario
-            val id = actual.museo?.id ?: ValidadorFichaMuseo.siguienteId(museos.museos.value.map { it.id })
-            val nuevo = Museum(
-                id = id,
+            val datos = Museum(
+                id = actual.museo?.id.orEmpty(),
                 nombre = formulario.nombre.trim(),
                 pais = formulario.pais.trim(),
                 ciudad = formulario.ciudad.trim(),
@@ -176,15 +175,52 @@ class DetalleMuseoViewModel(
                 enlace = formulario.enlace.trim(),
                 imagen = formulario.imagen
             )
-            // Al editar se conserva el proyecto y el estado de publicación; una ficha nueva queda pendiente
-            museos.guardar(
-                actual.museo?.let { nuevo.copy(proyecto = it.proyecto, publicado = it.publicado) } ?: nuevo
-            )
-
-            _uiState.update {
-                it.copy(guardando = false, editando = it.esNuevo, fichaGuardada = true, cerrar = it.esNuevo)
+            // Ficha nueva: POST (el servidor asigna el id y la deja pendiente).
+            // Edición: PUT conservando el proyecto y el estado de publicación.
+            val existente = actual.museo
+            val resultado = if (existente == null) {
+                museos.crear(datos)
+            } else {
+                museos.actualizar(datos.copy(proyecto = existente.proyecto, publicado = existente.publicado))
             }
+
+            resultado
+                .onSuccess {
+                    _uiState.update { estado ->
+                        estado.copy(guardando = false, editando = estado.esNuevo, fichaGuardada = true, cerrar = estado.esNuevo)
+                    }
+                }
+                .onFailure { error ->
+                    // El formulario queda abierto con lo escrito, para reintentar
+                    _uiState.update { it.copy(guardando = false, errorRemoto = error.aErrorRemoto()) }
+                }
         }
+    }
+
+    // ---------- Eliminar ficha (Investigador o Administrador) ----------
+
+    fun onSolicitarEliminacion() {
+        if (_uiState.value.puedeEliminar) _uiState.update { it.copy(confirmandoEliminacion = true) }
+    }
+
+    fun onCancelarEliminacion() {
+        _uiState.update { it.copy(confirmandoEliminacion = false) }
+    }
+
+    fun confirmarEliminacion() {
+        val estado = _uiState.value
+        val id = estado.museo?.id ?: return
+        if (!estado.puedeEliminar || estado.eliminando) return
+        _uiState.update { it.copy(confirmandoEliminacion = false, eliminando = true, errorRemoto = null) }
+        viewModelScope.launch {
+            museos.eliminar(id)
+                .onSuccess { _uiState.update { it.copy(eliminando = false, cerrar = true) } }
+                .onFailure { error -> _uiState.update { it.copy(eliminando = false, errorRemoto = error.aErrorRemoto()) } }
+        }
+    }
+
+    fun onErrorMostrado() {
+        _uiState.update { it.copy(errorRemoto = null) }
     }
 
     companion object {
