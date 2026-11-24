@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -64,8 +65,8 @@ class CatalogoViewModelTest {
     }
 
     @Test
-    fun productoDesactivado_soloLoVeElAdministrador() {
-        productos.guardar(SeedData.productos.first().copy(activo = false))
+    fun productoDesactivado_soloLoVeElAdministrador() = runTest {
+        productos.cambiarActivo(SeedData.productos.first().id, activo = false)
         assertEquals(SeedData.productos.size - 1, viewModel.uiState.value.productos.size)
 
         SessionManager.iniciarSesion(SeedData.usuarios.first { it.rol == Rol.ADMINISTRADOR })
