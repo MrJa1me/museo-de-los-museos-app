@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Search
@@ -64,6 +65,7 @@ import com.example.museo_de_los_museos_app.R
 import com.example.museo_de_los_museos_app.model.CategoriaProducto
 import com.example.museo_de_los_museos_app.model.Product
 import com.example.museo_de_los_museos_app.navigation.Routes
+import com.example.museo_de_los_museos_app.ui.components.AvisoConexion
 import com.example.museo_de_los_museos_app.ui.utils.formatearPrecio
 import com.example.museo_de_los_museos_app.viewmodel.catalogo.CatalogoViewModel
 
@@ -83,6 +85,10 @@ fun CatalogoScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.pantalla_catalogo)) },
                 actions = {
+                    // Descarga otra vez el catálogo desde ms-productos
+                    IconButton(onClick = viewModel::actualizar, enabled = !estado.actualizando) {
+                        Icon(Icons.Filled.Refresh, contentDescription = stringResource(R.string.conexion_actualizar))
+                    }
                     IconButton(onClick = { navController.navigate(Routes.Historial.route) }) {
                         Icon(Icons.Filled.History, contentDescription = stringResource(R.string.catalogo_ir_historial))
                     }
@@ -111,6 +117,7 @@ fun CatalogoScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+            AvisoConexion(conexion = estado.conexion, alReintentar = viewModel::actualizar)
             BarraBusqueda(
                 texto = estado.busqueda,
                 onTextoChange = viewModel::onBusquedaChange

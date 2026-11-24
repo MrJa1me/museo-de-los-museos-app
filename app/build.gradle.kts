@@ -28,6 +28,7 @@ android {
         val msHost = (project.findProperty("msHost") as String?) ?: "10.0.2.2"
         buildConfigField("String", "URL_MS_MUSEOS", "\"http://$msHost:8081/\"")
         buildConfigField("String", "URL_MS_PEDIDOS", "\"http://$msHost:8082/\"")
+        buildConfigField("String", "URL_MS_PRODUCTOS", "\"http://$msHost:8083/\"")
         // API externa pública (sin clave): Art Institute of Chicago
         buildConfigField("String", "URL_API_OBRAS", "\"https://api.artic.edu/\"")
     }

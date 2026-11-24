@@ -9,6 +9,7 @@ import com.example.museo_de_los_museos_app.domain.ModalidadEnvio
 import com.example.museo_de_los_museos_app.domain.Validadores
 import com.example.museo_de_los_museos_app.domain.ZonaInternacional
 import com.example.museo_de_los_museos_app.model.CartItem
+import com.example.museo_de_los_museos_app.model.ItemStock
 import com.example.museo_de_los_museos_app.model.Order
 import com.example.museo_de_los_museos_app.model.OrderItem
 import com.example.museo_de_los_museos_app.model.Product
@@ -31,7 +32,13 @@ import com.example.museo_de_los_museos_app.remote.aErrorRemoto
 
 /**
  * Carrito y cálculo de envío (P4): cantidades, formulario de destino validado, cálculo con
- * CalculadoraEnvio y confirmación de la solicitud (se guarda en la tabla de pedidos).
+ * CalculadoraEnvio y confirmación de la solicitud.
+ *
+ * Al confirmar participan dos microservicios:
+ *  1. ms-productos revisa la disponibilidad real (POST /api/productos/disponibilidad);
+ *  2. ms-pedidos guarda la solicitud (POST /api/pedidos);
+ *  3. ms-productos descuenta el stock (POST /api/productos/descontar-stock).
+ * Si algo falla antes del paso 2, el carrito queda intacto.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class CarritoViewModel(
@@ -158,7 +165,7 @@ class CarritoViewModel(
         _uiState.update { it.copy(mostrandoConfirmacion = false) }
     }
 
-    /** Crea la solicitud, descuenta el stock y vacía el carrito del usuario. */
+    /** Revisa el stock en el servidor, crea la solicitud, descuenta el stock y vacía el carrito del usuario. */
     fun confirmarPedido() {
         val estado = _uiState.value
         val userId = SessionManager.userId ?: return
@@ -179,11 +186,27 @@ class CarritoViewModel(
             destino = textoDestino(estado),
             modalidad = if (resultado.requiereEnvio) estado.formulario.modalidad.etiqueta else SIN_ENVIO
         )
+        val items = estado.lineas.map { ItemStock(it.producto.id, it.cantidad) }
+
         viewModelScope.launch {
-            // POST /api/pedidos: solo si el microservicio guarda la solicitud se descuenta stock y se vacía el carrito
+            // 1) El stock guardado en el teléfono puede estar desactualizado: se le pregunta a ms-productos
+            val problemas = productos.verificarDisponibilidad(items).getOrElse { error ->
+                _uiState.update { it.copy(confirmando = false, errorRemoto = error.aErrorRemoto()) }
+                return@launch
+            }
+            if (problemas.isNotEmpty()) {
+                // Trae el stock real para que el carrito lo muestre y avisa qué producto no alcanza
+                productos.sincronizar()
+                val primero = problemas.first()
+                _uiState.update { it.copy(confirmando = false, productoSinStock = primero.nombre.ifBlank { primero.productoId }) }
+                return@launch
+            }
+
+            // 2) POST /api/pedidos: solo si el microservicio guarda la solicitud se descuenta stock y se vacía el carrito
             pedidos.crear(pedido)
                 .onSuccess { creado ->
-                    estado.lineas.forEach { productos.guardar(it.producto.copy(stock = it.producto.stock - it.cantidad)) }
+                    // 3) Si el descuento falla (otro cliente compró justo antes), se vuelve a leer el catálogo
+                    productos.descontarStock(items).onFailure { productos.sincronizar() }
                     carrito.vaciar(userId)
                     _uiState.update {
                         it.copy(confirmando = false, pedidoConfirmado = creado.id, formulario = FormularioDestino(), errores = ErroresDestino())
