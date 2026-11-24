@@ -1,6 +1,9 @@
 package com.example.museo_de_los_museos_app.viewmodel.detalleproducto
 
 import com.example.museo_de_los_museos_app.domain.ErrorValidacion
+import com.example.museo_de_los_museos_app.remote.TipoErrorRemoto
+import com.example.museo_de_los_museos_app.remote.ErrorRemoto
+import com.example.museo_de_los_museos_app.fakes.ProductosConFallo
 import com.example.museo_de_los_museos_app.model.Rol
 import com.example.museo_de_los_museos_app.repository.InMemoryCartRepository
 import com.example.museo_de_los_museos_app.repository.InMemoryNotificationRepository
@@ -92,5 +95,38 @@ class DetalleProductoViewModelTest {
         vmCliente.cargar("a01")
         vmCliente.alternarActivo()
         assertTrue(productos.obtenerPorId("a01")!!.activo)
+    }
+}
+
+/** Activar/desactivar va a ms-productos (PATCH): si no responde, el producto queda igual y se avisa. */
+@OptIn(ExperimentalCoroutinesApi::class)
+class DetalleProductoRemotoTest {
+
+    @Before
+    fun setUp() {
+        Dispatchers.setMain(UnconfinedTestDispatcher())
+        SessionManager.iniciarSesion(SeedData.usuarios.first { it.rol == Rol.ADMINISTRADOR })
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
+
+    @Test
+    fun desactivar_sinServidor_noCambiaElProducto_yMuestraError() {
+        val productos = ProductosConFallo().apply {
+            falla = ErrorRemoto(TipoErrorRemoto.SIN_CONEXION)
+        }
+        val vm = DetalleProductoViewModel(productos, InMemoryCartRepository(), InMemoryNotificationRepository())
+        vm.cargar("a01")
+
+        vm.alternarActivo()
+
+        assertTrue(productos.obtenerPorId("a01")!!.activo)
+        assertEquals(TipoErrorRemoto.SIN_CONEXION, vm.uiState.value.errorRemoto?.tipo)
+        assertFalse(vm.uiState.value.cambiandoActivo)
+        vm.onErrorMostrado()
+        assertEquals(null, vm.uiState.value.errorRemoto)
     }
 }

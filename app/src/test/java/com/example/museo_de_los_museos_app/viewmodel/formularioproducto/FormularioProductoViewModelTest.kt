@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -72,15 +73,15 @@ class FormularioProductoViewModelTest {
         viewModel.guardar()
 
         val nuevo = productos.productos.value.single { it.nombre == "Taller de Archivos" }
-        assertTrue(nuevo.id.startsWith("c"))
+        assertEquals("c05", nuevo.id) // el id lo asigna el repositorio (en la app real, ms-productos)
         assertNull(nuevo.pesoKg)
         assertTrue(nuevo.activo)
         assertTrue(viewModel.uiState.value.guardado)
     }
 
     @Test
-    fun edicion_cargaDatosYConservaIdYEstado() {
-        productos.guardar(productos.obtenerPorId("p01")!!.copy(activo = false))
+    fun edicion_cargaDatosYConservaIdYEstado() = runTest {
+        productos.cambiarActivo("p01", activo = false)
         viewModel.cargar("p01")
         assertEquals("Guía de Museos Virtuales (libro)", viewModel.uiState.value.nombre)
         assertEquals("0,5", viewModel.uiState.value.peso)

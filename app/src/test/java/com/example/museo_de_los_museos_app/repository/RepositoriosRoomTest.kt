@@ -7,21 +7,17 @@ import com.example.museo_de_los_museos_app.repository.db.CarritoEntity
 import com.example.museo_de_los_museos_app.repository.db.FavoritoDao
 import com.example.museo_de_los_museos_app.repository.db.HistorialQrDao
 import com.example.museo_de_los_museos_app.repository.db.PreferenciasDao
-import com.example.museo_de_los_museos_app.repository.db.ProductoDao
 import com.example.museo_de_los_museos_app.repository.db.UsuarioDao
 import com.example.museo_de_los_museos_app.repository.db.aEntidad
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Test
 
 /** Repositorios que solo usan Room: el DAO se simula con MockK y se verifica que se llame correctamente. */
@@ -44,21 +40,6 @@ class RepositoriosRoomTest {
         coVerify(exactly = 1) { dao.insertarSiNoExisten(any()) }
         coVerify { dao.insertar(admin.copy(id = "u99").aEntidad()) }
         coVerify { dao.actualizar(admin.aEntidad()) }
-    }
-
-    @Test
-    fun productos_cargaSemilla_yGuarda() = runTest {
-        val dao = mockk<ProductoDao>(relaxed = true)
-        val producto = SeedData.productos.first()
-        every { dao.observarTodos() } returns flowOf(listOf(producto.aEntidad()))
-        val repo = RoomProductRepository(dao, CoroutineScope(UnconfinedTestDispatcher(testScheduler)))
-
-        assertEquals(producto, repo.obtenerPorId(producto.id))
-        assertNull(repo.obtenerPorId("zzz"))
-        repo.guardar(producto.copy(stock = 1))
-
-        coVerify { dao.insertarSiNoExisten(match { it.size == SeedData.productos.size }) }
-        coVerify { dao.guardar(producto.copy(stock = 1).aEntidad()) }
     }
 
     @Test

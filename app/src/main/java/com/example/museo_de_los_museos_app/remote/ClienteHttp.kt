@@ -8,9 +8,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 /**
- * Crea los servicios Retrofit de la app. Hay tres orígenes de datos remotos:
- *  - ms-museos  (microservicio propio, Spring Boot, puerto 8081)
- *  - ms-pedidos (microservicio propio, Spring Boot, puerto 8082)
+ * Crea los servicios Retrofit de la app. Hay cuatro orígenes de datos remotos:
+ *  - ms-museos    (microservicio propio, Spring Boot, puerto 8081)
+ *  - ms-pedidos   (microservicio propio, Spring Boot, puerto 8082)
+ *  - ms-productos (microservicio propio, Spring Boot, puerto 8083)
  *  - API externa del Art Institute of Chicago (pública, de terceros)
  * Las URL vienen de BuildConfig (app/build.gradle.kts).
  */
@@ -38,5 +39,6 @@ object ClienteHttp {
 
     val museos: MuseosApi by lazy { retrofit(BuildConfig.URL_MS_MUSEOS).create(MuseosApi::class.java) }
     val pedidos: PedidosApi by lazy { retrofit(BuildConfig.URL_MS_PEDIDOS).create(PedidosApi::class.java) }
+    val productos: ProductosApi by lazy { retrofit(BuildConfig.URL_MS_PRODUCTOS).create(ProductosApi::class.java) }
     val obrasArte: ObrasArteApi by lazy { retrofit(BuildConfig.URL_API_OBRAS).create(ObrasArteApi::class.java) }
 }

@@ -6,6 +6,7 @@ import com.example.museo_de_los_museos_app.domain.Validadores
 import com.example.museo_de_los_museos_app.model.CategoriaProducto
 import com.example.museo_de_los_museos_app.model.Product
 import com.example.museo_de_los_museos_app.model.Rol
+import com.example.museo_de_los_museos_app.remote.aErrorRemoto
 import com.example.museo_de_los_museos_app.repository.ProductRepository
 import com.example.museo_de_los_museos_app.repository.Repositorios
 import com.example.museo_de_los_museos_app.repository.SessionManager
@@ -19,7 +20,8 @@ import kotlinx.coroutines.launch
 /**
  * Formulario de producto del Administrador (P4): alta de un producto nuevo o edición de uno existente.
  * Valida nombre obligatorio, precio mayor que 0, stock o cupos de 0 o más y, si no es curso, el peso.
- * Se guarda en Room a través de ProductRepository.guardar (crea o actualiza según el id).
+ * Se guarda en el microservicio ms-productos: alta → POST /api/productos (el servidor asigna el id),
+ * edición → PUT /api/productos/{id}. Solo si el servidor responde OK se vuelve atrás.
  */
 class FormularioProductoViewModel(
     private val productos: ProductRepository = Repositorios.productos
@@ -92,12 +94,19 @@ class FormularioProductoViewModel(
             _uiState.update { it.copy(errores = errores) }
             return
         }
-        _uiState.update { it.copy(guardando = true) }
+        if (estado.guardando) return
+        _uiState.update { it.copy(guardando = true, errorRemoto = null) }
         val producto = construirProducto(estado, original)
         viewModelScope.launch {
-            productos.guardar(producto)
-            _uiState.update { it.copy(guardando = false, guardado = true) }
+            val resultado = if (original == null) productos.crear(producto) else productos.actualizar(producto)
+            resultado
+                .onSuccess { _uiState.update { it.copy(guardando = false, guardado = true) } }
+                .onFailure { error -> _uiState.update { it.copy(guardando = false, errorRemoto = error.aErrorRemoto()) } }
         }
+    }
+
+    fun onErrorMostrado() {
+        _uiState.update { it.copy(errorRemoto = null) }
     }
 
     companion object {
@@ -108,9 +117,12 @@ class FormularioProductoViewModel(
             peso = Validadores.validarPeso(estado.peso, estado.categoria)
         )
 
-        /** Arma el producto con los datos del formulario (en una edición conserva id y si está activo). */
+        /**
+         * Arma el producto con los datos del formulario. En una edición conserva id y si está activo;
+         * en un alta el id va vacío porque lo asigna ms-productos (c05, p03, m03k...).
+         */
         fun construirProducto(estado: FormularioProductoUiState, original: Product?) = Product(
-            id = original?.id ?: nuevoId(estado.categoria),
+            id = original?.id.orEmpty(),
             nombre = estado.nombre.trim(),
             categoria = estado.categoria,
             precio = estado.precio.trim().toInt(),
@@ -119,17 +131,6 @@ class FormularioProductoViewModel(
             descripcion = estado.descripcion.trim(),
             activo = original?.activo ?: true
         )
-
-        /** Id con el prefijo de la categoría, como en SeedData (c = curso, p = publicación, m = material, a = artículo). */
-        fun nuevoId(categoria: CategoriaProducto): String {
-            val prefijo = when (categoria) {
-                CategoriaProducto.CURSO -> "c"
-                CategoriaProducto.PUBLICACION -> "p"
-                CategoriaProducto.MATERIAL_CONSERVACION -> "m"
-                CategoriaProducto.ARTICULO_MUSEOLOGICO -> "a"
-            }
-            return "$prefijo${System.currentTimeMillis()}"
-        }
 
         private fun llenarDesde(estado: FormularioProductoUiState, p: Product) = estado.copy(
             cargando = false,
