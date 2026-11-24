@@ -204,7 +204,7 @@ apksigner: Verifies (APK Signature Scheme v2)
 
 El reporte queda en `app/build/reports/jacoco/coberturaLogica/html/index.html`.
 
-**Cobertura de la lógica: 94,9 % de líneas** (90,6 % de instrucciones). Se mide sobre `viewmodel`, `repository`, `remote`, `domain` y `model`. No incluye las pantallas Compose (se prueban en el emulador) ni el código declarativo de Room (entidades, DAO y clases generadas).
+**Cobertura de la lógica: 95,2 % de líneas** (91,1 % de instrucciones). Se mide sobre `viewmodel`, `repository`, `remote`, `domain` y `model`. No incluye las pantallas Compose (se prueban en el emulador) ni el código declarativo de Room (entidades, DAO y clases generadas).
 
 | Qué se prueba | Clases de prueba | Qué se simula |
 | --- | --- | --- |
