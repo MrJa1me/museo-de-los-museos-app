@@ -1,6 +1,7 @@
 package com.example.museo_de_los_museos_app.viewmodel.mapa
 
 import com.example.museo_de_los_museos_app.model.Museum
+import com.example.museo_de_los_museos_app.repository.EstadoConexion
 
 /** Estado del permiso de ubicación, para no volver a preguntar sin que el usuario lo pida. */
 enum class EstadoPermiso { SIN_CONSULTAR, CONCEDIDO, DENEGADO }
@@ -17,5 +18,8 @@ data class MapaUiState(
     /** Eventos de un solo uso: la pantalla los ejecuta y avisa al ViewModel. */
     val solicitarPermiso: Boolean = false,
     val centrarEnUbicacion: Boolean = false,
-    val esInvestigador: Boolean = false
+    val esInvestigador: Boolean = false,
+    /** Si los museos vienen del microservicio o de la copia local (Room). */
+    val conexion: EstadoConexion = EstadoConexion.SIN_VERIFICAR,
+    val actualizando: Boolean = false
 )

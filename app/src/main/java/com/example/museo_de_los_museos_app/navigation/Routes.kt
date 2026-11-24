@@ -32,6 +32,12 @@ sealed class Routes(val route: String) {
             if (productoId == null) "formulario_producto" else "formulario_producto?productoId=$productoId"
     }
 
+    /** Obras de arte de la API externa. [pais] es opcional: desde la ficha de un museo se buscan obras de su país. */
+    data object ObrasArte : Routes("obras_arte?pais={pais}") {
+        const val ARG_PAIS = "pais"
+        fun crear(pais: String? = null) = if (pais == null) "obras_arte" else "obras_arte?pais=${android.net.Uri.encode(pais)}"
+    }
+
     data object Favoritos : Routes("favoritos")
     data object Carrito : Routes("carrito")
     data object Historial : Routes("historial")

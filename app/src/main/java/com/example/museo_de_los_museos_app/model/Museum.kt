@@ -10,12 +10,16 @@ data class Museum(
     val clasificacion: ClasificacionMuseo,
     val descripcion: String,
     val enlace: String,
-    val proyecto: String = "Mapa Iberoamérica 2026",
+    val proyecto: String = PROYECTO_POR_DEFECTO,
     /** Nombre del archivo en res/drawable, sin extensión (ej. "museo_oro"). Vacío = imagen genérica. */
     val imagen: String = "",
     /** Las fichas nuevas quedan pendientes hasta que el Administrador las aprueba. */
     val publicado: Boolean = false
-)
+) {
+    companion object {
+        const val PROYECTO_POR_DEFECTO = "Mapa Iberoamérica 2026"
+    }
+}
 
 /**
  * Un Cliente (o invitado, [rol] null) solo ve museos publicados.

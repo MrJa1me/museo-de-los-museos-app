@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.example.museo_de_los_museos_app.remote.aErrorRemoto
 
 /**
  * Carrito y cálculo de envío (P4): cantidades, formulario de destino validado, cálculo con
@@ -179,13 +180,23 @@ class CarritoViewModel(
             modalidad = if (resultado.requiereEnvio) estado.formulario.modalidad.etiqueta else SIN_ENVIO
         )
         viewModelScope.launch {
+            // POST /api/pedidos: solo si el microservicio guarda la solicitud se descuenta stock y se vacía el carrito
             pedidos.crear(pedido)
-            estado.lineas.forEach { productos.guardar(it.producto.copy(stock = it.producto.stock - it.cantidad)) }
-            carrito.vaciar(userId)
-            _uiState.update {
-                it.copy(confirmando = false, pedidoConfirmado = pedido.id, formulario = FormularioDestino(), errores = ErroresDestino())
-            }
+                .onSuccess { creado ->
+                    estado.lineas.forEach { productos.guardar(it.producto.copy(stock = it.producto.stock - it.cantidad)) }
+                    carrito.vaciar(userId)
+                    _uiState.update {
+                        it.copy(confirmando = false, pedidoConfirmado = creado.id, formulario = FormularioDestino(), errores = ErroresDestino())
+                    }
+                }
+                .onFailure { error ->
+                    _uiState.update { it.copy(confirmando = false, errorRemoto = error.aErrorRemoto()) }
+                }
         }
+    }
+
+    fun onErrorMostrado() {
+        _uiState.update { it.copy(errorRemoto = null) }
     }
 
     /** Después de la pantalla de éxito, el carrito vuelve a su estado normal. */

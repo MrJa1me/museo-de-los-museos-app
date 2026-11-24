@@ -81,6 +81,9 @@ import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 import com.example.museo_de_los_museos_app.ui.components.ImagenMuseoMiniatura
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.LinearProgressIndicator
+import com.example.museo_de_los_museos_app.ui.components.AvisoConexion
 
 
 private val CENTRO_IBEROAMERICA = GeoPoint(10.0, -40.0)
@@ -195,6 +198,9 @@ fun MapaScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.pantalla_mapa)) },
                 actions = {
+                    IconButton(onClick = viewModel::actualizar, enabled = !estado.actualizando) {
+                        Icon(Icons.Filled.Refresh, contentDescription = stringResource(R.string.conexion_actualizar))
+                    }
                     if (estado.esInvestigador) {
                         IconButton(onClick = {
                             navController.navigate(Routes.DetalleMuseo.crear(DetalleMuseoViewModel.ID_NUEVO))
@@ -217,6 +223,8 @@ fun MapaScreen(
         contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { padding ->
         Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+            AvisoConexion(conexion = estado.conexion, alReintentar = viewModel::actualizar)
+            if (estado.actualizando) LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
             FiltroPaises(
                 paises = estado.paises,
                 seleccionado = estado.paisSeleccionado,

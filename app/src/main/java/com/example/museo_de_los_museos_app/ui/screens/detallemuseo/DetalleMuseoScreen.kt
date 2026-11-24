@@ -94,6 +94,11 @@ import com.example.museo_de_los_museos_app.ui.components.ImagenMuseoMiniatura
 import com.example.museo_de_los_museos_app.ui.utils.copiarImagenMuseo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material.icons.filled.Palette
+import com.example.museo_de_los_museos_app.navigation.Routes
 
 private val ROJO_FAVORITO = Color(0xFFD32F2F)
 
@@ -126,6 +131,32 @@ fun DetalleMuseoScreen(
             alcance.launch { snackbar.showSnackbar(textoMensaje) }
             viewModel.onMensajeMostrado()
         }
+    }
+
+    // El microservicio rechazó la operación o no respondió: se explica en un Snackbar
+    val textoError = estado.errorRemoto?.texto()
+    LaunchedEffect(textoError) {
+        if (textoError != null) {
+            alcance.launch { snackbar.showSnackbar(textoError) }
+            viewModel.onErrorMostrado()
+        }
+    }
+
+    if (estado.confirmandoEliminacion) {
+        AlertDialog(
+            onDismissRequest = viewModel::onCancelarEliminacion,
+            icon = { Icon(Icons.Filled.DeleteForever, contentDescription = null) },
+            title = { Text(stringResource(R.string.detalle_eliminar_titulo)) },
+            text = { Text(stringResource(R.string.detalle_eliminar_mensaje, estado.museo?.nombre.orEmpty())) },
+            confirmButton = {
+                TextButton(onClick = viewModel::confirmarEliminacion) {
+                    Text(stringResource(R.string.detalle_eliminar_confirmar), color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = viewModel::onCancelarEliminacion) { Text(stringResource(R.string.detalle_eliminar_cancelar)) }
+            }
+        )
     }
 
     // Ficha nueva guardada: muestra la confirmación un momento y vuelve al mapa
@@ -164,6 +195,11 @@ fun DetalleMuseoScreen(
                     if (estado.esInvestigador && estado.museo != null && !estado.editando) {
                         IconButton(onClick = viewModel::onEditar) {
                             Icon(Icons.Filled.Edit, contentDescription = stringResource(R.string.detalle_editar_ficha))
+                        }
+                    }
+                    if (estado.puedeEliminar && !estado.editando) {
+                        IconButton(onClick = viewModel::onSolicitarEliminacion, enabled = !estado.eliminando) {
+                            Icon(Icons.Filled.Delete, contentDescription = stringResource(R.string.detalle_eliminar_ficha))
                         }
                     }
                 },
@@ -217,7 +253,8 @@ fun DetalleMuseoScreen(
                                     museo = museo,
                                     esFavorito = estado.esFavorito,
                                     alAlternarFavorito = viewModel::alternarFavorito,
-                                    alAbrirRecorrido = { abrirEnlace(museo.enlace) }
+                                    alAbrirRecorrido = { abrirEnlace(museo.enlace) },
+                                    alVerObras = { navController.navigate(Routes.ObrasArte.crear(museo.pais)) }
                                 )
                             }
                         }
@@ -233,7 +270,8 @@ private fun VistaMuseo(
     museo: Museum,
     esFavorito: Boolean,
     alAlternarFavorito: () -> Unit,
-    alAbrirRecorrido: () -> Unit
+    alAbrirRecorrido: () -> Unit,
+    alVerObras: () -> Unit
 ) {
     // Corazón que "late" y cambia de color al marcar favorito
     val escala by animateFloatAsState(
@@ -307,6 +345,12 @@ private fun VistaMuseo(
             Icon(Icons.AutoMirrored.Filled.OpenInNew, contentDescription = null)
             Spacer(modifier = Modifier.size(8.dp))
             Text(stringResource(R.string.detalle_recorrido))
+        }
+        // Integra la API externa al flujo: obras de arte relacionadas con el país del museo
+        TextButton(onClick = alVerObras, modifier = Modifier.fillMaxWidth()) {
+            Icon(Icons.Filled.Palette, contentDescription = null)
+            Spacer(modifier = Modifier.size(8.dp))
+            Text(stringResource(R.string.obras_ver_relacionadas, museo.pais))
         }
         OutlinedButton(onClick = alAlternarFavorito, modifier = Modifier.fillMaxWidth()) {
             Icon(

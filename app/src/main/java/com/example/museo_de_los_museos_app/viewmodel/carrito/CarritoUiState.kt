@@ -6,6 +6,7 @@ import com.example.museo_de_los_museos_app.domain.LineaCarrito
 import com.example.museo_de_los_museos_app.domain.ModalidadEnvio
 import com.example.museo_de_los_museos_app.domain.RegionesChile
 import com.example.museo_de_los_museos_app.domain.ResultadoEnvio
+import com.example.museo_de_los_museos_app.remote.ErrorRemoto
 
 enum class TipoEnvio { NACIONAL, INTERNACIONAL }
 
@@ -44,7 +45,9 @@ data class CarritoUiState(
     val productoSinStock: String? = null,
     val mostrandoConfirmacion: Boolean = false,
     val confirmando: Boolean = false,
-    val pedidoConfirmado: String? = null
+    val pedidoConfirmado: String? = null,
+    /** El microservicio de pedidos no respondió o rechazó la solicitud: el carrito queda intacto. */
+    val errorRemoto: ErrorRemoto? = null
 ) {
     val vacio: Boolean get() = lineas.isEmpty()
     val lineasDisponibles: List<LineaCarrito> get() = lineas.filter { it.producto.activo }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Evaluación 4: microservicios, API externa y estado de conexión -->
+<resources>
+    <!-- Errores remotos -->
+    <string name="remoto_sin_conexion">No hay conexión con el servidor. Revisa que el microservicio esté encendido.</string>
+    <string name="remoto_rechazado">El servidor rechazó la operación.</string>
+    <string name="remoto_servidor">Error interno del servidor. Intenta de nuevo.</string>
+    <string name="remoto_desconocido">Ocurrió un error inesperado.</string>
+
+    <!-- Aviso de conexión -->
+    <string name="conexion_sin_servidor">Sin conexión con el servidor: mostrando los datos guardados en el teléfono.</string>
+    <string name="conexion_reintentar">Reintentar</string>
+    <string name="conexion_actualizar">Actualizar desde el servidor</string>
+    <string name="conexion_actualizado">Datos actualizados desde el servidor</string>
+
+    <!-- Eliminar ficha de museo -->
+    <string name="detalle_eliminar_ficha">Eliminar ficha</string>
+    <string name="detalle_eliminar_titulo">¿Eliminar esta ficha?</string>
+    <string name="detalle_eliminar_mensaje">La ficha «%1$s» se eliminará del servidor para todos los usuarios. Esta acción no se puede deshacer.</string>
+    <string name="detalle_eliminar_confirmar">Eliminar</string>
+    <string name="detalle_eliminar_cancelar">Cancelar</string>
+
+    <!-- Cancelar solicitud -->
+    <string name="historial_cancelar_pedido">Cancelar solicitud</string>
+    <string name="historial_cancelar_titulo">¿Cancelar la solicitud?</string>
+    <string name="historial_cancelar_mensaje">La solicitud #%1$s se eliminará del servidor. Solo se puede cancelar antes de ser enviada.</string>
+    <string name="historial_cancelar_confirmar">Sí, cancelar</string>
+    <string name="historial_cancelar_volver">Volver</string>
+    <string name="historial_pedido_cancelado">Solicitud cancelada</string>
+
+    <!-- Obras de arte (API externa) -->
+    <string name="obras_titulo">Obras de arte del mundo</string>
+    <string name="obras_subtitulo">Datos en vivo de la API pública del Art Institute of Chicago</string>
+    <string name="obras_campo_busqueda">Buscar obras (artista, país, tema…)</string>
+    <string name="obras_buscar">Buscar</string>
+    <string name="obras_error_corta">Escribe al menos 2 caracteres</string>
+    <string name="obras_vacio">No se encontraron obras para «%1$s».</string>
+    <string name="obras_sin_imagen">Sin imagen</string>
+    <string name="obras_fuente">Fuente: Art Institute of Chicago (api.artic.edu)</string>
+    <string name="obras_reintentar">Reintentar</string>
+    <string name="obras_ver_relacionadas">Ver obras de arte de %1$s</string>
+    <string name="dashboard_btn_obras">Obras de arte</string>
+</resources>

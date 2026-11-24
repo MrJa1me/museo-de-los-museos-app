@@ -43,6 +43,7 @@ import com.example.museo_de_los_museos_app.ui.screens.historial.HistorialScreen
 import com.example.museo_de_los_museos_app.ui.screens.login.LoginScreen
 import com.example.museo_de_los_museos_app.ui.screens.mapa.MapaScreen
 import com.example.museo_de_los_museos_app.ui.screens.notificaciones.NotificacionesScreen
+import com.example.museo_de_los_museos_app.ui.screens.obrasarte.ObrasArteScreen
 import com.example.museo_de_los_museos_app.ui.screens.perfil.PerfilScreen
 import com.example.museo_de_los_museos_app.ui.screens.registro.RegistroScreen
 import com.example.museo_de_los_museos_app.ui.screens.resultadoqr.ResultadoQrScreen
@@ -127,6 +128,15 @@ fun AppNavHost(modifier: Modifier = Modifier) {
             ) { entrada ->
                 val productoId = entrada.arguments?.getString(Routes.FormularioProducto.ARG_PRODUCTO_ID)
                 FormularioProductoScreen(navController, productoId)
+            }
+            composable(
+                route = Routes.ObrasArte.route,
+                arguments = listOf(navArgument(Routes.ObrasArte.ARG_PAIS) {
+                    type = NavType.StringType
+                    nullable = true
+                })
+            ) { entrada ->
+                ObrasArteScreen(navController, entrada.arguments?.getString(Routes.ObrasArte.ARG_PAIS))
             }
             composable(Routes.Favoritos.route) { FavoritosScreen(navController) }
             composable(Routes.Carrito.route) { CarritoScreen(navController) }

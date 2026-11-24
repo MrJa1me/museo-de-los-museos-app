@@ -10,3 +10,6 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+# Gson lee y escribe los DTO por reflexión (nombres de campos = claves del JSON de los microservicios
+# y de la API externa). Si R8 los renombrara, el JSON dejaría de coincidir.
+-keep class com.example.museo_de_los_museos_app.remote.dto.** { *; }

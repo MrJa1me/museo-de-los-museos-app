@@ -8,10 +8,15 @@ import com.example.museo_de_los_museos_app.repository.OrderRepository
 import com.example.museo_de_los_museos_app.repository.ProductRepository
 import com.example.museo_de_los_museos_app.repository.Repositorios
 import com.example.museo_de_los_museos_app.repository.SessionManager
+import com.example.museo_de_los_museos_app.remote.ErrorRemoto
+import com.example.museo_de_los_museos_app.remote.aErrorRemoto
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 /**
  * ViewModel del Dashboard (P2).
@@ -36,9 +41,19 @@ class DashboardViewModel(
         initialValue = DashboardUiState(cargando = true),
     )
 
-    /** Solo el Administrador puede publicar una ficha pendiente. */
+    /** Error de la última aprobación (el microservicio no respondió o la rechazó). */
+    private val _errorAprobacion = MutableStateFlow<ErrorRemoto?>(null)
+    val errorAprobacion: StateFlow<ErrorRemoto?> = _errorAprobacion.asStateFlow()
+
+    /** Solo el Administrador puede publicar una ficha pendiente (PATCH /api/museos/{id}/aprobar). */
     fun aprobarMuseo(museoId: String) {
         if (SessionManager.rol != Rol.ADMINISTRADOR) return
-        museumRepository.aprobar(museoId)
+        viewModelScope.launch {
+            museumRepository.aprobar(museoId).onFailure { _errorAprobacion.value = it.aErrorRemoto() }
+        }
+    }
+
+    fun onErrorMostrado() {
+        _errorAprobacion.value = null
     }
 }

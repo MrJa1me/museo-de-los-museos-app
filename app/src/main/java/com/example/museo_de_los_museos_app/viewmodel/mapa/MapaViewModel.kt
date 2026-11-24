@@ -45,6 +45,19 @@ class MapaViewModel(
                 aplicarFiltro()
             }
         }
+        viewModelScope.launch {
+            repositorio.conexion.collect { conexion -> _uiState.update { it.copy(conexion = conexion) } }
+        }
+    }
+
+    /** Vuelve a descargar las fichas desde el microservicio ms-museos (GET /api/museos). */
+    fun actualizar() {
+        if (_uiState.value.actualizando) return
+        _uiState.update { it.copy(actualizando = true) }
+        viewModelScope.launch {
+            repositorio.sincronizar()
+            _uiState.update { it.copy(actualizando = false) }
+        }
     }
 
     /** Al tocar el país que ya está seleccionado, se quita el filtro. */

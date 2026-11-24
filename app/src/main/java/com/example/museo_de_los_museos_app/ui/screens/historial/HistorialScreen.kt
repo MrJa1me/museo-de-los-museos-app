@@ -74,6 +74,14 @@ import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material.icons.filled.Refresh
+import com.example.museo_de_los_museos_app.repository.SessionManager
+import com.example.museo_de_los_museos_app.ui.components.AvisoConexion
+import com.example.museo_de_los_museos_app.ui.utils.texto
 
 /** Tiempo que se muestra el mensaje de cambio de estado antes de ocultarse. */
 private const val DURACION_MENSAJE_MS = 3000L
@@ -87,6 +95,33 @@ fun HistorialScreen(
     viewModel: HistorialViewModel = viewModel()
 ) {
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val snackbar = remember { SnackbarHostState() }
+    val textoError = estado.errorRemoto?.texto()
+    val textoCancelado = stringResource(R.string.historial_pedido_cancelado)
+    LaunchedEffect(textoError, estado.pedidoCancelado) {
+        val texto = textoError ?: textoCancelado.takeIf { estado.pedidoCancelado }
+        if (texto != null) {
+            viewModel.onErrorMostrado()
+            snackbar.showSnackbar(texto)
+        }
+    }
+
+    estado.pedidoPorCancelar?.let { pedido ->
+        AlertDialog(
+            onDismissRequest = viewModel::onCerrarCancelacion,
+            title = { Text(stringResource(R.string.historial_cancelar_titulo)) },
+            text = { Text(stringResource(R.string.historial_cancelar_mensaje, HistorialViewModel.codigoCorto(pedido.id))) },
+            confirmButton = {
+                TextButton(onClick = viewModel::confirmarCancelacion) {
+                    Text(stringResource(R.string.historial_cancelar_confirmar), color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = viewModel::onCerrarCancelacion) { Text(stringResource(R.string.historial_cancelar_volver)) }
+            }
+        )
+    }
 
     LaunchedEffect(estado.ultimoCambio) {
         if (estado.ultimoCambio != null) {
@@ -110,9 +145,15 @@ fun HistorialScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.p4_volver))
                     }
                 },
+                actions = {
+                    IconButton(onClick = viewModel::actualizar, enabled = !estado.actualizando) {
+                        Icon(Icons.Filled.Refresh, contentDescription = stringResource(R.string.conexion_actualizar))
+                    }
+                },
                 windowInsets = WindowInsets(0, 0, 0, 0)
             )
         },
+        snackbarHost = { SnackbarHost(snackbar) },
         contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { padding ->
         Box(modifier = Modifier.fillMaxSize().padding(padding)) {
@@ -128,6 +169,8 @@ fun HistorialScreen(
                 )
 
                 else -> Column(modifier = Modifier.fillMaxSize()) {
+                    AvisoConexion(conexion = estado.conexion, alReintentar = viewModel::actualizar)
+                    if (estado.actualizando) LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                     FiltrosEstado(seleccionado = estado.filtroEstado, alElegir = viewModel::onFiltroChange)
 
                     // Confirmación animada cuando el Administrador cambia un estado
@@ -181,6 +224,8 @@ fun HistorialScreen(
                                     nombreCliente = if (estado.esAdministrador) estado.nombresClientes[pedido.userId] ?: pedido.userId else null,
                                     esAdministrador = estado.esAdministrador,
                                     alAvanzar = { viewModel.avanzarEstado(pedido.id) },
+                                    puedeCancelar = estado.puedeCancelar(pedido, SessionManager.userId),
+                                    alCancelar = { viewModel.onSolicitarCancelacion(pedido.id) },
                                     modifier = Modifier.animateItem()
                                 )
                             }
@@ -222,6 +267,8 @@ private fun TarjetaPedido(
     nombreCliente: String?,
     esAdministrador: Boolean,
     alAvanzar: () -> Unit,
+    puedeCancelar: Boolean,
+    alCancelar: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var expandido by rememberSaveable(pedido.id) { mutableStateOf(false) }
@@ -279,6 +326,11 @@ private fun TarjetaPedido(
             if (esAdministrador && siguiente != null) {
                 Button(onClick = alAvanzar, modifier = Modifier.fillMaxWidth()) {
                     Text(stringResource(R.string.historial_avanzar, siguiente.etiqueta))
+                }
+            }
+            if (puedeCancelar) {
+                OutlinedButton(onClick = alCancelar, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.historial_cancelar_pedido), color = MaterialTheme.colorScheme.error)
                 }
             }
         }

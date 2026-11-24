@@ -3,6 +3,7 @@ package com.example.museo_de_los_museos_app.viewmodel.detallemuseo
 import com.example.museo_de_los_museos_app.domain.ErrorFicha
 import com.example.museo_de_los_museos_app.model.ClasificacionMuseo
 import com.example.museo_de_los_museos_app.model.Museum
+import com.example.museo_de_los_museos_app.remote.ErrorRemoto
 
 /** Campos del formulario de ficha (Investigador), como texto tal cual se escriben. */
 data class FormularioFicha(
@@ -50,5 +51,14 @@ data class DetalleMuseoUiState(
     val fichaGuardada: Boolean = false,
     val mensaje: MensajeDetalle? = null,
     /** Evento: volver atrás después de crear una ficha nueva. */
-    val cerrar: Boolean = false
-)
+    val cerrar: Boolean = false,
+    val esAdministrador: Boolean = false,
+    /** Diálogo "¿Eliminar esta ficha?" visible. */
+    val confirmandoEliminacion: Boolean = false,
+    val eliminando: Boolean = false,
+    /** El microservicio rechazó la operación o no respondió. */
+    val errorRemoto: ErrorRemoto? = null
+) {
+    /** El Investigador (autor de las fichas) y el Administrador pueden eliminar una ficha existente. */
+    val puedeEliminar: Boolean get() = museo != null && !esNuevo && (esInvestigador || esAdministrador)
+}
