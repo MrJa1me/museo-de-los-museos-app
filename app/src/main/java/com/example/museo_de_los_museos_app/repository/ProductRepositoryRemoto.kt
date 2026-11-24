@@ -1,5 +1,7 @@
 package com.example.museo_de_los_museos_app.repository
 
+import com.example.museo_de_los_museos_app.model.ItemStock
+import com.example.museo_de_los_museos_app.model.ProblemaStock
 import com.example.museo_de_los_museos_app.model.Product
 import com.example.museo_de_los_museos_app.remote.ErrorRemoto
 import com.example.museo_de_los_museos_app.remote.ProductosApi
@@ -30,6 +32,8 @@ import kotlinx.coroutines.launch
  * - Lectura: la UI siempre observa Room, así el catálogo se ve aunque el servidor esté apagado.
  *   [sincronizar] reemplaza esa copia con lo que tiene el servidor.
  * - Escritura: primero el microservicio; solo si responde OK se guarda en Room su respuesta.
+ * - Stock: el stock real vive en el servidor, por eso el carrito pregunta con [verificarDisponibilidad]
+ *   antes de confirmar y luego llama a [descontarStock].
  */
 class ProductRepositoryRemoto(
     private val api: ProductosApi,
@@ -72,6 +76,19 @@ class ProductRepositoryRemoto(
 
     override suspend fun cambiarActivo(id: String, activo: Boolean): Result<Product> =
         guardarRespuesta(llamar { api.cambiarActivo(id, CambioActivoDto(activo)) })
+
+    override suspend fun verificarDisponibilidad(items: List<ItemStock>): Result<List<ProblemaStock>> = registrar(
+        llamar { api.disponibilidad(items.aDto()) }.map { respuesta ->
+            respuesta.problemas.orEmpty().map { it.aModelo() }
+        }
+    )
+
+    override suspend fun descontarStock(items: List<ItemStock>): Result<Unit> = registrar(
+        llamar { api.descontarStock(items.aDto()) }.map { actualizados ->
+            // El servidor devuelve los productos con el stock nuevo: se guardan en la copia local
+            actualizados.mapNotNull { it.aModelo() }.forEach { dao.guardar(it.aEntidad()) }
+        }
+    )
 
     /** Guarda en Room el producto tal como lo devolvió el servidor (con su id y valores definitivos). */
     private suspend fun guardarRespuesta(resultado: Result<ProductoDto>): Result<Product> =

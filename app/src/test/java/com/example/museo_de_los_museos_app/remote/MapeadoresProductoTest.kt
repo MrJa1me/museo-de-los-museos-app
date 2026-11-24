@@ -1,6 +1,9 @@
 package com.example.museo_de_los_museos_app.remote
 
 import com.example.museo_de_los_museos_app.model.CategoriaProducto
+import com.example.museo_de_los_museos_app.model.ItemStock
+import com.example.museo_de_los_museos_app.model.MotivoStock
+import com.example.museo_de_los_museos_app.remote.dto.ProblemaStockDto
 import com.example.museo_de_los_museos_app.remote.dto.ProductoDto
 import com.example.museo_de_los_museos_app.repository.SeedData
 import org.junit.Assert.assertEquals
@@ -44,5 +47,17 @@ class MapeadoresProductoTest {
         val curso = ProductoDto(id = "c09", categoria = "CURSO", pesoKg = 2.0, stock = -3).aModelo()!!
         assertNull(curso.pesoKg)
         assertEquals(0, curso.stock)
+    }
+
+    @Test
+    fun itemsDeStock_yProblemas() {
+        val dto = listOf(ItemStock("p01", 2)).aDto()
+        assertEquals("p01", dto.items.single().productoId)
+        assertEquals(2, dto.items.single().cantidad)
+
+        assertEquals(MotivoStock.INACTIVO, ProblemaStockDto("a01", motivo = "inactivo").aModelo().motivo)
+        val desconocido = ProblemaStockDto().aModelo()
+        assertEquals(MotivoStock.SIN_STOCK, desconocido.motivo)
+        assertEquals("", desconocido.productoId)
     }
 }

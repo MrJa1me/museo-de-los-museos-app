@@ -1,8 +1,14 @@
 package com.example.museo_de_los_museos_app.remote
 
 import com.example.museo_de_los_museos_app.model.CategoriaProducto
+import com.example.museo_de_los_museos_app.model.ItemStock
+import com.example.museo_de_los_museos_app.model.MotivoStock
+import com.example.museo_de_los_museos_app.model.ProblemaStock
 import com.example.museo_de_los_museos_app.model.Product
+import com.example.museo_de_los_museos_app.remote.dto.ItemStockDto
+import com.example.museo_de_los_museos_app.remote.dto.ProblemaStockDto
 import com.example.museo_de_los_museos_app.remote.dto.ProductoDto
+import com.example.museo_de_los_museos_app.remote.dto.StockDto
 
 /**
  * Conversión entre el JSON de ms-productos y los modelos de la app (mismo criterio que Mapeadores.kt):
@@ -36,4 +42,14 @@ fun Product.aDto(incluirId: Boolean = true) = ProductoDto(
     pesoKg = pesoKg,
     descripcion = descripcion,
     activo = activo
+)
+
+fun List<ItemStock>.aDto() = StockDto(map { ItemStockDto(it.productoId, it.cantidad) })
+
+fun ProblemaStockDto.aModelo() = ProblemaStock(
+    productoId = productoId.orEmpty(),
+    nombre = nombre.orEmpty(),
+    solicitado = solicitado ?: 0,
+    disponible = disponible ?: 0,
+    motivo = MotivoStock.entries.firstOrNull { it.name.equals(motivo, ignoreCase = true) } ?: MotivoStock.SIN_STOCK
 )
