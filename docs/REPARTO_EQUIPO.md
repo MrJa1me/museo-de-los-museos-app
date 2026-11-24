@@ -12,7 +12,7 @@ El trabajo nuevo (microservicio `ms-productos`, catálogo conectado, stock del c
 | 1 | **Backend ms-productos** | Alan | `0a7f769c2d` | `microservicios/ms-productos/` completo + 29 pruebas | Clases 5, 6 y 7 |
 | 2 | **Catálogo conectado** | Alanis | `b0313547d6` | Retrofit, repositorio remoto, catálogo/formulario/detalle + arreglo de `libs.versions.toml` | Clases 3, 4 y 8 |
 | 3 | **Stock del carrito** | Nicolás | `f51091cdc6` | Validar disponibilidad y descontar stock al confirmar el carrito + pruebas | Clases 8 y 9 |
-| 4 | **Documentación** | Benjamín | `4987622251` | README (ms-productos) y `docs/guias-estudio/` | Clase 10 |
+| 4 | **README** | Benjamín | `5efd3b5e58` | README con ms-productos, stock del carrito y pruebas (las guías de estudio se comparten fuera del repo) | Clase 10 |
 
 Cada parte compila y pasa sus pruebas por sí sola (parte 2: 213 pruebas; parte 3: 224).
 
@@ -72,7 +72,7 @@ En la parte 1, en vez de `gradlew` prueba el microservicio: `cd microservicios/m
 | 1 | `feature/ev4-ms-productos` | `0a7f769c2d` | `feat(backend): agregar microservicio ms-productos para el catalogo` |
 | 2 | `feature/ev4-catalogo-remoto` | `b0313547d6` | `feat(app): conectar el catalogo con ms-productos` |
 | 3 | `feature/ev4-stock-carrito` | `f51091cdc6` | `feat(app): validar stock con ms-productos al confirmar el carrito` |
-| 4 | `feature/ev4-docs-guias` | `4987622251` | `docs: documentar ms-productos y agregar guias de estudio` |
+| 4 | `feature/ev4-readme` | `5efd3b5e58` | `docs(readme): documentar ms-productos, stock del carrito y pruebas` |
 
 ## Si algo sale mal
 
