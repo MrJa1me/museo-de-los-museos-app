@@ -24,8 +24,8 @@ object Repositorios {
 
     fun inicializarBaseDatos(context: Context) {
         baseDatos = AppDatabase.crear(context)
-        productos = RoomProductRepository(baseDatos.productoDao())
-        // Museos y pedidos: microservicios propios (Spring Boot) con copia local en Room
+        // Museos, pedidos y catálogo: microservicios propios (Spring Boot) con copia local en Room
+        productos = ProductRepositoryRemoto(ClienteHttp.productos, baseDatos.productoDao())
         museos = MuseumRepositoryRemoto(ClienteHttp.museos, baseDatos.museoDao())
         pedidos = OrderRepositoryRemoto(ClienteHttp.pedidos, baseDatos.pedidoDao())
 

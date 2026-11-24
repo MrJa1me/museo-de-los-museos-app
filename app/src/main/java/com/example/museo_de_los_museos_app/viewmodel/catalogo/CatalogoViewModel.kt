@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 /**
  * Catálogo de cursos y productos. La UI solo envía eventos (búsqueda, categoría, disponibilidad)
  * y muestra [uiState]; el filtrado se hace aquí.
+ * Los productos vienen de ms-productos (con copia en Room): [actualizar] los vuelve a descargar.
  */
 class CatalogoViewModel(
     private val repositorio: ProductRepository = Repositorios.productos
@@ -41,6 +42,19 @@ class CatalogoViewModel(
                 _uiState.update { it.copy(esAdministrador = usuario?.rol == Rol.ADMINISTRADOR) }
                 aplicarFiltros()
             }
+        }
+        viewModelScope.launch {
+            repositorio.conexion.collect { conexion -> _uiState.update { it.copy(conexion = conexion) } }
+        }
+    }
+
+    /** Vuelve a descargar el catálogo desde el microservicio ms-productos (GET /api/productos). */
+    fun actualizar() {
+        if (_uiState.value.actualizando) return
+        _uiState.update { it.copy(actualizando = true) }
+        viewModelScope.launch {
+            repositorio.sincronizar()
+            _uiState.update { it.copy(actualizando = false) }
         }
     }
 

@@ -2,6 +2,7 @@ package com.example.museo_de_los_museos_app.viewmodel.detalleproducto
 
 import com.example.museo_de_los_museos_app.domain.ErrorValidacion
 import com.example.museo_de_los_museos_app.model.Product
+import com.example.museo_de_los_museos_app.remote.ErrorRemoto
 
 data class DetalleProductoUiState(
     val cargando: Boolean = true,
@@ -16,7 +17,11 @@ data class DetalleProductoUiState(
     /** El Administrador ve los botones Editar y Desactivar/Activar en lugar de la compra. */
     val esAdministrador: Boolean = false,
     val agregando: Boolean = false,
-    val mensaje: MensajeDetalleProducto? = null
+    val mensaje: MensajeDetalleProducto? = null,
+    /** true mientras ms-productos procesa el cambio de activo (evita doble toque). */
+    val cambiandoActivo: Boolean = false,
+    /** El servidor no respondió al activar/desactivar: el producto queda como estaba. */
+    val errorRemoto: ErrorRemoto? = null
 ) {
     val esCurso: Boolean get() = producto?.requiereEnvio == false
 }

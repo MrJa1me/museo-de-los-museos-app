@@ -31,7 +31,8 @@ import com.example.museo_de_los_museos_app.remote.aErrorRemoto
 
 /**
  * Carrito y cálculo de envío (P4): cantidades, formulario de destino validado, cálculo con
- * CalculadoraEnvio y confirmación de la solicitud (se guarda en la tabla de pedidos).
+ * CalculadoraEnvio y confirmación de la solicitud: se crea en ms-pedidos y luego se actualiza el stock
+ * de cada producto en ms-productos (PUT). Si ms-pedidos no responde, el carrito queda intacto.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class CarritoViewModel(
@@ -183,7 +184,8 @@ class CarritoViewModel(
             // POST /api/pedidos: solo si el microservicio guarda la solicitud se descuenta stock y se vacía el carrito
             pedidos.crear(pedido)
                 .onSuccess { creado ->
-                    estado.lineas.forEach { productos.guardar(it.producto.copy(stock = it.producto.stock - it.cantidad)) }
+                    // PUT /api/productos/{id} con el stock nuevo de cada producto comprado
+                    estado.lineas.forEach { productos.actualizar(it.producto.copy(stock = it.producto.stock - it.cantidad)) }
                     carrito.vaciar(userId)
                     _uiState.update {
                         it.copy(confirmando = false, pedidoConfirmado = creado.id, formulario = FormularioDestino(), errores = ErroresDestino())

@@ -2,6 +2,7 @@ package com.example.museo_de_los_museos_app.viewmodel.formularioproducto
 
 import com.example.museo_de_los_museos_app.domain.ErrorValidacion
 import com.example.museo_de_los_museos_app.model.CategoriaProducto
+import com.example.museo_de_los_museos_app.remote.ErrorRemoto
 
 /** Error de cada campo (null = sin error). Lo llena el ViewModel con Validadores. */
 data class ErroresProducto(
@@ -29,7 +30,9 @@ data class FormularioProductoUiState(
     val errores: ErroresProducto = ErroresProducto(),
     val guardando: Boolean = false,
     /** Cuando es true la pantalla vuelve atrás (el producto ya se guardó). */
-    val guardado: Boolean = false
+    val guardado: Boolean = false,
+    /** ms-productos no respondió o rechazó los datos: el formulario queda como estaba para corregir o reintentar. */
+    val errorRemoto: ErrorRemoto? = null
 ) {
     /** Los cursos tienen cupos y no tienen peso (no se envían). */
     val esCurso: Boolean get() = categoria == CategoriaProducto.CURSO

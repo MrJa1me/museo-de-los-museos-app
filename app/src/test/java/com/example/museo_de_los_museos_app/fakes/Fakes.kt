@@ -5,22 +5,28 @@ import com.example.museo_de_los_museos_app.model.Museum
 import com.example.museo_de_los_museos_app.model.ObraArte
 import com.example.museo_de_los_museos_app.model.Order
 import com.example.museo_de_los_museos_app.model.Preferencias
+import com.example.museo_de_los_museos_app.model.Product
 import com.example.museo_de_los_museos_app.model.QrHistory
 import com.example.museo_de_los_museos_app.model.User
 import com.example.museo_de_los_museos_app.remote.ErrorRemoto
+import com.example.museo_de_los_museos_app.remote.TipoErrorRemoto
+import com.example.museo_de_los_museos_app.repository.EstadoConexion
 import com.example.museo_de_los_museos_app.repository.FavoriteRepository
 import com.example.museo_de_los_museos_app.repository.InMemoryMuseumRepository
 import com.example.museo_de_los_museos_app.repository.InMemoryOrderRepository
+import com.example.museo_de_los_museos_app.repository.InMemoryProductRepository
 import com.example.museo_de_los_museos_app.repository.MuseumRepository
 import com.example.museo_de_los_museos_app.repository.ObrasArteRepository
 import com.example.museo_de_los_museos_app.repository.OrderRepository
 import com.example.museo_de_los_museos_app.repository.PreferenciasRepository
+import com.example.museo_de_los_museos_app.repository.ProductRepository
 import com.example.museo_de_los_museos_app.repository.QrHistoryRepository
 import com.example.museo_de_los_museos_app.repository.SeedData
 import com.example.museo_de_los_museos_app.repository.UserRepository
 import com.example.museo_de_los_museos_app.repository.agregarSinDuplicados
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
@@ -94,4 +100,28 @@ class PedidosConFallo(private val base: InMemoryOrderRepository = InMemoryOrderR
     override suspend fun cambiarEstado(id: String, estado: EstadoPedido) = o { base.cambiarEstado(id, estado) }()
     override suspend fun eliminar(id: String) = o { base.eliminar(id) }()
     override suspend fun sincronizar() = o { base.sincronizar() }()
+}
+
+/**
+ * Catálogo en memoria al que se le puede ordenar que falle (como si ms-productos estuviera apagado o rechazara).
+ */
+class ProductosConFallo(
+    private val base: InMemoryProductRepository = InMemoryProductRepository()
+) : ProductRepository by base {
+    var falla: ErrorRemoto? = null
+    var sincronizaciones = 0
+        private set
+    private val _conexion = MutableStateFlow(EstadoConexion.CONECTADO)
+    override val conexion: StateFlow<EstadoConexion> = _conexion
+
+    private suspend fun <T> o(resultado: suspend () -> Result<T>): Result<T> {
+        val error = falla
+        _conexion.value = if (error?.tipo == TipoErrorRemoto.SIN_CONEXION) EstadoConexion.SIN_CONEXION else EstadoConexion.CONECTADO
+        return if (error != null) Result.failure(error) else resultado()
+    }
+
+    override suspend fun sincronizar(): Result<Unit> { sincronizaciones++; return o { base.sincronizar() } }
+    override suspend fun crear(producto: Product) = o { base.crear(producto) }
+    override suspend fun actualizar(producto: Product) = o { base.actualizar(producto) }
+    override suspend fun cambiarActivo(id: String, activo: Boolean) = o { base.cambiarActivo(id, activo) }
 }
