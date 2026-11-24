@@ -1,9 +1,13 @@
 package com.example.museo_de_los_museos_app.repository
 
+import com.example.museo_de_los_museos_app.model.ItemStock
+import com.example.museo_de_los_museos_app.model.MotivoStock
 import com.example.museo_de_los_museos_app.remote.ErrorRemoto
 import com.example.museo_de_los_museos_app.remote.ProductosApi
 import com.example.museo_de_los_museos_app.remote.TipoErrorRemoto
 import com.example.museo_de_los_museos_app.remote.aDto
+import com.example.museo_de_los_museos_app.remote.dto.DisponibilidadDto
+import com.example.museo_de_los_museos_app.remote.dto.ProblemaStockDto
 import com.example.museo_de_los_museos_app.remote.dto.ProductoDto
 import com.example.museo_de_los_museos_app.repository.db.ProductoDao
 import com.example.museo_de_los_museos_app.repository.db.aEntidad
@@ -29,7 +33,7 @@ import java.io.IOException
 
 /**
  * Repositorio del catálogo (ms-productos) con MockK:
- *  - ProductosApi (Retrofit) se simula para responder éxito, sin red o 400 según la prueba;
+ *  - ProductosApi (Retrofit) se simula para responder éxito, sin red, 400 o 409 según la prueba;
  *  - ProductoDao (Room) se simula con relaxed = true y se verifica con coVerify qué se guardó.
  * Así se prueba la lógica sin servidor, sin emulador y sin internet.
  */
@@ -134,5 +138,45 @@ class ProductRepositoryRemotoTest {
         assertEquals(false, resultado.getOrThrow().activo)
         coVerify { api.cambiarActivo("p01", match { !it.activo }) }
         coVerify { dao.guardar(desactivado.aEntidad()) }
+    }
+
+    @Test
+    fun verificarDisponibilidad_traduceLosProblemasDelServidor() = runTest {
+        coEvery { api.disponibilidad(any()) } returns DisponibilidadDto(
+            disponible = false,
+            problemas = listOf(ProblemaStockDto("a02", "Taza", 1, 0, "SIN_STOCK"))
+        )
+
+        val problemas = repositorio().verificarDisponibilidad(listOf(ItemStock("a02", 1))).getOrThrow()
+
+        assertEquals(MotivoStock.SIN_STOCK, problemas.single().motivo)
+        assertEquals(0, problemas.single().disponible)
+        coVerify { api.disponibilidad(match { it.items.single().productoId == "a02" && it.items.single().cantidad == 1 }) }
+    }
+
+    @Test
+    fun verificarDisponibilidad_todoDisponible_devuelveListaVacia() = runTest {
+        coEvery { api.disponibilidad(any()) } returns DisponibilidadDto(disponible = true, problemas = null)
+        assertTrue(repositorio().verificarDisponibilidad(listOf(ItemStock("p01", 1))).getOrThrow().isEmpty())
+    }
+
+    @Test
+    fun descontarStock_guardaElStockNuevoEnRoom() = runTest {
+        coEvery { api.descontarStock(any()) } returns listOf(producto.copy(stock = 23).aDto())
+
+        assertTrue(repositorio().descontarStock(listOf(ItemStock("p01", 2))).isSuccess)
+
+        coVerify { dao.guardar(producto.copy(stock = 23).aEntidad()) }
+    }
+
+    @Test
+    fun descontarStock_409_esRechazado_yNoGuarda() = runTest {
+        coEvery { api.descontarStock(any()) } throws errorHttp(409, """{"mensaje":"Stock insuficiente para \"Taza\": quedan 0"}""")
+
+        val error = repositorio().descontarStock(listOf(ItemStock("a02", 1))).exceptionOrNull() as ErrorRemoto
+
+        assertEquals(TipoErrorRemoto.RECHAZADO, error.tipo)
+        assertEquals(409, error.codigo)
+        coVerify(exactly = 0) { dao.guardar(any()) }
     }
 }

@@ -18,3 +18,21 @@ data class ProductoDto(
 /** Cuerpo de PATCH /api/productos/{id}/activo. */
 data class CambioActivoDto(val activo: Boolean)
 
+/** Cuerpo de POST /api/productos/disponibilidad y POST /api/productos/descontar-stock. */
+data class StockDto(val items: List<ItemStockDto>)
+
+data class ItemStockDto(val productoId: String, val cantidad: Int)
+
+/** Respuesta de POST /api/productos/disponibilidad. */
+data class DisponibilidadDto(
+    val disponible: Boolean? = null,
+    val problemas: List<ProblemaStockDto>? = null
+)
+
+data class ProblemaStockDto(
+    val productoId: String? = null,
+    val nombre: String? = null,
+    val solicitado: Int? = null,
+    val disponible: Int? = null,
+    val motivo: String? = null
+)

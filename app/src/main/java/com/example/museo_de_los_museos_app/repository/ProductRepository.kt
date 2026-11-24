@@ -1,6 +1,9 @@
 package com.example.museo_de_los_museos_app.repository
 
+import com.example.museo_de_los_museos_app.domain.DisponibilidadStock
 import com.example.museo_de_los_museos_app.domain.IdsProducto
+import com.example.museo_de_los_museos_app.model.ItemStock
+import com.example.museo_de_los_museos_app.model.ProblemaStock
 import com.example.museo_de_los_museos_app.model.Product
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,6 +33,12 @@ interface ProductRepository {
 
     /** Desactivar esconde el producto a los Clientes sin borrarlo. */
     suspend fun cambiarActivo(id: String, activo: Boolean): Result<Product>
+
+    /** Pregunta al servidor si se pueden comprar las líneas del carrito. Lista vacía = todo disponible. */
+    suspend fun verificarDisponibilidad(items: List<ItemStock>): Result<List<ProblemaStock>>
+
+    /** Descuenta el stock de una compra ya confirmada. */
+    suspend fun descontarStock(items: List<ItemStock>): Result<Unit>
 }
 
 /** Implementación en memoria, cargada con [SeedData]. Se usa en las pruebas de los ViewModels. */
@@ -63,6 +72,19 @@ class InMemoryProductRepository(inicial: List<Product> = SeedData.productos) : P
         val cambiado = actual.copy(activo = activo)
         reemplazar(cambiado)
         return Result.success(cambiado)
+    }
+
+    override suspend fun verificarDisponibilidad(items: List<ItemStock>): Result<List<ProblemaStock>> =
+        Result.success(DisponibilidadStock.revisar(items, _productos.value))
+
+    override suspend fun descontarStock(items: List<ItemStock>): Result<Unit> {
+        if (DisponibilidadStock.revisar(items, _productos.value).isNotEmpty()) {
+            return Result.failure(IllegalStateException("Stock insuficiente"))
+        }
+        items.forEach { item ->
+            obtenerPorId(item.productoId)?.let { reemplazar(it.copy(stock = it.stock - item.cantidad)) }
+        }
+        return Result.success(Unit)
     }
 
     private fun reemplazar(producto: Product) {
