@@ -1,6 +1,7 @@
 package com.example.museo_de_los_museos_app.fakes
 
 import com.example.museo_de_los_museos_app.model.EstadoPedido
+import com.example.museo_de_los_museos_app.model.ItemStock
 import com.example.museo_de_los_museos_app.model.Museum
 import com.example.museo_de_los_museos_app.model.ObraArte
 import com.example.museo_de_los_museos_app.model.Order
@@ -103,7 +104,8 @@ class PedidosConFallo(private val base: InMemoryOrderRepository = InMemoryOrderR
 }
 
 /**
- * Catálogo en memoria al que se le puede ordenar que falle (como si ms-productos estuviera apagado o rechazara).
+ * Catálogo en memoria al que se le puede ordenar que falle (como si ms-productos estuviera apagado o rechazara)
+ * y al que se le puede quitar stock "en el servidor" para simular que otro cliente compró antes.
  */
 class ProductosConFallo(
     private val base: InMemoryProductRepository = InMemoryProductRepository()
@@ -124,4 +126,6 @@ class ProductosConFallo(
     override suspend fun crear(producto: Product) = o { base.crear(producto) }
     override suspend fun actualizar(producto: Product) = o { base.actualizar(producto) }
     override suspend fun cambiarActivo(id: String, activo: Boolean) = o { base.cambiarActivo(id, activo) }
+    override suspend fun verificarDisponibilidad(items: List<ItemStock>) = o { base.verificarDisponibilidad(items) }
+    override suspend fun descontarStock(items: List<ItemStock>) = o { base.descontarStock(items) }
 }
