@@ -1,8 +1,8 @@
 # Reparto de la Evaluación 4 en 4 Pull Requests (uno por integrante)
 
-El trabajo nuevo (microservicio `ms-productos`, catálogo conectado, stock del carrito y documentación) está dividido en **4 partes**. Cada parte es un commit de la rama `claude/zealous-dijkstra-rs7k6o`. Cada integrante copia **su** parte con un comando, hace el commit **desde su computador y con su cuenta de GitHub** y abre su propio Pull Request. Así el historial muestra un aporte real de cada uno.
+El trabajo nuevo (microservicio `ms-productos`, catálogo conectado, stock del carrito y documentación) está dividido en **4 partes**. Cada parte es un commit de la rama `ev4-alanis`. Cada integrante copia **su** parte con un comando, hace el commit **desde su computador y con su cuenta de GitHub** y abre su propio Pull Request. Así el historial muestra un aporte real de cada uno.
 
-> No abran un Pull Request directo de `claude/zealous-dijkstra-rs7k6o`: esa rama es solo la fuente de las 4 partes.
+> No abran un Pull Request directo de `ev4-alanis`: esa rama es solo la fuente de las 4 partes.
 
 ## Quién hace qué (propuesta, se puede cambiar)
 
@@ -42,7 +42,7 @@ git config user.email "tu_correo_de_github@ejemplo.com"
 ```bash
 git checkout main
 git pull origin main
-git fetch origin claude/zealous-dijkstra-rs7k6o
+git fetch origin ev4-alanis
 ```
 
 **3. Crear tu rama y copiar tu parte sin hacer commit todavía (`-n`):**
