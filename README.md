@@ -2,7 +2,7 @@
 
 Proyecto de Desarrollo de Aplicaciones Móviles (DSY1105, Duoc UC · **Evaluación Parcial 4**).
 
-App Android (Kotlin + Jetpack Compose) que unifica el catálogo de cursos y productos museológicos (con solicitudes de compra y cálculo de envío simulado) y el Mapa de Museos Virtuales de Iberoamérica. Se conecta a **dos microservicios propios en Spring Boot** (fichas de museos y solicitudes de compra) y consume una **API externa** (obras del Art Institute of Chicago). Todos los datos son ficticios.
+App Android (Kotlin + Jetpack Compose) que unifica el catálogo de cursos y productos museológicos (con solicitudes de compra y cálculo de envío simulado) y el Mapa de Museos Virtuales de Iberoamérica. Se conecta a **tres microservicios propios en Spring Boot** (fichas de museos, solicitudes de compra y catálogo de productos) y consume una **API externa** (obras del Art Institute of Chicago). Todos los datos son ficticios.
 
 **Contenido**
 
@@ -19,7 +19,7 @@ App Android (Kotlin + Jetpack Compose) que unifica el catálogo de cursos y prod
 
 ## 1. Nombre del proyecto
 
-**Museo de los Museos**: app móvil + microservicios `ms-museos` y `ms-pedidos`.
+**Museo de los Museos**: app móvil + microservicios `ms-museos`, `ms-pedidos` y `ms-productos`.
 
 ## 2. Integrantes
 
@@ -28,7 +28,7 @@ App Android (Kotlin + Jetpack Compose) que unifica el catálogo de cursos y prod
 | P1 | Alan | [Nariyato] | Base técnica del proyecto, persistencia con Room/SQLite, repositorios, `SessionManager`, tema (modo claro/oscuro), registro, login y perfil con cámara/galería |
 | P2 | Nicolas | [MrJa1me] | Navegación, bienvenida, dashboard, notificaciones y configuración del perfil |
 | P3 | Benjamin | [benjalbsp] | Mapa de museos, detalle y fichas de museo, aprobación de fichas, lector QR, favoritos, historial de QR e imágenes |
-| P4 | Alanis | [AlanisVerdugo] | Catálogo, detalle de producto, administración de productos, carrito, cálculo de envío e historial de pedidos |
+| P4 | Alanis | [AlanisVerdugo] | Catálogo, detalle de producto, administración de productos, carrito, cálculo de envío e historial de pedidos. Evaluación 4: microservicio `ms-productos` e integración del catálogo y el stock |
 
 ## 3. Funcionalidades
 
@@ -40,8 +40,8 @@ App Android (Kotlin + Jetpack Compose) que unifica el catálogo de cursos y prod
 - **Fichas de museo (CRUD completo con `ms-museos`)**: el Investigador **crea** y **edita** fichas con validación por campo; el Administrador las **aprueba**; el Investigador o el Administrador las **eliminan** (con diálogo de confirmación).
 - **Obras de arte del mundo (API externa)**: búsqueda en vivo en la API del Art Institute of Chicago, con imágenes. Desde la ficha de un museo se abren las obras relacionadas con su país.
 - **Favoritos** e **historial de QR** por usuario. **Lector QR** con Google Code Scanner.
-- **Catálogo**: cursos y productos; el Administrador agrega, edita, activa y desactiva productos.
-- **Carrito y envío**: cálculo de envío simulado. Al confirmar, la solicitud se **crea en `ms-pedidos`**. Si el servidor no responde, el carrito queda intacto y se avisa.
+- **Catálogo (CRUD con `ms-productos`)**: cursos y productos con búsqueda y filtros. El Administrador **agrega** (el servidor asigna el id), **edita** y **activa/desactiva** productos. Botón para **actualizar desde el servidor** y aviso «Sin conexión».
+- **Carrito y envío**: cálculo de envío simulado. Al confirmar, la app **valida la disponibilidad en `ms-productos`**, **crea la solicitud en `ms-pedidos`** y luego **descuenta el stock en `ms-productos`**. Si un producto ya no alcanza, se avisa cuál; si un servidor no responde, el carrito queda intacto.
 - **Historial de solicitudes (CRUD con `ms-pedidos`)**: el Cliente ve sus solicitudes y puede **cancelarlas** antes del envío. El Administrador **avanza su estado** (Pendiente → Confirmado → Enviado → Entregado), lo que genera un aviso para el cliente.
 - **Funciona sin conexión**: si un microservicio está apagado, la app muestra la última copia guardada en Room con el aviso *"Sin conexión con el servidor"* y un botón *Reintentar*.
 - **Perfil**: datos y foto (cámara o galería) y configuración por usuario. **Tema propio** con modo oscuro.
@@ -52,8 +52,9 @@ App Android (Kotlin + Jetpack Compose) que unifica el catálogo de cursos y prod
 | --- | --- | --- | --- |
 | `ms-museos` | 8081 | H2 en archivo `data/museos` (o MySQL con el perfil `mysql`) | Fichas de museos virtuales y su aprobación |
 | `ms-pedidos` | 8082 | H2 en archivo `data/pedidos` (o MySQL con el perfil `mysql`) | Solicitudes de compra, sus ítems y el flujo de estados |
+| `ms-productos` | 8083 | H2 en archivo `data/productos` (o MySQL con el perfil `mysql`) | Catálogo de cursos y productos, activación y stock |
 
-Cada uno valida los datos que recibe (`@Valid`), aplica las reglas de negocio en su capa `service` y responde los errores en JSON con el código HTTP correcto (400, 404, 409). Ambos cargan los mismos datos de prueba que la app la primera vez que arrancan.
+Cada uno valida los datos que recibe (`@Valid`), aplica las reglas de negocio en su capa `service` y responde los errores en JSON con el código HTTP correcto (400, 404, 409). Todos cargan los mismos datos de prueba que la app la primera vez que arrancan.
 
 ## 4. Endpoints utilizados
 
@@ -79,7 +80,20 @@ Cada uno valida los datos que recibe (`@Valid`), aplica las reglas de negocio en
 | PATCH | `/api/pedidos/{id}/estado` | Administrador avanza el estado (solo un paso a la vez) | 200 / 409 |
 | DELETE | `/api/pedidos/{id}` | Cancelar una solicitud (no se permite si ya fue enviada) | 204 / 409 |
 
-La documentación interactiva de cada microservicio está en **Swagger UI**: `http://localhost:8081/swagger-ui.html` y `http://localhost:8082/swagger-ui.html`.
+La documentación interactiva de cada microservicio está en **Swagger UI**: `http://localhost:8081/swagger-ui.html`, `http://localhost:8082/swagger-ui.html` y `http://localhost:8083/swagger-ui.html`.
+
+### Microservicio `ms-productos` (`http://<host>:8083`)
+
+| Método | Endpoint | Uso en la app | Respuesta |
+| --- | --- | --- | --- |
+| GET | `/api/productos` | Sincronizar el catálogo (`?categoria=CURSO` y/o `?activo=true` para filtrar) | 200 + lista |
+| GET | `/api/productos/{id}` | Obtener un producto | 200 / 404 |
+| POST | `/api/productos` | Administrador crea un producto (el servidor asigna el id según la categoría: `c05`, `p03`, `m03k`...) | 201 / 400 / 409 |
+| PUT | `/api/productos/{id}` | Administrador edita un producto (no cambia si está activo) | 200 / 400 / 404 |
+| PATCH | `/api/productos/{id}/activo` | Administrador activa o desactiva un producto (`{"activo": false}`) | 200 / 404 |
+| DELETE | `/api/productos/{id}` | Eliminar (disponible en la API; la app usa desactivar) | 204 / 404 |
+| POST | `/api/productos/disponibilidad` | Antes de confirmar el carrito: revisa stock y estado sin modificar nada | 200 + problemas |
+| POST | `/api/productos/descontar-stock` | Después de crear la solicitud: descuenta el stock (todo o nada) | 200 / 409 |
 
 ### API externa: Art Institute of Chicago
 
@@ -100,7 +114,7 @@ Es pública y no necesita clave. Sus datos **no se guardan** en Room ni en los m
 
 ### 5.1 Levantar los microservicios
 
-En dos terminales, desde la raíz del repositorio:
+En tres terminales, desde la raíz del repositorio:
 
 ```bash
 cd microservicios/ms-museos
@@ -112,11 +126,16 @@ cd microservicios/ms-pedidos
 ./mvnw spring-boot:run
 ```
 
-Revisa que respondan: `http://localhost:8081/api/museos` y `http://localhost:8082/api/pedidos`.
-También se pueden abrir como proyectos Maven en IntelliJ y ejecutar `MsMuseosApplication` / `MsPedidosApplication`.
+```bash
+cd microservicios/ms-productos
+./mvnw spring-boot:run
+```
+
+Revisa que respondan: `http://localhost:8081/api/museos`, `http://localhost:8082/api/pedidos` y `http://localhost:8083/api/productos`.
+También se pueden abrir como proyectos Maven en IntelliJ y ejecutar `MsMuseosApplication` / `MsPedidosApplication` / `MsProductosApplication`.
 
 **Con MySQL** (XAMPP, Laragon, etc.) en vez de H2: inicia MySQL y ejecuta
-`./mvnw spring-boot:run -Dspring-boot.run.profiles=mysql`. Las bases `museo_museos` y `museo_pedidos` se crean solas (usuario `root` sin contraseña; se cambia en `application-mysql.properties`).
+`./mvnw spring-boot:run -Dspring-boot.run.profiles=mysql`. Las bases `museo_museos`, `museo_pedidos` y `museo_productos` se crean solas (usuario `root` sin contraseña; se cambia en `application-mysql.properties`).
 
 ### 5.2 Ejecutar la app
 
@@ -176,7 +195,7 @@ apksigner: Verifies (APK Signature Scheme v2)
 
 ## 7. Pruebas unitarias
 
-### App móvil: 194 pruebas (JUnit 4 + MockK + kotlinx-coroutines-test)
+### App móvil: 224 pruebas (JUnit 4 + MockK + kotlinx-coroutines-test)
 
 ```bash
 ./gradlew testDebugUnitTest   # ejecuta las pruebas
@@ -185,22 +204,23 @@ apksigner: Verifies (APK Signature Scheme v2)
 
 El reporte queda en `app/build/reports/jacoco/coberturaLogica/html/index.html`.
 
-**Cobertura de la lógica: 94,9 % de líneas** (90,6 % de instrucciones). Se mide sobre `viewmodel`, `repository`, `remote`, `domain` y `model`. No incluye las pantallas Compose (se prueban en el emulador) ni el código declarativo de Room (entidades, DAO y clases generadas).
+**Cobertura de la lógica: 95,2 % de líneas** (91,1 % de instrucciones). Se mide sobre `viewmodel`, `repository`, `remote`, `domain` y `model`. No incluye las pantallas Compose (se prueban en el emulador) ni el código declarativo de Room (entidades, DAO y clases generadas).
 
 | Qué se prueba | Clases de prueba | Qué se simula |
 | --- | --- | --- |
 | Capa remota (Retrofit) | `MapeadoresTest`, `ErrorRemotoTest` | Respuestas HTTP de error con `Response.error(...)` |
-| Repositorios con microservicio | `MuseumRepositoryRemotoTest`, `OrderRepositoryRemotoTest` | **MockK**: la interfaz Retrofit (`MuseosApi`, `PedidosApi`) y el DAO de Room |
+| Repositorios con microservicio | `MuseumRepositoryRemotoTest`, `OrderRepositoryRemotoTest`, `ProductRepositoryRemotoTest` | **MockK**: la interfaz Retrofit (`MuseosApi`, `PedidosApi`, `ProductosApi`) y el DAO de Room |
 | API externa | `ObrasArteRepositoryTest` | **MockK**: `ObrasArteApi` (no se llama a internet) |
 | Repositorios Room | `RepositoriosRoomTest`, `HistorialQrTest` | **MockK**: los DAO |
-| ViewModels | `DetalleMuseo`, `Mapa`, `EscanerQr`, `Login`, `Registro`, `Perfil`, `Catalogo`, `Favoritos`, `ObrasArte`, `Historial`, `Carrito`, `Dashboard`, `Notificaciones`, `DetalleProducto`, `FormularioProducto`, `Bienvenida` | *Fakes* en memoria (`fakes/Fakes.kt`), por ejemplo `MuseosConFallo`, que simula un servidor caído o que rechaza |
-| Reglas de negocio | `CalculadoraEnvioTest`, `LectorQrTest`, `Validadores*Test`, ... | Nada: son funciones puras |
+| ViewModels | `DetalleMuseo`, `Mapa`, `EscanerQr`, `Login`, `Registro`, `Perfil`, `Catalogo`, `Favoritos`, `ObrasArte`, `Historial`, `Carrito`, `Dashboard`, `Notificaciones`, `DetalleProducto`, `FormularioProducto`, `Bienvenida` | *Fakes* en memoria (`fakes/Fakes.kt`), por ejemplo `MuseosConFallo` y `ProductosConFallo`, que simulan un servidor caído o que rechaza |
+| Reglas de negocio | `CalculadoraEnvioTest`, `LectorQrTest`, `Validadores*Test`, `IdsProductoTest`, `DisponibilidadStockTest`, ... | Nada: son funciones puras |
 
-### Microservicios: 44 pruebas (JUnit 5 + Mockito + MockMvc)
+### Microservicios: 73 pruebas (JUnit 5 + Mockito + MockMvc)
 
 ```bash
 cd microservicios/ms-museos && ./mvnw test     # 20 pruebas
 cd microservicios/ms-pedidos && ./mvnw test    # 24 pruebas
+cd microservicios/ms-productos && ./mvnw test  # 29 pruebas
 ```
 
 - `*ServiceTest`: reglas de negocio con el repositorio JPA simulado por Mockito.
@@ -224,8 +244,8 @@ View (Compose)  ──eventos──▶  ViewModel  ──▶  Repositorio  ─�
 app/src/main/java/com/example/museo_de_los_museos_app/
 ├── model/        clases de datos (Museum, Order, ObraArte, ...)
 ├── domain/       reglas de negocio puras (CalculadoraEnvio, LectorQr, validadores)
-├── remote/       Retrofit: ClienteHttp, MuseosApi, PedidosApi, ObrasArteApi, dto/, Mapeadores, ErrorRemoto
-├── repository/   repositorios (MuseumRepositoryRemoto, OrderRepositoryRemoto, ObrasArteRepository, Room*)
+├── remote/       Retrofit: ClienteHttp, MuseosApi, PedidosApi, ProductosApi, ObrasArteApi, dto/, Mapeadores, ErrorRemoto
+├── repository/   repositorios (MuseumRepositoryRemoto, OrderRepositoryRemoto, ProductRepositoryRemoto, ObrasArteRepository, Room*)
 │   └── db/       AppDatabase, entidades y DAO de Room
 ├── viewmodel/    un paquete por pantalla (ViewModel + UiState)
 ├── navigation/   rutas y NavHost
@@ -259,6 +279,12 @@ controller  →  service  →  repository (Spring Data JPA)  →  base de datos 
 
 - `main` es la rama estable. Cada integrante trabaja en `feature/...` y los cambios entran por Pull Request revisado.
 - Commits pequeños con mensajes técnicos en español. El avance se registra en Trello.
+
+## Material de estudio para la defensa
+
+- [`docs/guias-estudio/`](docs/guias-estudio/README.md): guías divididas en 10 clases (Kotlin, Compose, MVVM, Retrofit, Spring Boot, JPA, microservicios, CRUD, pruebas y APK/GitHub), cada una con las preguntas del quiz del Control 3 y su respuesta.
+- [`docs/GUIA_DEFENSA.md`](docs/GUIA_DEFENSA.md): guía general de la defensa (museos y pedidos).
+- [`docs/guias-estudio/defensa-alanis.md`](docs/guias-estudio/defensa-alanis.md): defensa enfocada en el catálogo y `ms-productos`.
 
 ## Enlaces
 
