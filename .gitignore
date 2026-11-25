@@ -16,3 +16,4 @@ local.properties
 /TEMPORAL
 /docs/
 /.idea/
+.kotlin/
