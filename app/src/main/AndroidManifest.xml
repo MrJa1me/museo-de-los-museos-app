@@ -5,6 +5,9 @@
     <!-- Mapa (osmdroid) y ubicación (P3) -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Android 17 (API 37) bloquea por defecto el acceso a direcciones de red local (10.0.2.2, 192.168.x.x),
+         que es donde corren los microservicios durante las pruebas. Se pide en MainActivity. -->
+    <uses-permission android:name="android.permission.ACCESS_LOCAL_NETWORK" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!-- Perfil (P1): la cámara se abre con TakePicture() y la galería con GetContent().

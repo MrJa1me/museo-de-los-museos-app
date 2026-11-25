@@ -16,12 +16,12 @@ interface ObrasArteApi {
         @Query("q") consulta: String,
         @Query("limit") limite: Int = 20,
         @Query("fields") campos: String = CAMPOS,
-        // El museo pide identificar la app que consume su API
+        // El museo pide identificar la app que consume su API. OkHttp solo admite ASCII en los encabezados (sin tildes)
         @Header("AIC-User-Agent") agente: String = AGENTE
     ): ObrasRespuestaDto
 
     companion object {
         const val CAMPOS = "id,title,artist_display,date_display,place_of_origin,medium_display,image_id"
-        const val AGENTE = "MuseoDeLosMuseos/1.0 (proyecto académico DSY1105)"
+        const val AGENTE = "MuseoDeLosMuseos/1.0 (proyecto academico DSY1105)"
     }
 }
