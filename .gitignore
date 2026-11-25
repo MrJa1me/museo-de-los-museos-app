@@ -14,6 +14,7 @@
 .cxx
 local.properties
 /TEMPORAL
+/scripts/
 /docs/estudio/
 /.idea/
 .kotlin/

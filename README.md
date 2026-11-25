@@ -23,12 +23,12 @@ App Android (Kotlin + Jetpack Compose) que unifica el catálogo de cursos y prod
 
 ## 2. Integrantes
 
-| Integrante | GitHub |
-| --- | --- |
-| Alan | [Nariyato](https://github.com/Nariyato) |
-| Nicolas | [MrJa1me](https://github.com/MrJa1me) |
-| Benjamin | [benjalbsp](https://github.com/benjalbsp) |
-| Alanis | [AlanisVerdugo](https://github.com/AlanisVerdugo) |
+| Integrante | GitHub                                           |
+| ---------- | ------------------------------------------------ |
+| Alan       | [Nariyato](https://github.com/Nariyato)           |
+| Nicolas    | [MrJa1me](https://github.com/MrJa1me)             |
+| Benjamin   | [benjalbsp](https://github.com/benjalbsp)         |
+| Alanis     | [AlanisVerdugo](https://github.com/AlanisVerdugo) |
 
 ## 3. Funcionalidades
 
@@ -48,11 +48,11 @@ App Android (Kotlin + Jetpack Compose) que unifica el catálogo de cursos y prod
 
 ### Microservicios (Spring Boot 3.5, Java 17)
 
-| Microservicio | Puerto | Base de datos | Qué gestiona |
-| --- | --- | --- | --- |
-| `ms-museos` | 8081 | H2 en archivo `data/museos` (o MySQL con el perfil `mysql`) | Fichas de museos virtuales y su aprobación |
-| `ms-pedidos` | 8082 | H2 en archivo `data/pedidos` (o MySQL con el perfil `mysql`) | Solicitudes de compra, sus ítems y el flujo de estados |
-| `ms-productos` | 8083 | H2 en archivo `data/productos` (o MySQL con el perfil `mysql`) | Catálogo de cursos y productos, activación y stock |
+| Microservicio    | Puerto | Base de datos                                                      | Qué gestiona                                           |
+| ---------------- | ------ | ------------------------------------------------------------------ | ------------------------------------------------------- |
+| `ms-museos`    | 8081   | H2 en archivo `data/museos` (o MySQL con el perfil `mysql`)    | Fichas de museos virtuales y su aprobación             |
+| `ms-pedidos`   | 8082   | H2 en archivo `data/pedidos` (o MySQL con el perfil `mysql`)   | Solicitudes de compra, sus ítems y el flujo de estados |
+| `ms-productos` | 8083   | H2 en archivo `data/productos` (o MySQL con el perfil `mysql`) | Catálogo de cursos y productos, activación y stock    |
 
 Cada uno valida los datos que recibe (`@Valid`), aplica las reglas de negocio en su capa `service` y responde los errores en JSON con el código HTTP correcto (400, 404, 409). Todos cargan los mismos datos de prueba que la app la primera vez que arrancan.
 
@@ -60,47 +60,47 @@ Cada uno valida los datos que recibe (`@Valid`), aplica las reglas de negocio en
 
 ### Microservicio `ms-museos` (`http://<host>:8081`)
 
-| Método | Endpoint | Uso en la app | Respuesta |
-| --- | --- | --- | --- |
-| GET | `/api/museos` | Sincronizar mapa, dashboard y fichas (`?publicado=true/false` para filtrar) | 200 + lista |
-| GET | `/api/museos/{id}` | Obtener una ficha | 200 / 404 |
-| POST | `/api/museos` | Investigador crea una ficha (queda pendiente y el servidor asigna el id `m11`, `m12`...) | 201 / 400 / 409 |
-| PUT | `/api/museos/{id}` | Investigador edita una ficha | 200 / 400 / 404 |
-| PATCH | `/api/museos/{id}/aprobar` | Administrador publica una ficha | 200 / 404 |
-| DELETE | `/api/museos/{id}` | Investigador o Administrador elimina una ficha | 204 / 404 |
+| Método | Endpoint                     | Uso en la app                                                                                | Respuesta       |
+| ------- | ---------------------------- | -------------------------------------------------------------------------------------------- | --------------- |
+| GET     | `/api/museos`              | Sincronizar mapa, dashboard y fichas (`?publicado=true/false` para filtrar)                | 200 + lista     |
+| GET     | `/api/museos/{id}`         | Obtener una ficha                                                                            | 200 / 404       |
+| POST    | `/api/museos`              | Investigador crea una ficha (queda pendiente y el servidor asigna el id `m11`, `m12`...) | 201 / 400 / 409 |
+| PUT     | `/api/museos/{id}`         | Investigador edita una ficha                                                                 | 200 / 400 / 404 |
+| PATCH   | `/api/museos/{id}/aprobar` | Administrador publica una ficha                                                              | 200 / 404       |
+| DELETE  | `/api/museos/{id}`         | Investigador o Administrador elimina una ficha                                               | 204 / 404       |
 
 ### Microservicio `ms-pedidos` (`http://<host>:8082`)
 
-| Método | Endpoint | Uso en la app | Respuesta |
-| --- | --- | --- | --- |
-| GET | `/api/pedidos` | Sincronizar historial (`?userId=u03` o `?estado=PENDIENTE` para filtrar) | 200 + lista |
-| GET | `/api/pedidos/{id}` | Obtener una solicitud con sus ítems | 200 / 404 |
-| POST | `/api/pedidos` | Confirmar el carrito (el servidor recalcula subtotal y total) | 201 / 400 / 409 |
-| PUT | `/api/pedidos/{id}` | Cambiar destino/modalidad de una solicitud pendiente (disponible en la API, sin pantalla) | 200 / 409 |
-| PATCH | `/api/pedidos/{id}/estado` | Administrador avanza el estado (solo un paso a la vez) | 200 / 409 |
-| DELETE | `/api/pedidos/{id}` | Cancelar una solicitud (no se permite si ya fue enviada) | 204 / 409 |
+| Método | Endpoint                     | Uso en la app                                                                             | Respuesta       |
+| ------- | ---------------------------- | ----------------------------------------------------------------------------------------- | --------------- |
+| GET     | `/api/pedidos`             | Sincronizar historial (`?userId=u03` o `?estado=PENDIENTE` para filtrar)              | 200 + lista     |
+| GET     | `/api/pedidos/{id}`        | Obtener una solicitud con sus ítems                                                      | 200 / 404       |
+| POST    | `/api/pedidos`             | Confirmar el carrito (el servidor recalcula subtotal y total)                             | 201 / 400 / 409 |
+| PUT     | `/api/pedidos/{id}`        | Cambiar destino/modalidad de una solicitud pendiente (disponible en la API, sin pantalla) | 200 / 409       |
+| PATCH   | `/api/pedidos/{id}/estado` | Administrador avanza el estado (solo un paso a la vez)                                    | 200 / 409       |
+| DELETE  | `/api/pedidos/{id}`        | Cancelar una solicitud (no se permite si ya fue enviada)                                  | 204 / 409       |
 
 La documentación interactiva de cada microservicio está en **Swagger UI**: `http://localhost:8081/swagger-ui.html`, `http://localhost:8082/swagger-ui.html` y `http://localhost:8083/swagger-ui.html`.
 
 ### Microservicio `ms-productos` (`http://<host>:8083`)
 
-| Método | Endpoint | Uso en la app | Respuesta |
-| --- | --- | --- | --- |
-| GET | `/api/productos` | Sincronizar el catálogo (`?categoria=CURSO` y/o `?activo=true` para filtrar) | 200 + lista |
-| GET | `/api/productos/{id}` | Obtener un producto | 200 / 404 |
-| POST | `/api/productos` | Administrador crea un producto (el servidor asigna el id según la categoría: `c05`, `p03`, `m03k`...) | 201 / 400 / 409 |
-| PUT | `/api/productos/{id}` | Administrador edita un producto (no cambia si está activo) | 200 / 400 / 404 |
-| PATCH | `/api/productos/{id}/activo` | Administrador activa o desactiva un producto (`{"activo": false}`) | 200 / 404 |
-| DELETE | `/api/productos/{id}` | Eliminar (disponible en la API; la app usa desactivar) | 204 / 404 |
-| POST | `/api/productos/disponibilidad` | Antes de confirmar el carrito: revisa stock y estado sin modificar nada | 200 + problemas |
-| POST | `/api/productos/descontar-stock` | Después de crear la solicitud: descuenta el stock (todo o nada) | 200 / 409 |
+| Método | Endpoint                           | Uso en la app                                                                                                 | Respuesta       |
+| ------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------- | --------------- |
+| GET     | `/api/productos`                 | Sincronizar el catálogo (`?categoria=CURSO` y/o `?activo=true` para filtrar)                             | 200 + lista     |
+| GET     | `/api/productos/{id}`            | Obtener un producto                                                                                           | 200 / 404       |
+| POST    | `/api/productos`                 | Administrador crea un producto (el servidor asigna el id según la categoría: `c05`, `p03`, `m03k`...) | 201 / 400 / 409 |
+| PUT     | `/api/productos/{id}`            | Administrador edita un producto (no cambia si está activo)                                                   | 200 / 400 / 404 |
+| PATCH   | `/api/productos/{id}/activo`     | Administrador activa o desactiva un producto (`{"activo": false}`)                                          | 200 / 404       |
+| DELETE  | `/api/productos/{id}`            | Eliminar (disponible en la API; la app usa desactivar)                                                        | 204 / 404       |
+| POST    | `/api/productos/disponibilidad`  | Antes de confirmar el carrito: revisa stock y estado sin modificar nada                                       | 200 + problemas |
+| POST    | `/api/productos/descontar-stock` | Después de crear la solicitud: descuenta el stock (todo o nada)                                              | 200 / 409       |
 
 ### API externa: Art Institute of Chicago
 
-| Método | Endpoint | Uso |
-| --- | --- | --- |
-| GET | `https://api.artic.edu/api/v1/artworks/search?q={texto}&limit=20&fields=id,title,artist_display,date_display,place_of_origin,medium_display,image_id` | Pantalla *Obras de arte del mundo* |
-| GET | `https://www.artic.edu/iiif/2/{image_id}/full/400,/0/default.jpg` | Imagen de cada obra (la carga Coil) |
+| Método | Endpoint                                                                                                                                                | Uso                                  |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| GET     | `https://api.artic.edu/api/v1/artworks/search?q={texto}&limit=20&fields=id,title,artist_display,date_display,place_of_origin,medium_display,image_id` | Pantalla *Obras de arte del mundo* |
+| GET     | `https://www.artic.edu/iiif/2/{image_id}/full/400,/0/default.jpg`                                                                                     | Imagen de cada obra (la carga Coil)  |
 
 Es pública y no necesita clave. Sus datos **no se guardan** en Room ni en los microservicios: es información de terceros que se consulta en el momento.
 
@@ -144,6 +144,8 @@ También se pueden abrir como proyectos Maven en IntelliJ y ejecutar `MsMuseosAp
 3. Ejecutar el módulo `app` en el emulador.
 
 El emulador llega al PC por la IP especial **`10.0.2.2`**, que es la que viene configurada.
+
+> En Android 17 (API 37) la app pide al abrir el permiso **«Dispositivos cercanos»**. Acéptalo: sin él, Android bloquea el acceso a los microservicios y la app muestra «Sin conexión».
 **En un teléfono físico** (en la misma red Wi-Fi que el PC):
 
 1. Busca la IP del PC (`ipconfig` en Windows), por ejemplo `192.168.1.20`.
@@ -153,21 +155,21 @@ El emulador llega al PC por la IP especial **`10.0.2.2`**, que es la que viene c
 
 ### 5.3 Usuarios de prueba (ficticios)
 
-| Rol | Correo | Contraseña |
-| --- | --- | --- |
-| Administrador | admin@museo.test | Admin123 |
-| Investigador | investigador@museo.test | Invest123 |
-| Cliente | cliente1@museo.test | Cliente123 |
-| Cliente | cliente2@museo.test | Cliente123 |
+| Rol           | Correo                  | Contraseña |
+| ------------- | ----------------------- | ----------- |
+| Administrador | admin@museo.test        | Admin123    |
+| Investigador  | investigador@museo.test | Invest123   |
+| Cliente       | cliente1@museo.test     | Cliente123  |
+| Cliente       | cliente2@museo.test     | Cliente123  |
 
 ## 6. APK firmado y llave (.jks)
 
-| Archivo | Descripción |
-| --- | --- |
-| `entrega/museo-de-los-museos-v1.0-release.apk` | APK de release firmado (versión 1.0) |
-| `app/keystore/museo-release.jks` | Llave de firma (alias `museo`, RSA 2048, válida hasta 2054) |
-| `app/keystore/keystore.properties` | Contraseñas y alias que lee Gradle |
-| `app/build.gradle.kts` | Bloque `signingConfigs { create("release") { ... } }` y `release { signingConfig = ... }` |
+| Archivo                                          | Descripción                                                                                  |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------- |
+| `entrega/museo-de-los-museos-v1.0-release.apk` | APK de release firmado (versión 1.0)                                                         |
+| `app/keystore/museo-release.jks`               | Llave de firma (alias `museo`, RSA 2048, válida hasta 2054)                                |
+| `app/keystore/keystore.properties`             | Contraseñas y alias que lee Gradle                                                           |
+| `app/build.gradle.kts`                         | Bloque `signingConfigs { create("release") { ... } }` y `release { signingConfig = ... }` |
 
 > La pauta exige dejar la llave y su configuración en el repositorio. En una app real el `.jks` y sus contraseñas **nunca** se suben a GitHub.
 
@@ -206,14 +208,14 @@ El reporte queda en `app/build/reports/jacoco/coberturaLogica/html/index.html`.
 
 **Cobertura de la lógica: 95,2 % de líneas** (91,1 % de instrucciones). Se mide sobre `viewmodel`, `repository`, `remote`, `domain` y `model`. No incluye las pantallas Compose (se prueban en el emulador) ni el código declarativo de Room (entidades, DAO y clases generadas).
 
-| Qué se prueba | Clases de prueba | Qué se simula |
-| --- | --- | --- |
-| Capa remota (Retrofit) | `MapeadoresTest`, `ErrorRemotoTest` | Respuestas HTTP de error con `Response.error(...)` |
-| Repositorios con microservicio | `MuseumRepositoryRemotoTest`, `OrderRepositoryRemotoTest`, `ProductRepositoryRemotoTest` | **MockK**: la interfaz Retrofit (`MuseosApi`, `PedidosApi`, `ProductosApi`) y el DAO de Room |
-| API externa | `ObrasArteRepositoryTest` | **MockK**: `ObrasArteApi` (no se llama a internet) |
-| Repositorios Room | `RepositoriosRoomTest`, `HistorialQrTest` | **MockK**: los DAO |
-| ViewModels | `DetalleMuseo`, `Mapa`, `EscanerQr`, `Login`, `Registro`, `Perfil`, `Catalogo`, `Favoritos`, `ObrasArte`, `Historial`, `Carrito`, `Dashboard`, `Notificaciones`, `DetalleProducto`, `FormularioProducto`, `Bienvenida` | *Fakes* en memoria (`fakes/Fakes.kt`), por ejemplo `MuseosConFallo` y `ProductosConFallo`, que simulan un servidor caído o que rechaza |
-| Reglas de negocio | `CalculadoraEnvioTest`, `LectorQrTest`, `Validadores*Test`, `IdsProductoTest`, `DisponibilidadStockTest`, ... | Nada: son funciones puras |
+| Qué se prueba                 | Clases de prueba                                                                                                                                                                                                                                       | Qué se simula                                                                                                                                  |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Capa remota (Retrofit)         | `MapeadoresTest`, `ErrorRemotoTest`                                                                                                                                                                                                                | Respuestas HTTP de error con `Response.error(...)`                                                                                            |
+| Repositorios con microservicio | `MuseumRepositoryRemotoTest`, `OrderRepositoryRemotoTest`, `ProductRepositoryRemotoTest`                                                                                                                                                         | **MockK**: la interfaz Retrofit (`MuseosApi`, `PedidosApi`, `ProductosApi`) y el DAO de Room                                        |
+| API externa                    | `ObrasArteRepositoryTest`                                                                                                                                                                                                                            | **MockK**: `ObrasArteApi` (no se llama a internet)                                                                                      |
+| Repositorios Room              | `RepositoriosRoomTest`, `HistorialQrTest`                                                                                                                                                                                                          | **MockK**: los DAO                                                                                                                        |
+| ViewModels                     | `DetalleMuseo`, `Mapa`, `EscanerQr`, `Login`, `Registro`, `Perfil`, `Catalogo`, `Favoritos`, `ObrasArte`, `Historial`, `Carrito`, `Dashboard`, `Notificaciones`, `DetalleProducto`, `FormularioProducto`, `Bienvenida` | *Fakes* en memoria (`fakes/Fakes.kt`), por ejemplo `MuseosConFallo` y `ProductosConFallo`, que simulan un servidor caído o que rechaza |
+| Reglas de negocio              | `CalculadoraEnvioTest`, `LectorQrTest`, `Validadores*Test`, `IdsProductoTest`, `DisponibilidadStockTest`, ...                                                                                                                                | Nada: son funciones puras                                                                                                                       |
 
 ### Microservicios: 73 pruebas (JUnit 5 + Mockito + MockMvc)
 
@@ -263,17 +265,17 @@ controller  →  service  →  repository (Spring Data JPA)  →  base de datos 
 
 ### Tecnologías
 
-| Tecnología | Versión | Uso |
-| --- | --- | --- |
-| Kotlin · AGP | 2.2.10 · 9.4.1 | Lenguaje y compilación (minSdk 26, targetSdk 37) |
-| Jetpack Compose (BOM) + Material 3 | 2026.02.01 | Interfaz |
-| ViewModel + StateFlow · Navigation Compose | 2.8.0-rc02 · 2.7.7 | Arquitectura MVVM y navegación |
-| Room (SQLite) · DataStore | 2.8.5 · 1.1.0 | Copia local y sesión |
-| **Retrofit + Gson · OkHttp (logging)** | 2.11.0 · 4.12.0 | Consumo de microservicios y API externa |
-| **Coil** | 3.3.0 | Imágenes de la API externa |
-| osmdroid · Google Code Scanner | 6.1.20 · 16.1.0 | Mapa y QR |
-| **JUnit 4 · MockK · coroutines-test · JaCoCo** | 4.13.2 · 1.14.12 · 1.7.3 | Pruebas y cobertura |
-| **Spring Boot** (Web, Data JPA, Validation) · H2 · MySQL · springdoc | 3.5.16 · Java 17 | Microservicios |
+| Tecnología                                                                   | Versión                   | Uso                                               |
+| ----------------------------------------------------------------------------- | -------------------------- | ------------------------------------------------- |
+| Kotlin · AGP                                                                 | 2.2.10 · 9.4.1            | Lenguaje y compilación (minSdk 26, targetSdk 37) |
+| Jetpack Compose (BOM) + Material 3                                            | 2026.02.01                 | Interfaz                                          |
+| ViewModel + StateFlow · Navigation Compose                                   | 2.8.0-rc02 · 2.7.7        | Arquitectura MVVM y navegación                   |
+| Room (SQLite) · DataStore                                                    | 2.8.5 · 1.1.0             | Copia local y sesión                             |
+| **Retrofit + Gson · OkHttp (logging)**                                 | 2.11.0 · 4.12.0           | Consumo de microservicios y API externa           |
+| **Coil**                                                                | 3.3.0                      | Imágenes de la API externa                       |
+| osmdroid · Google Code Scanner                                               | 6.1.20 · 16.1.0           | Mapa y QR                                         |
+| **JUnit 4 · MockK · coroutines-test · JaCoCo**                       | 4.13.2 · 1.14.12 · 1.7.3 | Pruebas y cobertura                               |
+| **Spring Boot** (Web, Data JPA, Validation) · H2 · MySQL · springdoc | 3.5.16 · Java 17          | Microservicios                                    |
 
 ## Flujo de trabajo del equipo
 
