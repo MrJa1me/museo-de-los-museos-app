@@ -17,3 +17,4 @@ local.properties
 /docs/estudio/
 /.idea/
 .kotlin/
+/app/release/

@@ -23,12 +23,12 @@ App Android (Kotlin + Jetpack Compose) que unifica el catálogo de cursos y prod
 
 ## 2. Integrantes
 
-| Parte | Integrante | GitHub | Responsabilidad |
-| --- | --- | --- | --- |
-| P1 | Alan | [Nariyato] | Base técnica del proyecto, persistencia con Room/SQLite, repositorios, `SessionManager`, tema (modo claro/oscuro), registro, login y perfil con cámara/galería |
-| P2 | Nicolas | [MrJa1me] | Navegación, bienvenida, dashboard, notificaciones y configuración del perfil |
-| P3 | Benjamin | [benjalbsp] | Mapa de museos, detalle y fichas de museo, aprobación de fichas, lector QR, favoritos, historial de QR e imágenes |
-| P4 | Alanis | [AlanisVerdugo] | Catálogo, detalle de producto, administración de productos, carrito, cálculo de envío e historial de pedidos. Evaluación 4: microservicio `ms-productos` e integración del catálogo y el stock |
+| Integrante | GitHub |
+| --- | --- |
+| Alan | [Nariyato](https://github.com/Nariyato) |
+| Nicolas | [MrJa1me](https://github.com/MrJa1me) |
+| Benjamin | [benjalbsp](https://github.com/benjalbsp) |
+| Alanis | [AlanisVerdugo](https://github.com/AlanisVerdugo) |
 
 ## 3. Funcionalidades
 
@@ -279,12 +279,6 @@ controller  →  service  →  repository (Spring Data JPA)  →  base de datos 
 
 - `main` es la rama estable. Cada integrante trabaja en `feature/...` y los cambios entran por Pull Request revisado.
 - Commits pequeños con mensajes técnicos en español. El avance se registra en Trello.
-
-## Material de estudio para la defensa
-
-- [`docs/guias-estudio/`](docs/guias-estudio/README.md): guías divididas en 10 clases (Kotlin, Compose, MVVM, Retrofit, Spring Boot, JPA, microservicios, CRUD, pruebas y APK/GitHub), cada una con las preguntas del quiz del Control 3 y su respuesta.
-- [`docs/GUIA_DEFENSA.md`](docs/GUIA_DEFENSA.md): guía general de la defensa (museos y pedidos).
-- [`docs/guias-estudio/defensa-alanis.md`](docs/guias-estudio/defensa-alanis.md): defensa enfocada en el catálogo y `ms-productos`.
 
 ## Enlaces
 
